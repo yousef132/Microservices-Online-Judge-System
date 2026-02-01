@@ -47,14 +47,20 @@ public static class ServicesRegistration
     {
         var keycloakSection = configuration.GetSection("KeyCloak");
 
+        // NOTE : take care of generating token from different envirnments like docker and localhost
+        // because the issuer url will be different in those cases
+
         var tokenUrl = keycloakSection["TokenUrl"]!;
         // export authority by removing the token endpoint path
         var authority = tokenUrl.Replace("/protocol/openid-connect/token", "");
 
-        var audience = keycloakSection["PublicClientId"]!;
+        var audience = keycloakSection["Audience"]!;
 
-        services
-            .AddAuthentication("Bearer")
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer("Bearer", options =>
             {
                 options.Authority = authority;
@@ -106,8 +112,9 @@ public static class ServicesRegistration
                 }
             });
         });
-        services.AddSwaggerGen();
 
         return services;
     }
+
+
 }

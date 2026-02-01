@@ -4,6 +4,7 @@ using Users.API;
 using Users.API.Clients;
 using Users.API.Delegates;
 using Users.API.Extentions;
+using Users.API.Middlewares;
 using Users.API.Options;
 using Users.API.Repository;
 using Users.API.Repository.Implementations;
@@ -16,10 +17,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer()
     .RegisterServices(builder.Configuration)
-    // .AddIdentity(builder.Configuration)
+    .AddIdentity(builder.Configuration)
     .AddSwaggerDocumentation();
-
-
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -36,8 +35,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-// app.UseAuthentication();
-// app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.MapControllers();
 
 app.Run();

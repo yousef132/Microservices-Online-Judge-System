@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Users.API.Dtos.Requests;
@@ -27,5 +28,11 @@ public class AuthenticationController(IUserService userService) : ControllerBase
     {
         var loginUserResponse = await userService.RefreshUserAsnc(requestDto);
         return Ok(loginUserResponse);
+    }
+    [HttpPost("test-auth")]
+    [Authorize]
+    public async Task<ActionResult<LoginUserResponse>> TestAuth()
+    {
+        return Ok("Authorized Successfully");
     }
 }

@@ -25,7 +25,8 @@ namespace Users.API.Clients;
 
             httpResponseMessage.EnsureSuccessStatusCode();
 
-            return await httpResponseMessage.Content.ReadFromJsonAsync<LoginResponseRepresentation>(cancellationToken: cancellationToken) ?? throw new InvalidOperationException("Failed to read authorization token from response.");
+            return await httpResponseMessage.Content.ReadFromJsonAsync<LoginResponseRepresentation>(cancellationToken: cancellationToken)
+            ?? throw new InvalidOperationException("Failed to read authorization token from response.");
         }
         internal async Task<LoginResponseRepresentation> LoginUserAsync(string email, string password, CancellationToken cancellationToken = default)
         {
@@ -47,6 +48,7 @@ namespace Users.API.Clients;
 
             httpResponseMessage.EnsureSuccessStatusCode();
 
-            return await httpResponseMessage.Content.ReadFromJsonAsync<LoginResponseRepresentation>(cancellationToken: cancellationToken) ?? throw new InvalidOperationException("Failed to read authorization token from response.");
+            return await httpResponseMessage.Content.ReadFromJsonAsync<LoginResponseRepresentation>(cancellationToken: cancellationToken) 
+            ?? throw new InvalidOperationException("Failed to read authorization token from response.");
         }
     }
