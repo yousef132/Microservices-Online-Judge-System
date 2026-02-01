@@ -1,8 +1,8 @@
 using System.Net;
 using Users.API.Clients;
-using Users.API.Clients;
 using Users.API.Dtos.Requests;
 using Users.API.Dtos.Responses;
+using Users.API.Exceptions;
 using Users.API.Services.Dtos;
 
 namespace Users.API.Services;
@@ -27,7 +27,7 @@ internal sealed class IdentityProviderService(AdminKeyCloakClient adminKeyCloakC
             switch (exception.StatusCode)
             {
                 case HttpStatusCode.Unauthorized:
-                    throw new UnauthorizedAccessException("Invalid.Creds"); // TODO: specific exception
+                    throw new UnAuthorizedException("Invalid Credentials"); 
             }
             throw new NotImplementedException("Unhandled Status Code At the LoginUserAsync in IdentityProviderService with message" + exception.Message);
         }

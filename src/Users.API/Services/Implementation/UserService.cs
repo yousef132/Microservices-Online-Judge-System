@@ -1,5 +1,6 @@
 using Users.API.Dtos.Requests;
 using Users.API.Dtos.Responses;
+using Users.API.Exceptions;
 using Users.API.Models;
 using Users.API.Repository;
 using Users.API.Services.Dtos;
@@ -17,7 +18,7 @@ public class UserService(IIdentityProviderService identityProviderService,
         if (user != null)
         {
             logger.LogWarning("User creation failed. Email already exists: {Email}", createUserRequestDto.Email);
-            // throw new ConflictException("User.Conflict.Email", createUserRequestDto.Email);
+            throw new ConflictException("This Email Already Exists");
         }
         string userIdentitfier = await identityProviderService.RegisterUserAsync(new UserModel(createUserRequestDto.Email, createUserRequestDto.Password, createUserRequestDto.FirstName, createUserRequestDto.LastName), cancellationToken);
         user = new User()
