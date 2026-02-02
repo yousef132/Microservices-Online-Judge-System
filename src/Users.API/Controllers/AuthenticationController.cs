@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Users.API.Dtos.Requests;
 using Users.API.Dtos.Responses;
 using Users.API.Services;
+using Users.API.Services.Dtos;
 
 namespace Users.API.Controllers;
 
@@ -29,10 +31,22 @@ public class AuthenticationController(IUserService userService) : ControllerBase
         var loginUserResponse = await userService.RefreshUserAsnc(requestDto);
         return Ok(loginUserResponse);
     }
-    [HttpPost("test-auth")]
-    [Authorize]
-    public async Task<ActionResult<LoginUserResponse>> TestAuth()
+    [HttpGet("{userId}")]
+    public async Task<ActionResult<UserDetailsDto?>> GetUserDetails([FromRoute]string userId)
     {
-        return Ok("Authorized Successfully");
+        var userDetails = await userService.GetUserAsync(userId);
+        return Ok(userDetails);
+    }
+
+    [HttpPut]
+    [Authorize]
+    public async Task<ActionResult> UpdateUserDetails([FromBody] UpdateUserDto requestDto,CancellationToken cancellationToken)
+    {
+        // get user id from token
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId is null)
+            return Unauthorized("User Id not found in the token.");
+        await userService.UpdateUserAsync(requestDto,Guid.Parse(userId),cancellationToken);
+        return NoContent();
     }
 }

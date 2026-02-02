@@ -15,7 +15,8 @@ internal sealed class IdentityProviderService(AdminKeyCloakClient adminKeyCloakC
     {
         try
         {
-            var authResponse = await tokenKeyCloackCLient.LoginUserAsync(email, password, cancellationToken);
+            LoginResponseRepresentation authResponse = await tokenKeyCloackCLient.LoginUserAsync(email, password, cancellationToken);
+            
             return new LoginUserResponse()
             {
                 AccessToken = authResponse.AccessToken,
@@ -49,8 +50,6 @@ internal sealed class IdentityProviderService(AdminKeyCloakClient adminKeyCloakC
         var userRepresentation = new UserRepresentation(
             user.Email,
             user.Email,
-            user.FirstName,
-            user.LastName,
             true,
             true,
             [new CredentialRepresentation("password", user.Password, false)]);
