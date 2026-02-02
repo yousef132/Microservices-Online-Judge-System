@@ -3,7 +3,7 @@ using Users.API.Models;
 
 namespace Users.API.Repository.Implementations;
 
-public class UserRepository :GenericRepository<User,int>, IUserRepository
+public class UserRepository :GenericRepository<User,Guid>, IUserRepository
 {
     private readonly UserDbContext _context;
 
@@ -16,4 +16,11 @@ public class UserRepository :GenericRepository<User,int>, IUserRepository
         return _context.Users
             .FirstOrDefaultAsync(u => u.Email == email);
     }
+
+    public override async Task<User?> GetById(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.Keycloak_Id == id, cancellationToken);
+    }
+
 }

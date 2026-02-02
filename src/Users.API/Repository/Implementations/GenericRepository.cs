@@ -2,7 +2,7 @@ namespace Users.API.Repository.Implementations;
 
 public class GenericRepository<T,TKey> (UserDbContext context) : IGenericRepository<T, TKey> where T : class
 {
-    public async Task<T?> GetById(TKey id, CancellationToken cancellationToken = default)
+    public virtual async Task<T?> GetById(TKey id, CancellationToken cancellationToken = default)
         => await context.Set<T>().FindAsync(id,cancellationToken);
     
     public async Task AddAsync(T entity,CancellationToken cancellationToken = default)
