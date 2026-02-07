@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using Users.API.Common.Exceptions;
+using Users.API.Domain.Models;
 using Users.API.Dtos.Requests;
 using Users.API.Dtos.Responses;
-using Users.API.Exceptions;
-using Users.API.Models;
-using Users.API.Repository;
-using Users.API.Repository.Implementations;
+using Users.API.Infrastructure.Repository.Abstractions;
+using Users.API.Services.Abstraction;
 using Users.API.Services.Dtos;
 
 namespace Users.API.Services;

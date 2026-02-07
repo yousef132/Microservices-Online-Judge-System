@@ -29,4 +29,10 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Common\" />
+      <Folder Include="Domain\" />
+      <Folder Include="Infrastructure\Persistence\" />
+    </ItemGroup>
+
 </Project>

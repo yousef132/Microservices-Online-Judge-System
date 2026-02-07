@@ -1,8 +1,7 @@
 using Users.API.Dtos.Responses;
-using Users.API.Models;
 using Users.API.Services.Dtos;
 
-namespace Users.API.Services;
+namespace Users.API.Services.Abstraction;
 
 public interface IIdentityProviderService
 {

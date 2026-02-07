@@ -1,8 +1,10 @@
 using System.Net;
 using Users.API.Clients;
+using Users.API.Common.Clients;
+using Users.API.Common.Exceptions;
 using Users.API.Dtos.Requests;
 using Users.API.Dtos.Responses;
-using Users.API.Exceptions;
+using Users.API.Services.Abstraction;
 using Users.API.Services.Dtos;
 
 namespace Users.API.Services;
