@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
-using Users.API.Dtos.Requests;
-using Users.API.Dtos.Responses;
-using Users.API.Exceptions;
-using Users.API.Models;
-using Users.API.Repository;
-using Users.API.Repository.Implementations;
-using Users.API.Services.Dtos;
+using Users.API.Common.Exceptions;
+using Users.API.Domain.Models;
+using Users.API.Feature.User;
+using Users.API.Feature.User.Common;
+using Users.API.Infrastructure.Repository.Abstractions;
+using Users.API.Services.Abstraction;
 
 namespace Users.API.Services;
 
@@ -16,7 +15,7 @@ public class UserService(IIdentityProviderService identityProviderService,
     IUnitOfWork unitOfWork,
     IUserRepository userRepository) : IUserService
 {
-    public async Task<Guid> CreateUserAsync(CreateUserRequestDto createUserRequestDto, CancellationToken cancellationToken = default)
+    public async Task<Guid> CreateUserAsync(Signin.CreateUserRequestDto createUserRequestDto, CancellationToken cancellationToken = default)
     {
         User? user = await userRepository.GetByEmail(createUserRequestDto.Email);
         if (user != null)
@@ -38,7 +37,7 @@ public class UserService(IIdentityProviderService identityProviderService,
         return user.Id;
     }
 
-    public async Task<UserDetailsDto> GetUserAsync(string userId, CancellationToken cancellationToken = default)
+    public async Task<UserDetails.UserDetailsDto> GetUserAsync(string userId, CancellationToken cancellationToken = default)
     {
         User? user = await userRepository.GetById(Guid.Parse(userId), cancellationToken);
         if (user == null)
@@ -47,7 +46,7 @@ public class UserService(IIdentityProviderService identityProviderService,
             throw new NotFoundException("User Not Found");
         }
 
-        return new UserDetailsDto(
+        return new UserDetails.UserDetailsDto(
             user.Id,
             user.Username,
             user.Email,
@@ -63,17 +62,17 @@ public class UserService(IIdentityProviderService identityProviderService,
         );
     }
 
-    public async Task<LoginUserResponse> LoginUserAsync(LoginUserRequestDto loginUserRequestDto, CancellationToken cancellationToken = default)
+    public async Task<Login.LoginUserResponse> LoginUserAsync(Login.LoginUserRequestDto loginUserRequestDto, CancellationToken cancellationToken = default)
     {
         return await identityProviderService.LoginUserAsync(loginUserRequestDto.Email, loginUserRequestDto.Password, cancellationToken);
     }
 
-    public async Task<LoginUserResponse> RefreshUserAsnc(RefreshTokenRequestDto refreshTokenRequestDto, CancellationToken cancellationToken = default)
+    public async Task<RefreshToken.RefreshTokenResponse> RefreshUserAsnc(RefreshToken.RefreshTokenRequestDto refreshTokenRequestDto, CancellationToken cancellationToken = default)
     {
         return await identityProviderService.RefreshUserAsync(refreshTokenRequestDto.Token, cancellationToken);
     }
 
-    public async Task UpdateUserAsync(UpdateUserDto updateUserDto, Guid userId, CancellationToken cancellationToken = default)
+    public async Task UpdateUserAsync(UpdateUser.UpdateUserDto updateUserDto, Guid userId, CancellationToken cancellationToken = default)
     {
         var user = await userRepository.GetById(userId, cancellationToken);
         if (user == null)
