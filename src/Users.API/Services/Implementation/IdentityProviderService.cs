@@ -2,10 +2,9 @@ using System.Net;
 using Users.API.Clients;
 using Users.API.Common.Clients;
 using Users.API.Common.Exceptions;
-using Users.API.Dtos.Requests;
-using Users.API.Dtos.Responses;
+using Users.API.Feature.User;
+using Users.API.Feature.User.Common;
 using Users.API.Services.Abstraction;
-using Users.API.Services.Dtos;
 
 namespace Users.API.Services;
 
@@ -13,17 +12,12 @@ internal sealed class IdentityProviderService(AdminKeyCloakClient adminKeyCloakC
     : IIdentityProviderService
 {
     // POST /admin/realms/{realm}/users
-    public async Task<LoginUserResponse> LoginUserAsync(string email, string password, CancellationToken cancellationToken = default)
+    public async Task<Login.LoginUserResponse> LoginUserAsync(string email, string password, CancellationToken cancellationToken = default)
     {
         try
         {
-            LoginResponseRepresentation authResponse = await tokenKeyCloackCLient.LoginUserAsync(email, password, cancellationToken);
-            
-            return new LoginUserResponse()
-            {
-                AccessToken = authResponse.AccessToken,
-                RefreshToken = authResponse.RefreshToken
-            };
+            Login.LoginUserResponse authResponse = await tokenKeyCloackCLient.LoginUserAsync(email, password, cancellationToken);
+            return authResponse;
         }
         catch (HttpRequestException exception)
         {
@@ -36,14 +30,10 @@ internal sealed class IdentityProviderService(AdminKeyCloakClient adminKeyCloakC
         }
     }
 
-    public Task<LoginUserResponse> RefreshUserAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<RefreshToken.RefreshTokenResponse> RefreshUserAsync(string token, CancellationToken cancellationToken = default)
     {
-        var authResponse = tokenKeyCloackCLient.RefreshTokenAsync(token, cancellationToken);
-        return Task.FromResult(new LoginUserResponse()
-        {
-            AccessToken = authResponse.Result.AccessToken,
-            RefreshToken = authResponse.Result.RefreshToken
-        });
+        var authResponse = await tokenKeyCloackCLient.RefreshTokenAsync(token, cancellationToken);
+        return authResponse;
     }
 
 

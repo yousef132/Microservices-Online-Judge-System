@@ -2,7 +2,7 @@ using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 using Users.API.Common.Options;
-using Users.API.Dtos.Requests;
+using Users.API.Feature.User.Common;
 
 namespace Users.API.Common.Clients;
 

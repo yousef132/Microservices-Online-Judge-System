@@ -1,4 +1,4 @@
-namespace Users.API.Dtos.Requests;
+namespace Users.API.Feature.User.Common;
 
 internal sealed record UserRepresentation(
     string Username,

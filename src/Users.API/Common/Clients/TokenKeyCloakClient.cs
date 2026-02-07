@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Options;
 using Users.API.Common.Options;
-using Users.API.Dtos.Responses;
+using Users.API.Feature.User;
 
 namespace Users.API.Clients;
 
     internal class TokenKeyCloakClient(HttpClient httpClient, IOptions<KeyCloakOptions> options)
     {
         private readonly KeyCloakOptions _options = options.Value;
-        internal async Task<LoginResponseRepresentation> RefreshTokenAsync(string token, CancellationToken cancellationToken = default)
+        internal async Task<RefreshToken.RefreshTokenResponse> RefreshTokenAsync(string token, CancellationToken cancellationToken = default)
         {
             var refreshRepresentation = new KeyValuePair<string, string>[]
             {
@@ -25,10 +25,10 @@ namespace Users.API.Clients;
 
             httpResponseMessage.EnsureSuccessStatusCode();
 
-            return await httpResponseMessage.Content.ReadFromJsonAsync<LoginResponseRepresentation>(cancellationToken: cancellationToken)
+            return await httpResponseMessage.Content.ReadFromJsonAsync<RefreshToken.RefreshTokenResponse>(cancellationToken: cancellationToken)
             ?? throw new InvalidOperationException("Failed to read authorization token from response.");
         }
-        internal async Task<LoginResponseRepresentation> LoginUserAsync(string email, string password, CancellationToken cancellationToken = default)
+        internal async Task<Login.LoginUserResponse> LoginUserAsync(string email, string password, CancellationToken cancellationToken = default)
         {
             var loginRepresentation = new KeyValuePair<string, string>[]
             {
@@ -48,7 +48,7 @@ namespace Users.API.Clients;
 
             httpResponseMessage.EnsureSuccessStatusCode();
 
-            return await httpResponseMessage.Content.ReadFromJsonAsync<LoginResponseRepresentation>(cancellationToken: cancellationToken) 
+            return await httpResponseMessage.Content.ReadFromJsonAsync<Login.LoginUserResponse>(cancellationToken: cancellationToken) 
             ?? throw new InvalidOperationException("Failed to read authorization token from response.");
         }
     }
