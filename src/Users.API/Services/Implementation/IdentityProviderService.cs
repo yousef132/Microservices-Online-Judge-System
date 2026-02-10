@@ -1,8 +1,8 @@
+using BuildingBlocks.Exceptions;
 using System.Net;
 using Users.API.Clients;
 using Users.API.Dtos.Requests;
 using Users.API.Dtos.Responses;
-using Users.API.Exceptions;
 using Users.API.Services.Dtos;
 
 namespace Users.API.Services;

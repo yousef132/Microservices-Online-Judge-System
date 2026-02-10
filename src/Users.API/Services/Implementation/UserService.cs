@@ -1,9 +1,9 @@
+using BuildingBlocks.Exceptions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using Users.API.Dtos.Requests;
 using Users.API.Dtos.Responses;
-using Users.API.Exceptions;
 using Users.API.Models;
 using Users.API.Repository;
 using Users.API.Repository.Implementations;

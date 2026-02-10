@@ -22,14 +22,11 @@ internal sealed class AdminKeyCloakClient(HttpClient httpClient, IOptions<KeyClo
             
         }
         catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
+        { 
             Console.Write(e.InnerException?.Message);
             throw;
         }
-
-        // httpResponseMessage.EnsureSuccessStatusCode();
-
+        //httpResponseMessage.EnsureSuccessStatusCode();
     }
     private static string ExtractIdentityIdFromLocationHeader(
         HttpResponseMessage httpResponseMessage)

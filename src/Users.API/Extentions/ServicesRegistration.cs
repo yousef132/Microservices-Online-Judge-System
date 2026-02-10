@@ -1,10 +1,11 @@
+using BuildingBlocks.Identity;
+using BuildingBlocks.Identity.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Users.API.Clients;
 using Users.API.Delegates;
-using Users.API.Helpers;
 using Users.API.Options;
 using Users.API.Repository;
 using Users.API.Repository.Implementations;
