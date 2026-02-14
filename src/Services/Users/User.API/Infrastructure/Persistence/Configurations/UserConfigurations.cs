@@ -1,12 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Users.API.Domain.Models;
 
 namespace Users.API.Infrastructure.Persistence.Configurations;
 
-public class UserConfigurations : IEntityTypeConfiguration<User>
+public class UserConfigurations : IEntityTypeConfiguration<Domain.Models.User>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<Domain.Models.User> builder)
     {
         // Table & key
         builder.HasKey(u => u.Id);
