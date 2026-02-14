@@ -1,0 +1,41 @@
+﻿using CoreJudge.Application.Features.Testcases.Commands.Delete;
+using CoreJudge.Application.Features.Testcases.Commands.Update;
+using CoreJudge.Application.Features.Testcases.Queries.GetTestCasesByProblemId;
+using CoreJudge.Application.Features.TestCases.Commands.Create;
+using CoreJudge.Domain.Premitives;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace CoreJudge.API.Controllers
+{
+
+    [Authorize(Roles = Roles.Admin)]
+
+    public class TestcasesController : BaseController
+    {
+        [HttpPost]
+        public async Task<ActionResult<Response>> CreateTestcaseAsync(CreateTestcaseCommand command)
+         => ResponseResult(await mediator.Send(command));
+
+        [HttpGet("{problemId}")]
+        public async Task<ActionResult<Response>> GetProblemTestCasesByIdAsync([FromRoute] int problemId)
+         => ResponseResult(await mediator.Send(new GetTestCasesByProblemIdQuerey(problemId)));
+
+        [HttpDelete("{testcaseId}")]
+        public async Task<ActionResult<Response>> DeleteTestcaseAsync([FromRoute] int testcaseId)
+         => ResponseResult(await mediator.Send(new DeleteTestcaseCommand(testcaseId)));
+
+
+        [HttpPut("{testcaseId}")]
+        public async Task<ActionResult<Response>> UpdateTestcaseAsync([FromRoute] int testcaseId, [FromBody] UpdateTestcaseCommand command)
+        {
+            if (testcaseId != command.TestcaseId)
+                return BadRequest("TestcaseId in the route and body must match.");
+
+            return ResponseResult(await mediator.Send(command));
+        }
+    }
+}
+
+
+

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CoreJudge.Infrastructure.Context
 {
-    internal class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<Contest> Contests { get; set; }
         public DbSet<UserContest> Registers { get; set; }
