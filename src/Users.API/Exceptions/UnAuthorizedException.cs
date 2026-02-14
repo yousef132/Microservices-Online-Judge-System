@@ -1,4 +1,4 @@
-﻿namespace Users.API.Common.Exceptions
+﻿namespace Users.API.Exceptions
 {
     public class UnAuthorizedException : Exception
     {

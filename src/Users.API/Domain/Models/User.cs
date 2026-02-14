@@ -15,4 +15,9 @@ public class User
     public string? FacebookUrl { get; set; }
     public bool IsPublicProfile { get; set; } = true;
     public string? ProfilePictureUrl { get; set; }
+
+    public UserStatus RankName { get; set; } = UserStatus.UnRanked; // ex: pupil
+    public short Rating { get; set; } = 0; // ex: 1200 
+    public Gender? Gender { get; set; }
+
 }

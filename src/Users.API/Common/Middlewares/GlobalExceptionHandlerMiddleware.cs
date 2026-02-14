@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuildingBlocks.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using Users.API.Common.Exceptions;
 
 namespace Users.API.Common.Middlewares
 {

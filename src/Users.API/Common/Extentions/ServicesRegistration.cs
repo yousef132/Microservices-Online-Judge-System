@@ -1,3 +1,5 @@
+using BuildingBlocks.Identity;
+using BuildingBlocks.Identity.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

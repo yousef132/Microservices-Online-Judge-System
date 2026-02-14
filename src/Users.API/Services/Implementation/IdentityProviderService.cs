@@ -1,3 +1,4 @@
+using BuildingBlocks.Exceptions;
 using System.Net;
 using Users.API.Clients;
 using Users.API.Common.Clients;

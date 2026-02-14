@@ -1,3 +1,4 @@
+using BuildingBlocks.Exceptions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;

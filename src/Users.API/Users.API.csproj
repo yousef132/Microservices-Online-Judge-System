@@ -16,6 +16,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+		
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -34,6 +35,10 @@
       <Folder Include="Common\" />
       <Folder Include="Domain\" />
       <Folder Include="Infrastructure\Persistence\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />
     </ItemGroup>
 
 </Project>
