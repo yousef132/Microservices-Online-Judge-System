@@ -218,6 +218,9 @@ _pkginfo.txt
 # but keep track of directories ending in .cache
 !?*.[Cc]ache/
 
+bin/
+obj/
+
 # Others
 ClientBin/
 ~$*
@@ -419,3 +422,45 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
+
+# JetBrains Rider - Additional entries
+*.sln.iml
+.idea/**/sonarlint/
+.idea/**/markdown-navigator.xml
+.idea/**/markdown-navigator/
+.idea/**/markdown-navigator-enh.xml
+.idea/**/aws.xml
+
+# Rider auto-generates this file
+.idea/.idea.*/riderModule.iml
+.idea/.idea.*/
+
+# Common patterns
+.idea/**/modules.xml
+.idea/**/projectSettingsUpdater.xml
+.idea/**/vcs.xml
+.idea/**/inspectionProfiles/
+
+# Fody - Xml schema (VS/Rider)
+FodyWeavers.xsd
+
+# macOS
+.DS_Store
+
+# Visual Studio 2019/2022 additional
+.vs/*/v17/
+.vs/*/v16/
+*.vsidx
+*.vsconfig
+
+# Resharper (used by both VS and Rider)
+*.DotSettings
+
+# Code coverage
+*.cobertura.xml
+coverage/
+TestResults/
+
+# Sonar
+.sonarqube/
+.sonar/

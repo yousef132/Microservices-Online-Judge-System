@@ -1,4 +1,5 @@
-﻿namespace Users.API.Exceptions
+
+namespace BuildingBlocks.Core.Exceptions
 {
     public class UnAuthorizedException : Exception
     {

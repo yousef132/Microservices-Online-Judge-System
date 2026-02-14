@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Exceptions
+﻿namespace BuildingBlocks.Core.Exceptions
 {
     public class BadRequestException : Exception
     {

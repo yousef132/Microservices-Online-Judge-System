@@ -1,4 +1,4 @@
-namespace Users.API.Models;
+namespace Users.API.Domain.Models;
 
 public enum Gender
 {

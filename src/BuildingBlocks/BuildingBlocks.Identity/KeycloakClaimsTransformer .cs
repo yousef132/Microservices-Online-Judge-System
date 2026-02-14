@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication;
 
 
-namespace BuildingBlocks.Identity.Identity
+namespace BuildingBlocks.Identity
 {
     public class KeycloakClaimsTransformer : IClaimsTransformation
     {

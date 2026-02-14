@@ -1,3 +1,4 @@
+
 namespace Users.API.Domain.Models;
 
 public class User

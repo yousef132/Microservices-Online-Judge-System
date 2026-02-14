@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 
-namespace BuildingBlocks.Exceptions.Handler
+namespace BuildingBlocks.Core.Exceptions.Handler
 {
     public class CustomExceptionHandler
      (ILogger<CustomExceptionHandler> logger)
      : IExceptionHandler
     {
+
+
         public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
         {
             logger.LogError(

@@ -38,7 +38,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />
+      <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.Core\BuildingBlocks.Core.csproj" />
+      <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.Identity\BuildingBlocks.Identity.csproj" />
     </ItemGroup>
 
 </Project>

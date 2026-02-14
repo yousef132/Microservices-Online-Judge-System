@@ -1,32 +1,22 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Users.API.Models
+namespace Users.API.Domain.Models;
+public enum UserStatus
 {
-    public enum UserStatus
-    {
-        [EnumMember(Value = "UnRanked")]
-        UnRanked,
-
-        [EnumMember(Value = "Newbie")]
-        Newbie,
-        [EnumMember(Value = "Pupil")]
-
-        Pupil,
-        [EnumMember(Value = "Specialist")]
-
-        Specialist,
-
-        [EnumMember(Value = "Expert")]
-        Expert,
-        [EnumMember(Value = "Candidate Master")]
-
-        Candidate_Master,
-        [EnumMember(Value = "Master")]
-
-        Master,
-        [EnumMember(Value = "International Master")]
-
-        International_Master
-
-    }
+    [EnumMember(Value = "UnRanked")]
+    UnRanked,
+    [EnumMember(Value = "Newbie")]
+    Newbie,
+    [EnumMember(Value = "Pupil")]
+    Pupil,
+    [EnumMember(Value = "Specialist")]
+    Specialist,
+    [EnumMember(Value = "Expert")]
+    Expert,
+    [EnumMember(Value = "Candidate Master")]
+    Candidate_Master,
+    [EnumMember(Value = "Master")]
+    Master,
+    [EnumMember(Value = "International Master")]
+    International_Master
 }

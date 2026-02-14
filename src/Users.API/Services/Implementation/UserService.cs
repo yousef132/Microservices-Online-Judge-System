@@ -1,8 +1,7 @@
-using BuildingBlocks.Exceptions;
+using BuildingBlocks.Core.Exceptions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
-using Users.API.Common.Exceptions;
 using Users.API.Domain.Models;
 using Users.API.Feature.User;
 using Users.API.Feature.User.Common;

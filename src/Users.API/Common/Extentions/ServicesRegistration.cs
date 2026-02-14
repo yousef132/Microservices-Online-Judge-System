@@ -1,5 +1,4 @@
 using BuildingBlocks.Identity;
-using BuildingBlocks.Identity.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +6,6 @@ using Microsoft.Extensions.Options;
 using Users.API.Clients;
 using Users.API.Common.Clients;
 using Users.API.Common.Delegates;
-using Users.API.Common.Helpers;
 using Users.API.Common.Options;
 using Users.API.Infrastructure;
 using Users.API.Infrastructure.Repository.Abstractions;

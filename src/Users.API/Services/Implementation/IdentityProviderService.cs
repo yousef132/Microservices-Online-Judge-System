@@ -1,8 +1,7 @@
-using BuildingBlocks.Exceptions;
 using System.Net;
+using BuildingBlocks.Core.Exceptions;
 using Users.API.Clients;
 using Users.API.Common.Clients;
-using Users.API.Common.Exceptions;
 using Users.API.Feature.User;
 using Users.API.Feature.User.Common;
 using Users.API.Services.Abstraction;
