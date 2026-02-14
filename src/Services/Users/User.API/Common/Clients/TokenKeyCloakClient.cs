@@ -1,6 +1,8 @@
+using System.Text.Json;
 using Microsoft.Extensions.Options;
 using Users.API.Common.Options;
 using Users.API.Feature.User;
+using Users.API.Feature.User.Common;
 
 namespace Users.API.Clients;
 
@@ -28,27 +30,52 @@ namespace Users.API.Clients;
             return await httpResponseMessage.Content.ReadFromJsonAsync<RefreshToken.RefreshTokenResponse>(cancellationToken: cancellationToken)
             ?? throw new InvalidOperationException("Failed to read authorization token from response.");
         }
-        internal async Task<Login.LoginUserResponse> LoginUserAsync(string email, string password, CancellationToken cancellationToken = default)
+    internal async Task<KeycloakLoginResponse> LoginUserAsync(string email, string password, CancellationToken cancellationToken = default)
+    {
+        var loginRepresentation = new KeyValuePair<string, string>[]
         {
-            var loginRepresentation = new KeyValuePair<string, string>[]
-            {
-            new ("client_id", _options.ConfidentialClientId),
-            new ("username", email),
-            new ("password", password),
-            new ("client_secret", _options.ConfidentialClientSecret),
-            new ("grant_type", "password"),
-            new ("scope", "openid email")
-            };
+        new ("client_id", _options.ConfidentialClientId),
+        new ("username", email),
+        new ("password", password),
+        new ("client_secret", _options.ConfidentialClientSecret),
+        new ("grant_type", "password"),
+        new ("scope", "openid email")
+        };
 
-            var authRequestContent = new FormUrlEncodedContent(loginRepresentation);
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync(
-                "",
-                authRequestContent,
-                cancellationToken);
+        var authRequestContent = new FormUrlEncodedContent(loginRepresentation);
 
-            httpResponseMessage.EnsureSuccessStatusCode();
+        // Log the request
+        var requestBody = await authRequestContent.ReadAsStringAsync();
+        Console.WriteLine("=== REQUEST ===");
+        Console.WriteLine($"URL: {httpClient.BaseAddress}");
+        Console.WriteLine($"Body: {requestBody}");
+        Console.WriteLine("================");
 
-            return await httpResponseMessage.Content.ReadFromJsonAsync<Login.LoginUserResponse>(cancellationToken: cancellationToken) 
-            ?? throw new InvalidOperationException("Failed to read authorization token from response.");
+        HttpResponseMessage httpResponseMessage = await httpClient.PostAsync(
+            "",
+            authRequestContent,
+            cancellationToken);
+
+        // Read the response content once
+        var responseContent = await httpResponseMessage.Content.ReadAsStringAsync();
+
+        // Log the response
+        Console.WriteLine("=== RESPONSE ===");
+        Console.WriteLine($"Status Code: {(int)httpResponseMessage.StatusCode} {httpResponseMessage.StatusCode}");
+        Console.WriteLine($"Headers: {string.Join(", ", httpResponseMessage.Headers.Select(h => $"{h.Key}: {string.Join(",", h.Value)}"))}");
+        Console.WriteLine($"Body: {responseContent}");
+        Console.WriteLine("=================");
+
+        if (!httpResponseMessage.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException($"Keycloak returned {httpResponseMessage.StatusCode}: {responseContent}");
         }
+
+        // Deserialize from the string we already read
+        var result = JsonSerializer.Deserialize<KeycloakLoginResponse>(
+            responseContent,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        return result ?? throw new InvalidOperationException("Failed to read authorization token from response.");
     }
+}

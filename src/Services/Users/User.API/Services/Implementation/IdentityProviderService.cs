@@ -16,8 +16,8 @@ internal sealed class IdentityProviderService(AdminKeyCloakClient adminKeyCloakC
     {
         try
         {
-            Login.LoginUserResponse authResponse = await tokenKeyCloackCLient.LoginUserAsync(email, password, cancellationToken);
-            return authResponse;
+            var  authResponse = await tokenKeyCloackCLient.LoginUserAsync(email, password, cancellationToken);
+            return new Login.LoginUserResponse(authResponse.AccessToken, authResponse.RefreshToken);
         }
         catch (HttpRequestException exception)
         {

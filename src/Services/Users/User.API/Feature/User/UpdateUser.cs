@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Carter;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Users.API.Services;
+using static Users.API.Feature.User.RefreshToken;
 
 namespace Users.API.Feature.User;
 
@@ -19,16 +21,10 @@ public static class UpdateUser
     
     public class UpdateUserEndpoint : ICarterModule
     {
-        private readonly IUserService _userService;
-
-        public UpdateUserEndpoint(IUserService userService)
-        {
-            _userService = userService;
-        }
 
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/auth", async (IUserService userService, UpdateUser.UpdateUserDto  requestDto,HttpContext ctx) =>
+            app.MapPut("/auth", async (IUserService userService, UpdateUser.UpdateUserDto  requestDto,HttpContext ctx) =>
             {
                 // Validate request
                 var errors = Validate(requestDto);
@@ -43,7 +39,10 @@ public static class UpdateUser
 
                 // Return response
                 return Results.NoContent();
-            });
+            })
+              .WithTags("Auth")
+             .Produces<NoContent>(StatusCodes.Status200OK) // success response
+             .Produces<IEnumerable<string>>(StatusCodes.Status400BadRequest); // validation errors
         }
 
         // -------------------------------

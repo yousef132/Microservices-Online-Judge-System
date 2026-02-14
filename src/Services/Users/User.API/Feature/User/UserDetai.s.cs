@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Carter;
 using Microsoft.AspNetCore.Mvc;
 using Users.API.Services;
+using static Users.API.Feature.User.RefreshToken;
 
 namespace Users.API.Feature.User;
 
@@ -24,16 +25,11 @@ public class UserDetails
     );
     public class UserDetailsEndpoint : ICarterModule
     {
-        private readonly IUserService _userService;
 
-        public UserDetailsEndpoint(IUserService userService)
-        {
-            _userService = userService;
-        }
 
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/auth/details", async (IUserService userService,[FromQuery] string userId, CancellationToken cancellationToken) =>
+            app.MapGet("/auth/details/{userId}", async (IUserService userService,[FromRoute] string userId, CancellationToken cancellationToken) =>
             {
                 // // Validate request
                 // var errors = Validate(requestDto);
@@ -47,7 +43,10 @@ public class UserDetails
 
                 // Return response
                 return Results.Ok(details);
-            });
+            })
+              .WithTags("Auth")
+             .Produces<UserDetailsDto>(StatusCodes.Status200OK) // success response
+             .Produces<IEnumerable<string>>(StatusCodes.Status400BadRequest); // validation errors
         }
 
         // -------------------------------

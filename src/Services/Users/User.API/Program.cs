@@ -1,5 +1,7 @@
+using Carter;
 using Users.API.Common.Extentions;
 using Users.API.Common.Middlewares;
+using Users.API.Feature.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,13 +13,21 @@ builder.Services.AddEndpointsApiExplorer()
     .AddIdentity(builder.Configuration)
     .AddSwaggerDocumentation();
 
+builder.Services.AddCarter(configurator: c =>
+{
+    // Register each endpoint explicitly
+    c.WithModule<Signin.SigninEndpoint>();
+    c.WithModule<Login.LoginEndpoint>();
+    c.WithModule<RefreshToken.RefreshTokenEndpoint>();
+    c.WithModule<UserDetails.UserDetailsEndpoint>();
+    c.WithModule<UpdateUser.UpdateUserEndpoint>();
+});
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 var app = builder.Build();
 await app.Services.ApplyMigrationsWithRetryAsync();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -26,10 +36,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
 app.MapControllers();
+app.MapCarter();
 
 app.Run();
 

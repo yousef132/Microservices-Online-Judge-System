@@ -16,16 +16,11 @@ public class RefreshToken
     );
     public class RefreshTokenEndpoint : ICarterModule
     {
-        private readonly IUserService _userService;
 
-        public RefreshTokenEndpoint(IUserService userService)
-        {
-            _userService = userService;
-        }
 
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/auth/login", async (IUserService userService, RefreshTokenRequestDto  requestDto,CancellationToken cancellationToken) =>
+            app.MapPost("/auth/refresh-token", async (IUserService userService, RefreshTokenRequestDto  requestDto,CancellationToken cancellationToken) =>
             {
                 // Validate request
                 var errors = Validate(requestDto);
@@ -37,7 +32,10 @@ public class RefreshToken
 
                 // Return response
                 return Results.Ok(refreshTokenResponse);
-            });
+            })
+              .WithTags("Auth")         
+             .Produces<RefreshTokenResponse>(StatusCodes.Status200OK) // success response
+             .Produces<IEnumerable<string>>(StatusCodes.Status400BadRequest); // validation errors
         }
 
         // -------------------------------
@@ -51,4 +49,5 @@ public class RefreshToken
             return validationResults.Select(vr => vr.ErrorMessage ?? string.Empty);
         }
     }
+
 }

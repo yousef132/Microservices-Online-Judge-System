@@ -1,36 +1,11 @@
-﻿services:
-  users.api:
-    image: users.api
-    build:
-      context: .
-      dockerfile: Users.API/Dockerfile
-      
-  users.db:
-    image: postgres:latest
-    volumes:
-      - users-pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.3.2
-    depends_on:
-      postgres-keycloak:
-        condition: service_healthy
-  
-  postgres-keycloak:
-    image: postgres:latest
-    volumes:
-      - keycloak-pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-  
-volumes:
-  users-pgdata:
-  keycloak-pgdata:
+﻿{
+  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICItcGx2UmI0T1ZPSU9CQzhNTmZfTUZRLUIxWW9mdTUxUzdKdlY4VTNuQXB3In0.eyJleHAiOjE3NzEwODIxOTksImlhdCI6MTc3MTA4MTg5OSwianRpIjoib25ydHJvOjEwY2Y1ZGZhLTAzMmYtNGE3YS0wZWU5LWNiMWRlMjk5MWIyMCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9yZWFsbXMvb25saW5lX2p1ZGdlIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImU5YjYzMDYyLThlNzUtNGY3My05YWM4LWFlYmQzMGJlMzFkNSIsInR5cCI6IkJlYXJlciIsImF6cCI6Im9ubGluZV9qdWRnZS1jb25maWRlbnRpYWwtY2xpZW50Iiwic2lkIjoiZmQzODU4OGItOTBjNC00NzkwLWJlYjItNWUyYTZjMTZkMTQ5IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIvKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1vbmxpbmVfanVkZ2UiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoidXNpZiBzYWFkIiwicHJlZmVycmVkX3VzZXJuYW1lIjoidXNpZkBnbWFpbC5jb20iLCJnaXZlbl9uYW1lIjoidXNpZiIsImZhbWlseV9uYW1lIjoic2FhZCIsImVtYWlsIjoidXNpZkBnbWFpbC5jb20ifQ.iPmsN3feKsdwDt7-cmCxGH4VgvdqwjNT1LTMJaqUAaZ7RwDhtfGxdwdeTJPmycu0vi_p14ClKzuJVVS8tPAPYM8kpaDF1EHDfCBi-utvT3sPupbz_P26E264gCwuJ3ldpLwfHPQ34VBjMd8C43F_dyO8YHm-8g4UlxJWwpddXQbp7t-bQKgxG2Db9W81zqHoIN5Ul1nHO2Y8LfvTeGZ7DdYxVv1UIzGlvG1eYH6mRJh4agxN3VsL0fORmmzv74LImB0BaFoO4IUgoEUKpuDBs8pNT-X3-NlRSQ4LxzPVGEHNbckR5uSPpWRy56gA_Bp-hMX1LBFz-_08Z8IQkvzwOg",
+  "expires_in": 300,
+  "refresh_expires_in": 1800,
+  "refresh_token": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhMTRlM2Y2OC05MTFhLTRlOTUtOTAwYi02YjBkYmRkMjM4MmEifQ.eyJleHAiOjE3NzEwODM2OTksImlhdCI6MTc3MTA4MTg5OSwianRpIjoiNGRiMDkyMGItZjQyMS02ZjdiLTYyZjgtYzdlOGMwMzMzYmIyIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9vbmxpbmVfanVkZ2UiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvcmVhbG1zL29ubGluZV9qdWRnZSIsInN1YiI6ImU5YjYzMDYyLThlNzUtNGY3My05YWM4LWFlYmQzMGJlMzFkNSIsInR5cCI6IlJlZnJlc2giLCJhenAiOiJvbmxpbmVfanVkZ2UtY29uZmlkZW50aWFsLWNsaWVudCIsInNpZCI6ImZkMzg1ODhiLTkwYzQtNDc5MC1iZWIyLTVlMmE2YzE2ZDE0OSIsInNjb3BlIjoib3BlbmlkIGVtYWlsIHNlcnZpY2VfYWNjb3VudCBiYXNpYyBwcm9maWxlIHdlYi1vcmlnaW5zIHJvbGVzIGFjciJ9.39e7iQJvPlkYRdUDi588A-0sCdeHf8kq3TAO9O7I4vstowN3e-z_VJ3rBIlPjiEf6TfvvYj9_wZGrif89RHLbQ",
+  "token_type": "Bearer",
+  "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICItcGx2UmI0T1ZPSU9CQzhNTmZfTUZRLUIxWW9mdTUxUzdKdlY4VTNuQXB3In0.eyJleHAiOjE3NzEwODIxOTksImlhdCI6MTc3MTA4MTg5OSwianRpIjoiZWRlNDZiMmYtNzAzZC1mMmI3LTY0ODctNDc1ZDc3N2I5ZjhjIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9vbmxpbmVfanVkZ2UiLCJhdWQiOiJvbmxpbmVfanVkZ2UtY29uZmlkZW50aWFsLWNsaWVudCIsInN1YiI6ImU5YjYzMDYyLThlNzUtNGY3My05YWM4LWFlYmQzMGJlMzFkNSIsInR5cCI6IklEIiwiYXpwIjoib25saW5lX2p1ZGdlLWNvbmZpZGVudGlhbC1jbGllbnQiLCJzaWQiOiJmZDM4NTg4Yi05MGM0LTQ3OTAtYmViMi01ZTJhNmMxNmQxNDkiLCJhdF9oYXNoIjoibFBaN3UtSjdlWGdFVmdVWjRoS1JxUSIsImFjciI6IjEiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6InVzaWYgc2FhZCIsInByZWZlcnJlZF91c2VybmFtZSI6InVzaWZAZ21haWwuY29tIiwiZ2l2ZW5fbmFtZSI6InVzaWYiLCJmYW1pbHlfbmFtZSI6InNhYWQiLCJlbWFpbCI6InVzaWZAZ21haWwuY29tIn0.Fs-0tTBZzcXXh2cyW3rXEpTGHxXIbrY0Liktw7Jdpo4QZP9elyfv2Ijv0ypnWN_MeTQvu5_GVTK1eO2E0T7W-De-mwWLxzYevpIVjOFs7zwHTO7C28cU6RpcMm8aZ3o5c9SHwhUYgBERkGxKr1HXCVnpedlWs2WwqelrfrogqWDYd4Dco86ls2-8yxuplvlUBChWeefSLhhHiW-NljxvIah5fXtpR7n2vTH0-I615rlnKD3TEDqhv_xFSLwSa5vyM-7VG4L_x340mBGK1X9LzXxV9gXX0LQl9Hs_hj34_i1ac3pg6bIUA_sj3JoC7EfdF0EwLVOJA1AXF4F97ZFyXg",
+  "not-before-policy": 0,
+  "session_state": "fd38588b-90c4-4790-beb2-5e2a6c16d149",
+  "scope": "openid email profile",
+}

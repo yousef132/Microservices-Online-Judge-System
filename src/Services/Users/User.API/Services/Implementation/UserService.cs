@@ -31,6 +31,7 @@ public class UserService(IIdentityProviderService identityProviderService,
             LastLogin = DateTime.UtcNow,
             Username = createUserRequestDto.Email,
             DisplayName = createUserRequestDto.DisplayName,
+            
         };
         await userRepository.AddAsync(user,cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);

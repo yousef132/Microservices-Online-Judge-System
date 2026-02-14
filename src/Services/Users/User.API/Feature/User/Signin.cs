@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Carter;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Users.API.Services;
+using static Users.API.Feature.User.RefreshToken;
 
 namespace Users.API.Feature.User;
 
@@ -21,16 +22,10 @@ public static class Signin
     // ========================
     public class SigninEndpoint : ICarterModule
     {
-        private readonly IUserService _userService;
-
-        public SigninEndpoint(IUserService userService)
-        {
-            _userService = userService;
-        }
 
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/auth", async (IUserService userService, CreateUserRequestDto requestDto) =>
+            app.MapPost("/sign-in", async (IUserService userService, CreateUserRequestDto requestDto) =>
             {
                 // Validate request
                 var errors = Validate(requestDto);
@@ -42,7 +37,10 @@ public static class Signin
 
                 // Return response
                 return Results.Ok(signin);
-            });
+            })
+              .WithTags("Auth")
+              .Produces<Guid>(StatusCodes.Status200OK) // success response
+              .Produces<IEnumerable<string>>(StatusCodes.Status400BadRequest); // validation errors
         }
 
         // -------------------------------
