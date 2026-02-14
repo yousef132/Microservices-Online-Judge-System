@@ -1,14 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Users.API;
-using Users.API.Clients;
-using Users.API.Delegates;
-using Users.API.Extentions;
-using Users.API.Middlewares;
-using Users.API.Options;
-using Users.API.Repository;
-using Users.API.Repository.Implementations;
-using Users.API.Services;
+using Users.API.Common.Extentions;
+using Users.API.Common.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
