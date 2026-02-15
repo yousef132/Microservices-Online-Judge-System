@@ -1,7 +1,4 @@
-﻿
-using CodeSphere.Application.Features.Contest.Queries.GetContestStanding;
-using CodeSphere.Domain.Abstractions.Services;
-using CoreJudge.Application.Features.Contests.Command.Create;
+﻿using CoreJudge.Application.Features.Contests.Command.Create;
 using CoreJudge.Application.Features.Contests.Command.Delete;
 using CoreJudge.Application.Features.Contests.Command.Register;
 using CoreJudge.Application.Features.Contests.Command.Update;
@@ -78,7 +75,6 @@ namespace CoreJudge.API.Controllers
         [HttpGet("{contestId}/standing")]
         public async Task<ActionResult<Response>> GetContestStanding(int contestId)
          => ResponseResult(await mediator.Send(new GetContestStandingQuery(contestId)));
-
 
     }
 }
