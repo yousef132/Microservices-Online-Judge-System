@@ -14,16 +14,16 @@ namespace CoreJudge.Infrastructure.Implementation.Repositories
             this._context = _context;
         }
         public async Task<UserContest?> GetUserContest(string userId, int contestId)
-          => await _context.Registers.FirstOrDefaultAsync(r => r.UserId == Guid.Parse(userId) && r.ContestId == contestId);
+          => await _context.UserContestRegistrations.FirstOrDefaultAsync(r => r.UserId == Guid.Parse(userId) && r.ContestId == contestId);
        
         
         public async Task<UserContest?> IsRegistered(int contestId, string userId)
-            => await _context.Registers.FirstOrDefaultAsync(x => x.ContestId == contestId && x.UserId == Guid.Parse(userId));
+            => await _context.UserContestRegistrations.FirstOrDefaultAsync(x => x.ContestId == contestId && x.UserId == Guid.Parse(userId));
         public async Task<bool> RegisterInContest(UserContest registration)
         {
             try
             {
-                await _context.Registers.AddAsync(registration);
+                await _context.UserContestRegistrations.AddAsync(registration);
                 await _context.SaveChangesAsync();
                 return true;
             }

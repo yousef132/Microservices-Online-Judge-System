@@ -96,7 +96,7 @@ namespace CoreJudge.Infrastructure.Implementation.Repositories
         //}
 
         public async Task<bool> IsRegistered(string userId, int contestId)
-         => await context.Registers.AnyAsync(x => x.UserId == Guid.Parse(userId)  && x.ContestId == contestId);
+         => await context.UserContestRegistrations.AnyAsync(x => x.UserId == Guid.Parse(userId)  && x.ContestId == contestId);
     }
 
 
