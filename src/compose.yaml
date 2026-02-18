@@ -3,7 +3,7 @@
     image: users.api
     build:
       context: .
-      dockerfile: Users.API/Dockerfile
+      dockerfile: /Services/Users/User.API/Dockerfile
   
   users.db:
     image: postgres:latest
@@ -14,6 +14,24 @@
       interval: 10s
       timeout: 5s
       retries: 5
+  
+  
+  corejudge.db:
+    image: postgres:latest
+    volumes:
+      - corejudge-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  
+  corejudge.api:
+    image: corejudge.api
+    build:
+      context: .
+      dockerfile: /Services/CoreJudge/CoreJudge.API/Dockerfile
   
   keycloak:
     image: quay.io/keycloak/keycloak:26.3.2
@@ -30,7 +48,17 @@
       interval: 10s
       timeout: 5s
       retries: 5
+      
+      
+  api.gateway:
+    image: api.gateway
+    build:
+      context: .
+      dockerfile: Gateways/API.Gateway/Dockerfile
 
 volumes:
   users-pgdata:
-  keycloak-pgdata:
+  corejudge-pgdata:
+  keycloak-pgdata: 
+
+

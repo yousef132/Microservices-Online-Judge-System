@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreJudge.Application", "Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreJudge.Infrastructure", "Services\CoreJudge\CoreJudge.Infrastructure\CoreJudge.Infrastructure.csproj", "{480CC48D-4E85-4FDF-AC53-0F15DB66599E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Gateway", "Gateways\API.Gateway\API.Gateway.csproj", "{1583CD30-16B1-4FB5-9BA8-66E951717DA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Logging", "BuildingBlocks\BuildingBlocks.Logging\BuildingBlocks.Logging.csproj", "{356E21E8-B816-49FD-9087-4A1445A4E713}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{480CC48D-4E85-4FDF-AC53-0F15DB66599E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{480CC48D-4E85-4FDF-AC53-0F15DB66599E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{480CC48D-4E85-4FDF-AC53-0F15DB66599E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1583CD30-16B1-4FB5-9BA8-66E951717DA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1583CD30-16B1-4FB5-9BA8-66E951717DA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1583CD30-16B1-4FB5-9BA8-66E951717DA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1583CD30-16B1-4FB5-9BA8-66E951717DA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{356E21E8-B816-49FD-9087-4A1445A4E713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{356E21E8-B816-49FD-9087-4A1445A4E713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{356E21E8-B816-49FD-9087-4A1445A4E713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{356E21E8-B816-49FD-9087-4A1445A4E713}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +95,8 @@ Global
 		{1AD98CDF-9A01-488D-AF9D-922D25C2DAE7} = {5BDC0C14-67C5-4819-B4FC-E89F48914BE4}
 		{1BEA9752-2322-4CC3-9F54-36BC9EAEF394} = {5BDC0C14-67C5-4819-B4FC-E89F48914BE4}
 		{480CC48D-4E85-4FDF-AC53-0F15DB66599E} = {5BDC0C14-67C5-4819-B4FC-E89F48914BE4}
+		{1583CD30-16B1-4FB5-9BA8-66E951717DA5} = {6889657D-8413-45CD-A036-A056A77525EB}
+		{356E21E8-B816-49FD-9087-4A1445A4E713} = {06511080-D0B7-4EF0-9EFE-300F2D376356}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A61EB405-481F-4770-9308-9F65BB52CE13}
