@@ -11,18 +11,18 @@ public class UserConfigurations : IEntityTypeConfiguration<Domain.Models.User>
         builder.HasKey(u => u.Id);
 
         // Indexes (unique)
-        builder.HasIndex(u => u.Keycloak_Id).IsUnique();
-        builder.HasIndex(u => u.Username).IsUnique();
+        // builder.HasIndex(u => u.Keycloak_Id).IsUnique();
+        // builder.HasIndex(u => u.Username).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();
 
         // Basic properties
-        builder.Property(u => u.Keycloak_Id)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        builder.Property(u => u.Username)
-            .IsRequired()
-            .HasMaxLength(50);
+        // builder.Property(u => u.Keycloak_Id)
+        //     .IsRequired()
+        //     .HasMaxLength(100);
+        //
+        // builder.Property(u => u.Username)
+        //     .IsRequired()
+        //     .HasMaxLength(50);
 
         builder.Property(u => u.Email)
             .IsRequired()

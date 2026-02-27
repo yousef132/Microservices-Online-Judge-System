@@ -33,10 +33,10 @@ public static class Signin
                     return Results.BadRequest(errors);
 
                 // Call the service
-                Guid signin = await userService.CreateUserAsync(requestDto);
+                string token = await userService.CreateUserAsync(requestDto);
 
                 // Return response
-                return Results.Ok(signin);
+                return Results.Ok(token);
             })
               .WithTags("Auth")
               .Produces<Guid>(StatusCodes.Status200OK) // success response

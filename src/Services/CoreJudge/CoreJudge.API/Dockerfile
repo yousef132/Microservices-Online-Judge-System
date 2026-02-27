@@ -13,6 +13,7 @@ COPY ["BuildingBlocks/BuildingBlocks.Identity/BuildingBlocks.Identity.csproj", "
 COPY ["Services/CoreJudge/CoreJudge.Infrastructure/CoreJudge.Infrastructure.csproj", "Services/CoreJudge/CoreJudge.Infrastructure/"]
 COPY ["Services/CoreJudge/CoreJudge.Application/CoreJudge.Application.csproj", "Services/CoreJudge/CoreJudge.Application/"]
 COPY ["Services/CoreJudge/CoreJudge.Domain/CoreJudge.Domain.csproj", "Services/CoreJudge/CoreJudge.Domain/"]
+COPY ["BuildingBlocks/BuildingBlocks.Logging/BuildingBlocks.Logging.csproj", "BuildingBlocks/BuildingBlocks.Logging/"]
 RUN dotnet restore "Services/CoreJudge/CoreJudge.API/CoreJudge.API.csproj"
 COPY . .
 WORKDIR "/src/Services/CoreJudge/CoreJudge.API"

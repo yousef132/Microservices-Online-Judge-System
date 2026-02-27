@@ -1,4 +1,6 @@
 using System.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Users.API.Domain.Models;
@@ -6,7 +8,7 @@ using Users.API.Infrastructure.Repository.Abstractions;
 
 namespace Users.API.Infrastructure;
 
-public class UserDbContext : DbContext , IUnitOfWork
+public class UserDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid> , IUnitOfWork
 {
     public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
     {
@@ -18,6 +20,8 @@ public class UserDbContext : DbContext , IUnitOfWork
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
+    // seed user 
+    
 
     public DbSet<User> Users { get; set; } 
     private IDbContextTransaction? _transaction;

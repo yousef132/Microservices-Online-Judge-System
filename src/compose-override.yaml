@@ -9,17 +9,41 @@
       KeyCloak__TokenUrl: http://keycloak:8080/realms/online_judge/protocol/openid-connect/token
       KeyCloak__ConfidentialClientId: online_judge-confidential-client
       KeyCloak__ConfidentialClientSecret: rO4xRoiYtfARePWXa8AUlEFuX9nhT8b1
+      KeyCloak__PublicClientId: online_judge-public-client
+      KeyCloak__Audience: account
+      KeyCloak__Authority: http://keycloak:8080/realms/online_judge
+      Logging__LogLevel__Default: Information
+      Jaeger__OTEL_EXPORTER_OTLP_ENDPOINT: http://logging-jaeger:4317/
     depends_on:
       users.db:
         condition: service_healthy
 
+
+  corejudge.db:
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: corejudgedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+
   users.db:
     ports:
-      - "5433:5432" # host : container
+      - "5433:5432"
     environment:
       POSTGRES_DB: usersdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+
+
+  logging-jaeger:
+    container_name: logging.jaeger
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "16686:16686"
+
 
   corejudge.api:
     ports:
@@ -27,39 +51,66 @@
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__Default: Host=corejudge.db;Database=corejudgedb;Username=postgres;Password=postgres
+      KeyCloak__AdminUrl: http://keycloak:8080/admin/realms/online_judge/
+      KeyCloak__TokenUrl: http://keycloak:8080/realms/online_judge/protocol/openid-connect/token
+      KeyCloak__ConfidentialClientId: online_judge-confidential-client
+      KeyCloak__ConfidentialClientSecret: rO4xRoiYtfARePWXa8AUlEFuX9nhT8b1
+      KeyCloak__PublicClientId: online_judge-public-client
+      KeyCloak__Audience: account
+      KeyCloak__Authority: http://keycloak:8080/realms/online_judge
+      Logging__LogLevel__Default: Information
+      Jaeger__OTEL_EXPORTER_OTLP_ENDPOINT: http://logging-jaeger:4317/
     depends_on:
       corejudge.db:
         condition: service_healthy
-    
-  corejudge.db:
-      ports:
-        - "5435:5432"
-      environment:
-        POSTGRES_DB: corejudgedb
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        
-  keycloak:
-    command: start-dev --import-realm # to automatically import the realm on startup
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres-keycloak
-    volumes:
-      - ./containers/keycloak/data:/opt/keycloak/data
-      - ./files:/opt/keycloak/data/import
-    environment:
-      KC_DB: postgres # db type
-      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/auth_db
-      KC_DB_USERNAME: postgres
-      KC_DB_PASSWORD: postgres
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
 
-  postgres-keycloak:
+
+  api.gateway:
     ports:
-      - "5434:5432"
+      - "5000:8080"
     environment:
-      POSTGRES_DB: auth_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      ASPNETCORE_ENVIRONMENT: Development
+      KeyCloak__AdminUrl: http://keycloak:8080/admin/realms/online_judge/
+      KeyCloak__TokenUrl: http://keycloak:8080/realms/online_judge/protocol/openid-connect/token
+      KeyCloak__ConfidentialClientId: online_judge-confidential-client
+      KeyCloak__ConfidentialClientSecret: rO4xRoiYtfARePWXa8AUlEFuX9nhT8b1
+      KeyCloak__PublicClientId: online_judge-public-client
+      KeyCloak__Audience: account
+      KeyCloak__Authority: http://keycloak:8080/realms/online_judge
+      Logging__LogLevel__Default: Information
+      Jaeger__OTEL_EXPORTER_OTLP_ENDPOINT: http://logging-jaeger:4317/
+    depends_on:
+      users.api:
+        condition: service_healthy
+      corejudge.api:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    restart: unless-stopped
+
+
+# keycloak:
+#   command: start-dev --import-realm
+#   ports:
+#     - "8080:8080"
+#   depends_on:
+#     - postgres-keycloak
+#   volumes:
+#     - ./containers/keycloak/data:/opt/keycloak/data
+#     - ./files:/opt/keycloak/data/import
+#   environment:
+#     KC_DB: postgres
+#     KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/auth_db
+#     KC_DB_USERNAME: postgres
+#     KC_DB_PASSWORD: postgres
+#     KEYCLOAK_ADMIN: admin
+#     KEYCLOAK_ADMIN_PASSWORD: admin
+
+
+# postgres-keycloak:
+#   ports:
+#     - "5434:5432"
+#   environment:
+#     POSTGRES_DB: auth_db
+#     POSTGRES_USER: postgres
+#     POSTGRES_PASSWORD: postgres

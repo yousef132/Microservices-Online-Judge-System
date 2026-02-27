@@ -10,7 +10,6 @@ namespace CoreJudge.Application.Features.Problems.Commands.Create
         public string Name { get; init; }
         public string Description { get; init; }
         public int ContestId { get; init; }
-        public string ProblemSetterId { get; init; }
         public Difficulty Difficulty { get; init; }
         public decimal RunTimeLimit { get; init; }
         public MemoryLimit MemoryLimit { get; init; }

@@ -29,8 +29,6 @@ namespace CoreJudge.API.Controllers
         public async Task<ActionResult<Response>> SolveProblemAsync([FromForm] SubmitSolutionCommand command)
          => ResponseResult(await mediator.Send(command));
 
-
-
         [HttpPost("run")]
         [Authorize]
         //[RateLimitingFilter(5)]

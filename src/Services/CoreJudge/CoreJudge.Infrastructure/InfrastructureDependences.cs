@@ -9,7 +9,8 @@ public static class InfrastructureDependencies
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<ApplicationDbContext>(opt => { opt.UseNpgsql(configuration.GetConnectionString("Default")); });
+        string connectionString = configuration.GetConnectionString("Default");
+        services.AddDbContext<ApplicationDbContext>(opt => { opt.UseNpgsql(connectionString); });
 
         return services;
     }

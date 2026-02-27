@@ -10,6 +10,7 @@
 	<ItemGroup>
 		<PackageReference Include="Carter" Version="8.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.23" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
@@ -21,14 +22,9 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Npgsql" Version="8.0.0" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="..\.dockerignore">
-			<Link>.dockerignore</Link>
-		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -40,6 +36,13 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Core\BuildingBlocks.Core.csproj" />
 	  <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Identity\BuildingBlocks.Identity.csproj" />
+	  <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Logging\BuildingBlocks.Logging.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="..\..\..\.dockerignore">
+	    <Link>.dockerignore</Link>
+	  </Content>
 	</ItemGroup>
 
 </Project>

@@ -21,7 +21,7 @@ public class UserRepository :GenericRepository<Domain.Models.User,Guid>, IUserRe
     public override async Task<Domain.Models.User?> GetById(Guid id, CancellationToken cancellationToken = default)
     {
         return await _context.Users
-            .FirstOrDefaultAsync(u => u.Keycloak_Id == id, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 
 }

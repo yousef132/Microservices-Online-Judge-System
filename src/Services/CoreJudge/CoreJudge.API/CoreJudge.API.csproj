@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Core\BuildingBlocks.Core.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Identity\BuildingBlocks.Identity.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Logging\BuildingBlocks.Logging.csproj" />
     <ProjectReference Include="..\CoreJudge.Infrastructure\CoreJudge.Infrastructure.csproj" />
   </ItemGroup>
 

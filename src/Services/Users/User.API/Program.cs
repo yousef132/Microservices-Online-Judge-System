@@ -1,7 +1,10 @@
+using BuildingBlocks.Core;
 using Carter;
 using Users.API.Common.Extentions;
 using Users.API.Common.Middlewares;
 using Users.API.Feature.User;
+using BuildingBlocks.Identity;
+using BuildingBlocks.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +14,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer()
     .RegisterServices(builder.Configuration)
     .AddIdentity(builder.Configuration)
+    .AddLoggingConfigs(builder.Configuration)
     .AddSwaggerDocumentation();
+
 
 builder.Services.AddCarter(configurator: c =>
 {
@@ -21,13 +26,15 @@ builder.Services.AddCarter(configurator: c =>
     c.WithModule<RefreshToken.RefreshTokenEndpoint>();
     c.WithModule<UserDetails.UserDetailsEndpoint>();
     c.WithModule<UpdateUser.UpdateUserEndpoint>();
+    c.WithModule<UserRolesModule.UserRolesEndpoint>();
 });
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.SetMinimumLevel(LogLevel.Information);
-
+builder.Services.AddHealthChecks();
 var app = builder.Build();
 await app.Services.ApplyMigrationsWithRetryAsync();
+await app.Services.SeedAdminUser();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -35,7 +42,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
@@ -44,6 +51,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapCarter();
+app.MapGet("/health", () => Results.Ok("healthy"));
 
 app.Run();
 

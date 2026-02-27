@@ -1,6 +1,9 @@
+using BuildingBlocks.Core;
 using CoreJudge.API.Extentions;
 using CoreJudge.Application;
 using CoreJudge.Infrastructure;
+using BuildingBlocks.Identity;
+using BuildingBlocks.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen().AddSwaggerDocumentation();
+builder.Services.AddHealthChecks();
 builder.Services.AddApplication(builder.Configuration)
-                .AddInfrastructure(builder.Configuration);
+    .AddInfrastructure(builder.Configuration)
+    .AddIdentity(builder.Configuration)
+    .AddLoggingConfigs(builder.Configuration);
+
 var app = builder.Build();
 await app.Services.ApplyMigrationsWithRetryAsync();
 
@@ -27,5 +35,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapGet("/health", () => Results.Ok("healthy"));
 app.Run();

@@ -1,9 +1,15 @@
 ﻿services:
   users.api:
-    image: users.api
     build:
       context: .
       dockerfile: /Services/Users/User.API/Dockerfile
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+  
   
   users.db:
     image: postgres:latest
@@ -28,37 +34,62 @@
   
   
   corejudge.api:
-    image: corejudge.api
     build:
       context: .
       dockerfile: /Services/CoreJudge/CoreJudge.API/Dockerfile
-  
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.3.2
-    depends_on:
-      postgres-keycloak:
-        condition: service_healthy
-  
-  postgres-keycloak:
-    image: postgres:latest
-    volumes:
-      - keycloak-pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 10s
       timeout: 5s
-      retries: 5
-      
-      
+      retries: 10
+      start_period: 20s
+  
+#  keycloak:
+#    image: quay.io/keycloak/keycloak:26.3.2
+#    depends_on:
+#      postgres-keycloak:
+#        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8080/realms/master"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 20
+#      start_period: 40s
+#  
+  
+#  postgres-keycloak:
+#    image: postgres:latest
+#    volumes:
+#      - keycloak-pgdata:/var/lib/postgresql/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+  
+  
+  logging-jaeger:
+    image: jaegertracing/all-in-one:latest
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:16686"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+  
+  
   api.gateway:
     image: api.gateway
     build:
       context: .
       dockerfile: Gateways/API.Gateway/Dockerfile
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
 volumes:
   users-pgdata:
   corejudge-pgdata:
-  keycloak-pgdata: 
-
-
+  keycloak-pgdata:

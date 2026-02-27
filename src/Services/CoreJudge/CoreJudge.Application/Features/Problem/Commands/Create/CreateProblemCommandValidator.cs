@@ -17,7 +17,6 @@ namespace CoreJudge.Application.Features.Problems.Commands.Create
 					   .WithMessage("Difficulty must not be null.") // Ensures it's not null
 					   .Must(value => Enum.IsDefined(typeof(Difficulty), value))
 					   .WithMessage("Difficulty must be one of the valid values: 0 (Easy), 1 (Medium), or 2 (Hard)."); RuleFor(x => x.ContestId).NotEmpty().NotNull();
-            RuleFor(x => x.ProblemSetterId).NotEmpty().NotNull();
             RuleFor(x => x.RunTimeLimit).NotNull();
 			
 			RuleFor(x => x.MemoryLimit)

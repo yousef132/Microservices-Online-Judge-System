@@ -20,22 +20,22 @@ public class RefreshToken
 
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/auth/refresh-token", async (IUserService userService, RefreshTokenRequestDto  requestDto,CancellationToken cancellationToken) =>
-            {
-                // Validate request
-                var errors = Validate(requestDto);
-                if (errors.Any())
-                    return Results.BadRequest(errors);
-
-                // Call the service
-                var refreshTokenResponse = await userService.RefreshUserAsnc(requestDto,cancellationToken);
-
-                // Return response
-                return Results.Ok(refreshTokenResponse);
-            })
-              .WithTags("Auth")         
-             .Produces<RefreshTokenResponse>(StatusCodes.Status200OK) // success response
-             .Produces<IEnumerable<string>>(StatusCodes.Status400BadRequest); // validation errors
+            // app.MapPost("/auth/refresh-token", async (IUserService userService, RefreshTokenRequestDto  requestDto,CancellationToken cancellationToken) =>
+            // {
+            //     // Validate request
+            //     var errors = Validate(requestDto);
+            //     if (errors.Any())
+            //         return Results.BadRequest(errors);
+            //
+            //     // Call the service
+            //     var refreshTokenResponse = await userService.RefreshUserAsnc(requestDto,cancellationToken);
+            //
+            //     // Return response
+            //     return Results.Ok(refreshTokenResponse);
+            // })
+            //   .WithTags("Auth")         
+            //  .Produces<RefreshTokenResponse>(StatusCodes.Status200OK) // success response
+            //  .Produces<IEnumerable<string>>(StatusCodes.Status400BadRequest); // validation errors
         }
 
         // -------------------------------

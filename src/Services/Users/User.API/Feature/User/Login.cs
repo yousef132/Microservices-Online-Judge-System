@@ -17,8 +17,7 @@ using System.Text.Json.Serialization;
 
 
         public record LoginUserResponse(
-             string AccessToken, 
-             string RefreshToken
+             string AccessToken
         );
 
         public record LoginUserRequestDto(

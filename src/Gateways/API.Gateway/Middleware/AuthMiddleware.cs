@@ -16,7 +16,6 @@ public class AuthMiddleware
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             return;
         }
-
         // validate here
         await _next(context);
     }

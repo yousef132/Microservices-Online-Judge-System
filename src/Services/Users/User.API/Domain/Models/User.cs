@@ -1,12 +1,13 @@
 
+using Microsoft.AspNetCore.Identity;
+
 namespace Users.API.Domain.Models;
 
-public class User
+public class User : IdentityUser<Guid>
 {
-    public Guid Id { get; set; }
-    public Guid Keycloak_Id { get; set; } 
-    public string Username { get; set; } = null!;
-    public string Email { get; set; } = null!;
+    // public Guid Keycloak_Id { get; set; } 
+    // public string Username { get; set; } = null!;
+    // public string Email { get; set; } = null!;
     public DateTime? LastLogin { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public string DisplayName { get; set; } = null!;

@@ -1,7 +1,9 @@
+using System.Text.Json;
 using BuildingBlocks.Core.Exceptions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Users.API.Domain.Models;
 using Users.API.Feature.User;
 using Users.API.Feature.User.Common;
@@ -10,32 +12,41 @@ using Users.API.Services.Abstraction;
 
 namespace Users.API.Services;
 
-public class UserService(IIdentityProviderService identityProviderService,
+public class UserService(IJwtTokenGenerator _tokenGenerator,
     ILogger<UserService> logger,
     IUnitOfWork unitOfWork,
-    IUserRepository userRepository) : IUserService
+    IUserRepository userRepository,
+    UserManager<User> userManager,
+    SignInManager<User> signInManager) : IUserService
 {
-    public async Task<Guid> CreateUserAsync(Signin.CreateUserRequestDto createUserRequestDto, CancellationToken cancellationToken = default)
+    public async Task<string> CreateUserAsync(Signin.CreateUserRequestDto createUserRequestDto, CancellationToken cancellationToken = default)
     {
-        User? user = await userRepository.GetByEmail(createUserRequestDto.Email);
-        if (user != null)
+        var existingUser = await userManager.FindByEmailAsync(createUserRequestDto.Email);
+        if (existingUser != null)
         {
             logger.LogWarning("User creation failed. Email already exists: {Email}", createUserRequestDto.Email);
             throw new ConflictException("This Email Already Exists");
         }
-        string userIdentitfier = await identityProviderService.RegisterUserAsync(new UserModel(createUserRequestDto.Email, createUserRequestDto.Password), cancellationToken);
-        user = new User()
+
+        var user = new User
         {
             Email = createUserRequestDto.Email,
-            Keycloak_Id = Guid.Parse(userIdentitfier),
-            LastLogin = DateTime.UtcNow,
-            Username = createUserRequestDto.Email,
+            UserName = createUserRequestDto.Email,
             DisplayName = createUserRequestDto.DisplayName,
-            
+            EmailConfirmed = true,
+            LastLogin = DateTime.UtcNow
         };
-        await userRepository.AddAsync(user,cancellationToken);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-        return user.Id;
+
+        var result = await userManager.CreateAsync(user, createUserRequestDto.Password);
+
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            logger.LogError("Failed to create user: {Errors}", errors);
+            throw new Exception($"Failed to create user: {errors}");
+        }
+
+        return await _tokenGenerator.GenerateTokenAsync(user);
     }
 
     public async Task<UserDetails.UserDetailsDto> GetUserAsync(string userId, CancellationToken cancellationToken = default)
@@ -49,7 +60,7 @@ public class UserService(IIdentityProviderService identityProviderService,
 
         return new UserDetails.UserDetailsDto(
             user.Id,
-            user.Username,
+            user.UserName,
             user.Email,
             user.LastLogin ?? DateTime.MinValue,
             user.CreatedAt,
@@ -61,18 +72,37 @@ public class UserService(IIdentityProviderService identityProviderService,
             user.IsPublicProfile,
             user.ProfilePictureUrl
         );
+        
     }
 
     public async Task<Login.LoginUserResponse> LoginUserAsync(Login.LoginUserRequestDto loginUserRequestDto, CancellationToken cancellationToken = default)
     {
-        return await identityProviderService.LoginUserAsync(loginUserRequestDto.Email, loginUserRequestDto.Password, cancellationToken);
-    }
+        var users =  userManager.Users.ToList();
+        Console.WriteLine("loginUserRequestDto");
+        Console.WriteLine(JsonSerializer.Serialize(loginUserRequestDto));
+        Console.WriteLine("All Users");
+        Console.WriteLine(JsonSerializer.Serialize(users));
+        var user = await userManager.FindByEmailAsync(loginUserRequestDto.Email);
 
-    public async Task<RefreshToken.RefreshTokenResponse> RefreshUserAsnc(RefreshToken.RefreshTokenRequestDto refreshTokenRequestDto, CancellationToken cancellationToken = default)
-    {
-        return await identityProviderService.RefreshUserAsync(refreshTokenRequestDto.Token, cancellationToken);
-    }
+         if (user is null)
+             throw new UnAuthorizedException("Invalid credentials");
 
+         var result = await signInManager.CheckPasswordSignInAsync(
+             user,
+             loginUserRequestDto.Password,
+             lockoutOnFailure: true);
+
+         if (!result.Succeeded)
+             throw new UnAuthorizedException("Invalid credentials");
+
+         user.LastLogin = DateTime.UtcNow;
+         await userManager.UpdateAsync(user);
+
+         var accessToken = await _tokenGenerator.GenerateTokenAsync(user);
+         // var refreshToken = await jwtTokenGenerator.GenerateRefreshTokenAsync(user);
+
+         return new Login.LoginUserResponse(accessToken);
+    }
     public async Task UpdateUserAsync(UpdateUser.UpdateUserDto updateUserDto, Guid userId, CancellationToken cancellationToken = default)
     {
         var user = await userRepository.GetById(userId, cancellationToken);
@@ -91,5 +121,55 @@ public class UserService(IIdentityProviderService identityProviderService,
         userRepository.Update(user);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+    }
+    
+    public async Task AddRoleToUserAsync(Guid userId, string role, CancellationToken cancellationToken = default)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+        {
+            logger.LogWarning("Add role failed. User not found: {UserId}", userId);
+            throw new NotFoundException("User Not Found");
+        }
+
+        if (await userManager.IsInRoleAsync(user, role))
+        {
+            logger.LogWarning("User already has role {Role}: {UserId}", role, userId);
+            throw new ConflictException($"User already has role '{role}'");
+        }
+
+        var result = await userManager.AddToRoleAsync(user, role);
+
+        if (!result.Succeeded)
+        {
+            var error = string.Join(", ", result.Errors.Select(e => e.Description));
+            logger.LogError("Failed to add role {Role} to user {UserId}: {Error}", role, userId, error);
+            throw new Exception($"Failed to add role: {error}");
+        }
+    }
+
+    public async Task RemoveRoleFromUserAsync(Guid userId, string role, CancellationToken cancellationToken = default)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+        {
+            logger.LogWarning("Remove role failed. User not found: {UserId}", userId);
+            throw new NotFoundException("User Not Found");
+        }
+
+        if (!await userManager.IsInRoleAsync(user, role))
+        {
+            logger.LogWarning("User does not have role {Role}: {UserId}", role, userId);
+            throw new ConflictException($"User does not have role '{role}'");
+        }
+
+        var result = await userManager.RemoveFromRoleAsync(user, role);
+
+        if (!result.Succeeded)
+        {
+            var error = string.Join(", ", result.Errors.Select(e => e.Description));
+            logger.LogError("Failed to remove role {Role} from user {UserId}: {Error}", role, userId, error);
+            throw new Exception($"Failed to remove role: {error}");
+        }
     }
 }
