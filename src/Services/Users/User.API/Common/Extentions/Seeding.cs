@@ -14,21 +14,22 @@ public static class Seeding
         using var scope = services.CreateScope();
 
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
         var adminUsername = "all";
         var adminEmail = "all@gmail.com";
         var adminPassword = "Admin@123";
         var adminDisplayName = "Admin User";
 
-        // ===========================
-        // 1️⃣ Seed Roles
-        // ===========================
         foreach (var roleName in Roles.AllRoles)
         {
             if (!await roleManager.RoleExistsAsync(roleName))
             {
-                await roleManager.CreateAsync(new IdentityRole(roleName));
+                await roleManager.CreateAsync(new IdentityRole<Guid>
+                {
+                    Name = roleName,
+                    NormalizedName = roleName.ToUpper()
+                });
                 Console.WriteLine($"Role created: {roleName}");
             }
         }
@@ -42,7 +43,6 @@ public static class Seeding
 
         var adminUser = new User
         {
-            Id = Guid.NewGuid(),
             UserName = adminUsername,
             Email = adminEmail,
             DisplayName = adminDisplayName,
@@ -58,9 +58,6 @@ public static class Seeding
             return;
         }
 
-        // ===========================
-        // 3️⃣ Assign All Roles
-        // ===========================
         foreach (var roleName in Roles.AllRoles)
         {
             await userManager.AddToRoleAsync(adminUser, roleName);

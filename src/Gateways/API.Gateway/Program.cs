@@ -7,12 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-builder.Services.AddHttpLogging(options =>
-{
-    options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
-});
+builder.Services
+       .AddReverseProxy()
+       .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+// builder.Services.AddHttpLogging(options =>
+// {
+//     options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
+// });
 
 // builder.Services.AddTelemetryConsumer<ForwarderTelemetry>();
 
@@ -31,7 +32,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-//adds additional entries to the log detailing the incoming and outgoing request headers.   
+//adds additional entries to the log detailing the
+//incoming and outgoing request headers.   
 app.UseHttpLogging();
 // Enable endpoint routing, required for the reverse proxy
 app.UseRouting();

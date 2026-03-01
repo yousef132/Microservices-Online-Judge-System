@@ -1,4 +1,5 @@
-﻿using CoreJudge.Application.Features.Contests.Command.Create;
+﻿using BuildingBlocks.Identity;
+using CoreJudge.Application.Features.Contests.Command.Create;
 using CoreJudge.Application.Features.Contests.Command.Delete;
 using CoreJudge.Application.Features.Contests.Command.Register;
 using CoreJudge.Application.Features.Contests.Command.Update;

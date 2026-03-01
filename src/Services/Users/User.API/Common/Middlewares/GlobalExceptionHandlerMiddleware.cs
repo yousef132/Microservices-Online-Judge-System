@@ -27,6 +27,7 @@ namespace Users.API.Common.Middlewares
                     InvalidOperationException => StatusCodes.Status409Conflict,
                     ConflictException => StatusCodes.Status409Conflict,
                     ValidationException => StatusCodes.Status400BadRequest,
+                    UnAuthorizedException=> StatusCodes.Status401Unauthorized,
                     _ => StatusCodes.Status500InternalServerError
                 };
 

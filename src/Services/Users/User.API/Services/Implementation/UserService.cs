@@ -37,15 +37,21 @@ public class UserService(IJwtTokenGenerator _tokenGenerator,
             LastLogin = DateTime.UtcNow
         };
 
-        var result = await userManager.CreateAsync(user, createUserRequestDto.Password);
-
-        if (!result.Succeeded)
+        try
         {
-            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-            logger.LogError("Failed to create user: {Errors}", errors);
-            throw new Exception($"Failed to create user: {errors}");
+            var result = await userManager.CreateAsync(user, createUserRequestDto.Password);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                logger.LogError("Failed to create user: {Errors}", errors);
+                throw new Exception($"Failed to create user: {errors}");
+            }
         }
-
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
         return await _tokenGenerator.GenerateTokenAsync(user);
     }
 

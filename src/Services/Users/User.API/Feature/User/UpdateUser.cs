@@ -24,7 +24,7 @@ public static class UpdateUser
 
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/auth", async (IUserService userService, UpdateUser.UpdateUserDto  requestDto,HttpContext ctx) =>
+            app.MapPut("/auth/update", async (IUserService userService, UpdateUser.UpdateUserDto  requestDto,HttpContext ctx) =>
             {
                 // Validate request
                 var errors = Validate(requestDto);
