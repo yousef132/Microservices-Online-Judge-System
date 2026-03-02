@@ -30,7 +30,7 @@ namespace CoreJudge.Application.Features.Submissions.Queries.GetProblemSubmissio
         public async Task<Response> Handle(GetProblemSubmissionsQuery request, CancellationToken cancellationToken)
         {
 
-            var problem = await unitOfWork.Repository<Problem>().GetByIdAsync(request.ProblemId);
+            var problem = await unitOfWork.Repository<Domain.Models.Problem>().GetByIdAsync(request.ProblemId);
 
             if (problem is null)
                 return await Response.FailureAsync( "Problem Not Found", HttpStatusCode.NotFound);

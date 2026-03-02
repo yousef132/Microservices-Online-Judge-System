@@ -24,7 +24,7 @@ namespace CoreJudge.Application.Features.Testcases.Queries.GetTestCasesByProblem
 
         public async Task<Response> Handle(GetTestCasesByProblemIdQuerey request, CancellationToken cancellationToken)
         {
-            var problem = await unitOfWork.Repository<Problem>().GetByIdAsync(request.ProblemId);
+            var problem = await unitOfWork.Repository<Domain.Models.Problem>().GetByIdAsync(request.ProblemId);
             if (problem == null)
                 return await Response.FailureAsync("Problem not found", System.Net.HttpStatusCode.NotFound);
 

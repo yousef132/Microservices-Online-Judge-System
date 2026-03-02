@@ -1,6 +1,5 @@
 ﻿using CodeSphere.Domain.Abstractions;
 using CodeSphere.Domain.Abstractions.Repositories;
-using CoreJudge.Application.Abstractions.Repositories;
 using CoreJudge.Domain.Models;
 using CoreJudge.Infrastructure.Context;
 using CoreJudge.Infrastructure.Implementation.Repositories;
@@ -12,7 +11,6 @@ namespace CoreJudge.Infrastructure.Implementation
     {
         private readonly ApplicationDbContext context;
         private Hashtable _repositories;
-        public IElasticSearchRepository ElasticSearchRepository { get; }
 
         public IProblemRepository ProblemRepository { get; }
         public IUserContestRepository UserContestRepository { get; }
@@ -22,7 +20,6 @@ namespace CoreJudge.Infrastructure.Implementation
         public IBlogRepository BlogRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
-            IElasticSearchRepository elasticSearchRepository,
             IProblemRepository problemRepository,
             ISubmissionRepository submissionRepository,
             IContestRepository contestRepository,
@@ -32,7 +29,6 @@ namespace CoreJudge.Infrastructure.Implementation
         {
             this.context = context;
             _repositories = new Hashtable();
-            this.ElasticSearchRepository = elasticSearchRepository;
             this.ProblemRepository = problemRepository;
             this.SubmissionRepository = submissionRepository;
             this.TopicRepository = topicRepository;

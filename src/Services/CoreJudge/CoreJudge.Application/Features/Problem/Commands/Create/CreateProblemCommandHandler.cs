@@ -15,13 +15,11 @@ namespace CoreJudge.Application.Features.Problems.Commands.Create
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IElasticSearchRepository elasticSearchRepository;
 
-        public CreateProblemCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IElasticSearchRepository elasticSearchRepository)
+        public CreateProblemCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
-            this.elasticSearchRepository = elasticSearchRepository;
         }
         public async Task<Response> Handle(CreateProblemCommand request, CancellationToken cancellationToken)
         {
@@ -40,9 +38,9 @@ namespace CoreJudge.Application.Features.Problems.Commands.Create
             }
 
 
-            var mappedProblem = mapper.Map<Problem>(request);
+            var mappedProblem = mapper.Map<Domain.Models.Problem>(request);
 
-            await unitOfWork.Repository<Problem>().AddAsync(mappedProblem);
+            await unitOfWork.Repository<Domain.Models.Problem>().AddAsync(mappedProblem);
             await unitOfWork.CompleteAsync();
 
             //var document = new ProblemDocument

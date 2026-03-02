@@ -24,7 +24,7 @@ namespace CoreJudge.Application.Features.Testcases.Commands.Update
             if (existingTestcase == null)
                 return await Response.FailureAsync("Testcase not found!", System.Net.HttpStatusCode.NotFound);
 
-            var problem = await _unitOfWork.Repository<Problem>().GetByIdAsync(request.ProblemId);
+            var problem = await _unitOfWork.Repository<Domain.Models.Problem>().GetByIdAsync(request.ProblemId);
             if (problem == null)
                 return await Response.FailureAsync("Problem not found!", System.Net.HttpStatusCode.NotFound);
 
