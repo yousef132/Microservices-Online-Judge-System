@@ -7,7 +7,7 @@ namespace CodeSphere.Domain.Abstractions
     public interface IUnitOfWork
     {
         IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity;
-        IElasticSearchRepository ElasticSearchRepository { get; }
+        // IElasticSearchRepository ElasticSearchRepository { get; }
         IContestRepository ContestRepository { get; }
         IUserContestRepository UserContestRepository { get; }
         IProblemRepository ProblemRepository { get; }

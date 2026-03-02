@@ -25,9 +25,6 @@ namespace CoreJudge.Application.Features.Contests.Command.Create
             UserId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
         }
 
-
-
-
         public async Task<Response> Handle(CreateContestCommand request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(UserId))

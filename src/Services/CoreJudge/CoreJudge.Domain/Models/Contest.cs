@@ -14,10 +14,10 @@ namespace CoreJudge.Domain.Models
         public string Name { get; set; } = default!;
         public TimeSpan Duration => EndDate.Subtract(StartDate);
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; } = DateTime.Now;
+        public DateTime EndDate { get; set; } = DateTime.UtcNow;
 
         public ContestStatus ContestStatus
-            => DateTime.Now < StartDate ? ContestStatus.Upcoming : DateTime.Now > EndDate ? ContestStatus.Ended : ContestStatus.Running;
+            => DateTime.UtcNow < StartDate ? ContestStatus.Upcoming : DateTime.UtcNow > EndDate ? ContestStatus.Ended : ContestStatus.Running;
 
         public ICollection<UserContest> Registrations { get; set; } = default!;
         public ICollection<Problem> Problems { get; set; } = default!;

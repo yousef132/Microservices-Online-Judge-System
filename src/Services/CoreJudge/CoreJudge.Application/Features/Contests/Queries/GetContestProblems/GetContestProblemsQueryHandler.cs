@@ -4,10 +4,12 @@ using AutoMapper;
 using BuildingBlocks.Core.CQRS;
 using CodeSphere.Domain.Abstractions;
 using CodeSphere.Domain.Abstractions.Services;
+using CoreJudge.Application.Features.Contests.Common;
 using CoreJudge.Application.Features.Contests.Queries.GetContestProblems;
 using CoreJudge.Domain.Models;
 using CoreJudge.Domain.Premitives;
 using MediatR;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Microsoft.AspNetCore.Http;
 
 namespace CoreJudge.Application.Features.Contests.Queries
@@ -41,7 +43,7 @@ namespace CoreJudge.Application.Features.Contests.Queries
             {
                 ContestStatus.Upcoming => await Response.FailureAsync("Contest is not started yet", System.Net.HttpStatusCode.Forbidden),
                 ContestStatus.Running => await HandleRunningContest(request),
-                //_ => await FetchAndReturnContestProblems(request.Id)
+                _ => await FetchAndReturnContestProblems(request.Id)
             };
         }
 
@@ -65,12 +67,12 @@ namespace CoreJudge.Application.Features.Contests.Queries
             return null; // FOR Now
         }
 
-        //private async Task<Response> FetchAndReturnContestProblems(int contestId)
-        //{
-        //    var dbProblems = await unitOfWork.ContestRepository.GetContestProblemsByIdAsync(contestId);
-        //    var dbMappedProblems = mapper.Map<IReadOnlyList<ContestProblemResponse>>(dbProblems);
-        //    return await Response.SuccessAsync(dbMappedProblems, "Contest Problems fetched successfully", System.Net.HttpStatusCode.Found);
-        //}
+        private async Task<Response> FetchAndReturnContestProblems(int contestId)
+        {
+            var dbProblems = await unitOfWork.ContestRepository.GetContestProblemsByIdAsync(contestId);
+            var dbMappedProblems = mapper.Map<IReadOnlyList<ContestProblemResponse>>(dbProblems);
+            return await Response.SuccessAsync(dbMappedProblems, "Contest Problems fetched successfully", System.Net.HttpStatusCode.Found);
+        }
 
         //private async Task<Response> FetchAndCacheContestProblems(int contestId, string cacheKey)
         //{

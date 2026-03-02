@@ -23,11 +23,11 @@ namespace CoreJudge.Application.Features.Problems.Commands.Delete
         }
         public async Task<Response> Handle(DeleteProblemCommand request, CancellationToken cancellationToken)
         {
-            var problem = await _unitOfWork.Repository<Problem>().GetByIdAsync(request.Id);
+            var problem = await _unitOfWork.Repository<Domain.Models.Problem>().GetByIdAsync(request.Id);
             if (problem == null)
                 return await Response.FailureAsync("Problem Not Found!!", System.Net.HttpStatusCode.NotFound);
 
-            await _unitOfWork.Repository<Problem>().DeleteAsync(problem);
+            await _unitOfWork.Repository<Domain.Models.Problem>().DeleteAsync(problem);
             await _unitOfWork.CompleteAsync();
 
             return await Response.SuccessAsync(null,"Problem Deleted Successfully", System.Net.HttpStatusCode.NoContent);
