@@ -10,7 +10,6 @@
       retries: 10
       start_period: 20s
   
-  
   users.db:
     image: postgres:latest
     volumes:
@@ -32,6 +31,22 @@
       timeout: 5s
       retries: 5
   
+  caching:
+    image: redis:latest
+    container_name: redis-cache
+    restart: always
+    command: >
+      redis-server
+      --requirepass StrongRedisPassword123
+      --appendonly yes
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "StrongRedisPassword123", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    
   
   corejudge.api:
     build:
@@ -93,3 +108,4 @@ volumes:
   users-pgdata:
   corejudge-pgdata:
   keycloak-pgdata:
+  redis-data:

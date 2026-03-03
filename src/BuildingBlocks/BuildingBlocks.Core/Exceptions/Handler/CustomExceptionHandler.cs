@@ -6,69 +6,97 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BuildingBlocks.Core.Exceptions.Handler
 {
-    public class CustomExceptionHandler
-     (ILogger<CustomExceptionHandler> logger)
-     : IExceptionHandler
+   using BuildingBlocks.Core.Exceptions;
+using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+
+namespace BuildingBlocks.Core.Exceptions.Handler
+{
+    public sealed class GlobalExceptionHandler
+        (ILogger<GlobalExceptionHandler> logger)
+        : IExceptionHandler
     {
-
-
-        public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
+        public async ValueTask<bool> TryHandleAsync(
+            HttpContext context,
+            Exception exception,
+            CancellationToken cancellationToken)
         {
-            logger.LogError(
-                "Error Message: {exceptionMessage}, Time of occurrence {time}",
-                exception.Message, DateTime.UtcNow);
+            logger.LogError(exception,
+                "Unhandled exception occurred at {Time}",
+                DateTime.UtcNow);
 
-            (string Detail, string Title, int StatusCode) details = exception switch
+            var (title, detail, statusCode) = exception switch
             {
-                InternalServerException =>
-                (
-                    exception.Message,
-                    exception.GetType().Name,
-                    context.Response.StatusCode = StatusCodes.Status500InternalServerError
-                ),
-                ValidationException =>
-                (
-                    exception.Message,
-                    exception.GetType().Name,
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest
-                ),
+                // 400
+                ApplicationException =>
+                    (exception.GetType().Name, exception.Message, StatusCodes.Status400BadRequest),
+
+                FluentValidation.ValidationException =>
+                    (exception.GetType().Name, exception.Message, StatusCodes.Status400BadRequest),
+
                 BadRequestException =>
-                (
-                    exception.Message,
-                    exception.GetType().Name,
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest
-                ),
+                    (exception.GetType().Name, exception.Message, StatusCodes.Status400BadRequest),
+
+                // 401
+                UnauthorizedAccessException =>
+                    (exception.GetType().Name, exception.Message, StatusCodes.Status401Unauthorized),
+
+                UnAuthorizedException =>
+                    (exception.GetType().Name, exception.Message, StatusCodes.Status401Unauthorized),
+
+                // 404
                 NotFoundException =>
-                (
-                    exception.Message,
-                    exception.GetType().Name,
-                    context.Response.StatusCode = StatusCodes.Status404NotFound
-                ),
+                    (exception.GetType().Name, exception.Message, StatusCodes.Status404NotFound),
+
+                KeyNotFoundException =>
+                    (exception.GetType().Name, exception.Message, StatusCodes.Status404NotFound),
+
+                // 409
+                ConflictException =>
+                    (exception.GetType().Name, exception.Message, StatusCodes.Status409Conflict),
+
+                InvalidOperationException =>
+                    (exception.GetType().Name, exception.Message, StatusCodes.Status409Conflict),
+
+                // 500
+                InternalServerException =>
+                    (exception.GetType().Name, exception.Message, StatusCodes.Status500InternalServerError),
+
                 _ =>
-                (
-                    exception.Message,
-                    exception.GetType().Name,
-                    context.Response.StatusCode = StatusCodes.Status500InternalServerError
-                )
+                    ("Internal Server Error", exception.Message, StatusCodes.Status500InternalServerError)
             };
 
-            var problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
+            context.Response.StatusCode = statusCode;
+
+            var problemDetails = new ProblemDetails
             {
-                Title = details.Title,
-                Detail = details.Detail,
-                Status = details.StatusCode,
-                Instance = context.Request.Path
+                Title = title,
+                Detail = detail,
+                Status = statusCode,
+                Instance = context.Request.Path,
+                Type = exception.GetType().Name
             };
 
-            problemDetails.Extensions.Add("traceId", context.TraceIdentifier);
+            problemDetails.Extensions["traceId"] = context.TraceIdentifier;
 
-            if (exception is FluentValidation.ValidationException validationException)
+            // FluentValidation support
+            if (exception is FluentValidation.ValidationException fluentValidationException)
             {
-                problemDetails.Extensions.Add("ValidationErrors", validationException.Errors);
+                problemDetails.Extensions["validationErrors"] =
+                    fluentValidationException.Errors
+                        .GroupBy(e => e.PropertyName)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Select(e => e.ErrorMessage).ToArray()
+                        );
             }
 
-            await context.Response.WriteAsJsonAsync(problemDetails, cancellationToken: cancellationToken);
+            await context.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+
             return true;
         }
     }
+}
 }

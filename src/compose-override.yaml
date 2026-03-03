@@ -60,11 +60,15 @@
       KeyCloak__Authority: http://keycloak:8080/realms/online_judge
       Logging__LogLevel__Default: Information
       Jaeger__OTEL_EXPORTER_OTLP_ENDPOINT: http://logging-jaeger:4317/
+      ConnectionStrings__Redis: caching:6379,password=StrongRedisPassword123
     depends_on:
       corejudge.db:
         condition: service_healthy
 
-
+  caching:
+    ports:
+      - "6379:6379"
+      
   api.gateway:
     ports:
       - "5000:8080"

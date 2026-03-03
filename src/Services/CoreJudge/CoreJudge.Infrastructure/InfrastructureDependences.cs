@@ -8,6 +8,7 @@ using CoreJudge.Infrastructure.Implementation.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace CoreJudge.Infrastructure;
 
@@ -18,7 +19,11 @@ public static class InfrastructureDependencies
         string connectionString = configuration.GetConnectionString("Default");
         services.AddDbContext<ApplicationDbContext>(opt => { opt.UseNpgsql(connectionString); });
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        var redisConnectionString = configuration.GetConnectionString("Redis");
 
+        services.AddSingleton<IConnectionMultiplexer>(sp =>
+            ConnectionMultiplexer.Connect(redisConnectionString)
+        );        
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped(typeof(IExecutionService), typeof(ExecutionService));
