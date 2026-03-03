@@ -1,7 +1,7 @@
 using BuildingBlocks.Core;
+using BuildingBlocks.Core.Exceptions.Handler.BuildingBlocks.Core.Exceptions.Handler;
 using Carter;
 using Users.API.Common.Extentions;
-using Users.API.Common.Middlewares;
 using Users.API.Feature.User;
 using BuildingBlocks.Identity;
 using BuildingBlocks.Logging;
@@ -17,7 +17,8 @@ builder.Services.AddEndpointsApiExplorer()
     .AddLoggingConfigs(builder.Configuration)
     .AddSwaggerDocumentation();
 
-
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddCarter(configurator: c =>
 {
     // Register each endpoint explicitly
@@ -44,8 +45,7 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 
-app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-
+app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 
