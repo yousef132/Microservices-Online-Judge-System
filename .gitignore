@@ -464,3 +464,6 @@ TestResults/
 # Sonar
 .sonarqube/
 .sonar/
+
+# Ignore entire .idea folder under src (workspace.xml, projectSettingsUpdater.xml, etc.)
+src/.idea/
