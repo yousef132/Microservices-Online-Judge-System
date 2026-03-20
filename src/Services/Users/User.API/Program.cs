@@ -1,0 +1,57 @@
+using BuildingBlocks.Core;
+using BuildingBlocks.Core.Exceptions.Handler.BuildingBlocks.Core.Exceptions.Handler;
+using Carter;
+using Users.API.Common.Extentions;
+using Users.API.Feature.User;
+using BuildingBlocks.Identity;
+using BuildingBlocks.Logging;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+// Add1 services to the container.
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer()
+    .RegisterServices(builder.Configuration)
+    .AddIdentity(builder.Configuration)
+    .AddLoggingConfigs(builder.Configuration)
+    .AddSwaggerDocumentation();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+builder.Services.AddCarter(configurator: c =>
+{
+    // Register each endpoint explicitly
+    c.WithModule<Signin.SigninEndpoint>();
+    c.WithModule<Login.LoginEndpoint>();
+    c.WithModule<RefreshToken.RefreshTokenEndpoint>();
+    c.WithModule<UserDetails.UserDetailsEndpoint>();
+    c.WithModule<UpdateUser.UpdateUserEndpoint>();
+    c.WithModule<UserRolesModule.UserRolesEndpoint>();
+});
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.SetMinimumLevel(LogLevel.Information);
+builder.Services.AddHealthChecks();
+var app = builder.Build();
+await app.Services.ApplyMigrationsWithRetryAsync();
+await app.Services.SeedAdminUser();
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// app.UseHttpsRedirection();
+
+app.UseExceptionHandler();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+app.MapCarter();
+app.MapGet("/health", () => Results.Ok("healthy"));
+
+app.Run();
+
