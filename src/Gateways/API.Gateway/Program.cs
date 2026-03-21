@@ -10,10 +10,10 @@ builder.Services.AddSwaggerGen();
 builder.Services
        .AddReverseProxy()
        .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-// builder.Services.AddHttpLogging(options =>
-// {
-//     options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
-// });
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
+});
 
 // builder.Services.AddTelemetryConsumer<ForwarderTelemetry>();
 
