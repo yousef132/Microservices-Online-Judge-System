@@ -1,4 +1,4 @@
-﻿services:
+services:
   users.api:
     build:
       context: .
@@ -12,6 +12,7 @@
 
   users.db:
     image: postgres:16
+    pull_policy: if_not_present
     volumes:
       - users-pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -22,6 +23,7 @@
 
   corejudge.db:
     image: postgres:16
+    pull_policy: if_not_present
     volumes:
       - corejudge-pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -32,6 +34,7 @@
 
   caching:
     image: redis:8.6.1
+    pull_policy: if_not_present
     container_name: redis-cache
     restart: always
     command: >
@@ -82,11 +85,20 @@
 
   logging-jaeger:
     image: jaegertracing/all-in-one:1
+    pull_policy: if_not_present
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:16686"]
       interval: 15s
       timeout: 5s
       retries: 10
+
+  rabbitmq:
+    image: rabbitmq:4.2-management-alpine
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api.gateway:
     image: api.gateway
@@ -100,8 +112,32 @@
       retries: 10
       start_period: 20s
 
+  elasticsearch:
+    image: elasticsearch:9.2.7
+    pull_policy: if_not_present
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  kibana:
+    image: kibana:9.2.7
+    pull_policy: if_not_present
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 volumes:
   users-pgdata:
   corejudge-pgdata:
   keycloak-pgdata:
   redis-data:
+  elasticsearch-data:
