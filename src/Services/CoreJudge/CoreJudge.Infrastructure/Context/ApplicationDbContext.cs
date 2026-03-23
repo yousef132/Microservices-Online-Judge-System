@@ -1,7 +1,7 @@
-﻿using CoreJudge.Domain.Models;
+using CoreJudge.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-
+using MassTransit;
 
 namespace CoreJudge.Infrastructure.Context
 {
@@ -21,7 +21,10 @@ namespace CoreJudge.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+
+            modelBuilder.AddInboxStateEntity();
+            modelBuilder.AddOutboxMessageEntity();
+            modelBuilder.AddOutboxStateEntity();
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }

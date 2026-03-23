@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CoreJudge.Application.Abstractions.Elasticsearch;
 using CoreJudge.Application.Features.Contests.Common;
 using CoreJudge.Application.Features.Problem.Common;
 using CoreJudge.Application.Features.Problems.Commands.Create;
@@ -15,8 +16,7 @@ public class ProblemProfile : Profile
     {
         CreateMap<CreateProblemCommand, Problem>();
         CreateMap<Problem, CreateProblemCommandResponse>();
-        CreateMap<ProblemDocument, GetAllQueryResponse>()
-            .ForMember(d => d.Topics, opt => opt.MapFrom<TopicResolver>());
+        CreateMap<ProblemDocument, GetAllQueryResponse>();
         CreateMap<Problem, GetByIdQueryResponse>()
             .ForMember(d => d.TestCases, O => O.MapFrom(S => S.Testcases))
             .ForMember(d => d.Topics, O => O.MapFrom(S => S.ProblemTopics));

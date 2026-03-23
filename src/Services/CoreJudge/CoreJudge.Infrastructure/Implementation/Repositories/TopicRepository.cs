@@ -27,5 +27,11 @@ namespace CoreJudge.Infrastructure.Implementation.Repositories
                 .Select(x => x.Id)
                 .ToListAsync();
         }
+        public async Task<bool> AllTopicsFound(IEnumerable<int> topicIds)
+        {
+            return await _context.Topics
+                .Where(x => topicIds.Contains(x.Id))
+                .CountAsync() == topicIds.Count();
+        }
     }
 }

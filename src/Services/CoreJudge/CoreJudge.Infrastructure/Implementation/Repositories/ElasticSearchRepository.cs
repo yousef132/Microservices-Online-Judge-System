@@ -1,7 +1,6 @@
 ﻿using CodeSphere.Domain.Abstractions.Repositories;
 using CoreJudge.Infrastructure.Helpers;
 using Microsoft.Extensions.Options;
-using Nest;
 
 namespace CoreJudge.Infrastructure.Implementation.Repositories
 {

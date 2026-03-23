@@ -40,3 +40,4 @@ app.UseExceptionHandler();
 app.MapControllers();
 app.MapGet("/health", () => Results.Ok("healthy"));
 app.Run();
+app.Run();
