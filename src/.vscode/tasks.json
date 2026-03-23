@@ -2,12 +2,24 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build-CoreJudge.API",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
                 "${workspaceFolder}/Services/CoreJudge/CoreJudge.API/CoreJudge.API.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-Users.API",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Services/Users/User.API/Users.API.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -26,7 +38,7 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "watch",
+            "label": "watch-CoreJudge.API",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -34,6 +46,18 @@
                 "run",
                 "--project",
                 "${workspaceFolder}/Services/CoreJudge/CoreJudge.API/CoreJudge.API.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch-Users.API",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/Services/Users/User.API/Users.API.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

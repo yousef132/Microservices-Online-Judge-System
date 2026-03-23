@@ -3,6 +3,6 @@
     public class ElasticSearchIndexes
     {
         public const string Problems = "problems";
-        public const string Blogs = "Blogs";
+        public const string UserAttempts = "user_attempts";
     }
 }

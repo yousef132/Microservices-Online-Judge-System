@@ -1,4 +1,4 @@
-﻿using CodeSphere.Domain.Abstractions;
+using CodeSphere.Domain.Abstractions;
 using CodeSphere.Domain.Abstractions.Repositories;
 using CoreJudge.Domain.Models;
 using CoreJudge.Infrastructure.Context;
@@ -39,6 +39,15 @@ namespace CoreJudge.Infrastructure.Implementation
 
         public Task<int> CompleteAsync()
             => context.SaveChangesAsync();
+
+        public async Task BeginTransactionAsync()
+            => await context.Database.BeginTransactionAsync();
+
+        public async Task CommitTransactionAsync()
+            => await context.Database.CommitTransactionAsync();
+
+        public async Task RollbackTransactionAsync()
+            => await context.Database.RollbackTransactionAsync();
 
         public ValueTask DisposeAsync()
             => context.DisposeAsync();

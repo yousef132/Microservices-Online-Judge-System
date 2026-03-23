@@ -7,6 +7,7 @@ using CoreJudge.Domain.Models;
 using CoreJudge.Domain.Premitives;
 using MediatR;
 using System.Net;
+using CoreJudge.Domain.Events;
 
 namespace CoreJudge.Application.Features.Problems.Commands.Create
 {
@@ -30,31 +31,36 @@ namespace CoreJudge.Application.Features.Problems.Commands.Create
                 return await Response.FailureAsync("Contest Not Found!!", System.Net.HttpStatusCode.NotFound);
 
 
-            // TODO : TO MINIMIZE DB CALLS => load all topics in memory then check if incomming topics are valid or not
             bool allTopicsFound = await unitOfWork.TopicRepository.AllTopicsFound(request.Topics);
 
             if (!allTopicsFound)
                 return await Response.FailureAsync("One or more topics not found !!", System.Net.HttpStatusCode.NotFound);
 
-            var mappedProblem = mapper.Map<Domain.Models.Problem>(request);
-
-            await unitOfWork.Repository<Domain.Models.Problem>().AddAsync(mappedProblem);
-
-            //since we configured outbox by masstransit, it will intercept the publish network call and 
-            // add this message to EF core Change tracker as an OutboxMessage entity [in memory]
-            // then when we call unitOfWork.CompleteAsync(), it will save the problem and the outbox message in the same transaction
-            // then a background worker will send the message to the broker
-            // ***** MASSTRANSIT HANDLES ALL THAT STUFF *****
-            await publishEndpoint.Publish(new CoreJudge.Domain.Events.ProblemCreatedEvent
+            try
             {
-                ProblemId = mappedProblem.Id,
-                Title = mappedProblem.Name, // Note: Problem model seems to have 'Name'
-                Difficulty = mappedProblem.Difficulty.ToString()
-            }, cancellationToken);
+                var mappedProblem = mapper.Map<Domain.Models.Problem>(request);
 
-            await unitOfWork.CompleteAsync();
+                await unitOfWork.Repository<Domain.Models.Problem>().AddAsync(mappedProblem);
+                //since we configured outbox by masstransit, it will intercept the publish network call and 
+                // add this message to EF core Change tracker as an OutboxMessage entity [in memory]
+                // then when we call unitOfWork.CompleteAsync(), it will save the problem and the outbox message in the same transaction
+                // then a background worker will send the message to the broker
+                // ***** MASSTRANSIT HANDLES ALL THAT STUFF *****
+                await unitOfWork.CompleteAsync(); // TODO: user Domain Events and ID will be generated in app layer 
+                await publishEndpoint.Publish(new ProblemCreatedEvent
+                {
+                    ProblemId = mappedProblem.Id,
+                    Title = mappedProblem.Name, // Note: Problem model seems to have 'Name'
+                    Difficulty = mappedProblem.Difficulty.ToString()
+                }, cancellationToken);
 
-            return await Response.SuccessAsync(null, "Problem added successfully", HttpStatusCode.Created);
+                await unitOfWork.CompleteAsync();
+                return await Response.SuccessAsync(null, "Problem added successfully", HttpStatusCode.Created);
+            }
+            catch (Exception ex)
+            {
+                return await Response.FailureAsync($"Error while creating problem: {ex.Message}", HttpStatusCode.InternalServerError);
+            }
 
         }
     }

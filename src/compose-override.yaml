@@ -1,4 +1,4 @@
-services:
+﻿services:
   users.api:
     ports:
       - "5001:8080"
@@ -60,6 +60,7 @@ services:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: guest
       RabbitMQ__Password: guest
+      ElasticSearch__Uri: http://elasticsearch:9200
     depends_on:
       corejudge.db:
         condition: service_healthy

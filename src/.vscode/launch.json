@@ -2,34 +2,49 @@
     "version": "0.2.0",
     "configurations": [
         {
-            // Use IntelliSense to find out which attributes exist for C# debugging
-            // Use hover for the description of the existing attributes
-            // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
-            "name": ".NET Core Launch (web)",
+            "name": ".NET Core Launch (CoreJudge.API)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
+            "preLaunchTask": "build-CoreJudge.API",
             "program": "${workspaceFolder}/Services/CoreJudge/CoreJudge.API/bin/Debug/net8.0/CoreJudge.API.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Services/CoreJudge/CoreJudge.API",
             "stopAtEntry": false,
-            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
                 "action": "openExternally",
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "http://localhost:5151"
             }
         },
         {
-            "name": ".NET Core Attach",
+            "name": ".NET Core Launch (Users.API)",
             "type": "coreclr",
-            "request": "attach"
+            "request": "launch",
+            "preLaunchTask": "build-Users.API",
+            "program": "${workspaceFolder}/Services/Users/User.API/bin/Debug/net8.0/Users.API.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Services/Users/User.API",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "http://localhost:5009"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Run CoreJudge + Users APIs",
+            "configurations": [
+                ".NET Core Launch (CoreJudge.API)",
+                ".NET Core Launch (Users.API)"
+            ]
         }
     ]
 }

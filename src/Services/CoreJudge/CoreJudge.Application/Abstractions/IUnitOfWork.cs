@@ -1,4 +1,4 @@
-﻿using CodeSphere.Domain.Abstractions.Repositories;
+using CodeSphere.Domain.Abstractions.Repositories;
 using CoreJudge.Application.Abstractions.Repositories;
 using CoreJudge.Domain.Models;
 
@@ -13,7 +13,8 @@ namespace CodeSphere.Domain.Abstractions
         IProblemRepository ProblemRepository { get; }
         ISubmissionRepository SubmissionRepository { get; }
         ITopicRepository TopicRepository { get; }
-        IBlogRepository BlogRepository { get; } 
+        IBlogRepository BlogRepository { get; }
         Task<int> CompleteAsync();
+
     }
 }
