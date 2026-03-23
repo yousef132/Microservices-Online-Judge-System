@@ -10,7 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
-
+using CoreJudge.Application.Abstractions.Elasticsearch;
+using Elastic.Clients.Elasticsearch;
+using CoreJudge.Application.Mapping;
+using CoreJudge.Domain.Premitives;
+using CoreJudge.Infrastructure.Consumers;
 namespace CoreJudge.Infrastructure;
 
 public static class InfrastructureDependencies
@@ -21,11 +25,11 @@ public static class InfrastructureDependencies
         services.AddDbContext<ApplicationDbContext>(opt => { opt.UseNpgsql(connectionString); });
         services.AddAutoMapper(cfg =>
         {
-            cfg.AddProfile<CoreJudge.Application.Mapping.TopicProfile>();
-            cfg.AddProfile<CoreJudge.Application.Mapping.TestCaseProfile>();
-            cfg.AddProfile<CoreJudge.Application.Mapping.SubmissionProfile>();
-            cfg.AddProfile<CoreJudge.Application.Mapping.ProblemProfile>();
-            cfg.AddProfile<CoreJudge.Application.Mapping.ContestProfile>();
+            cfg.AddProfile<TopicProfile>();
+            cfg.AddProfile<TestCaseProfile>();
+            cfg.AddProfile<SubmissionProfile>();
+            cfg.AddProfile<ProblemProfile>();
+            cfg.AddProfile<ContestProfile>();
         });
         var redisConnectionString = configuration.GetConnectionString("Redis");
 
@@ -56,8 +60,15 @@ public static class InfrastructureDependencies
             // Configure Entity Framework Outbox
             x.AddEntityFrameworkOutbox<ApplicationDbContext>(o =>
             {
+                o.QueryDelay = TimeSpan.FromSeconds(10);
                 o.UsePostgres();
+
                 o.UseBusOutbox();
+                // this uses in-memory outbox [fast]
+                // commented it to use EF Outbox (DB-based)which is : 
+                //1.durable
+                //2.resilient to crash
+                //3.full audit trail
             });
 
             // Automatically scan and register all consumers across loaded assemblies
@@ -65,6 +76,7 @@ public static class InfrastructureDependencies
 
             // Globally configure all automatically registered endpoints 
             // to use a specific dead-letter queue (DLQ) via RabbitMQ BindDeadLetterQueue
+            x.AddConsumer<ProblemCreatedConsumer>();
             x.AddConfigureEndpointsCallback((context, name, cfg) =>
             {
                 // Enable the Inbox Pattern on all endpoints for deduplication
@@ -72,13 +84,16 @@ public static class InfrastructureDependencies
 
                 if (cfg is MassTransit.IRabbitMqReceiveEndpointConfigurator rmq)
                 {
+                    // Note: Dead Letter Queues (DLQ) are handled by MassTransit automatically!
+                    // Any message that exhausts the retry policy will be moved to a queue named `core-judge-deadletter-queue`.
+
                     rmq.BindDeadLetterQueue("core-judge-deadletter-queue");
                 }
             });
             // get rabbitmq configurations
             string host = configuration["RabbitMQ:Host"];
             string username = configuration["RabbitMQ:Username"];
-            string password = configuration["Password"];
+            string password = configuration["RabbitMQ:Password"];
 
             x.UsingRabbitMq((context, rabbitCfg) =>
             {
@@ -96,8 +111,6 @@ public static class InfrastructureDependencies
                     intervalDelta: TimeSpan.FromSeconds(2)
                 ));
 
-                // Note: Dead Letter Queues (DLQ) are handled by MassTransit automatically!
-                // Any message that exhausts the retry policy will be moved to a queue named `<queue-name>_error`.
 
                 // Automatically configure endpoints for all discovered consumers
                 rabbitCfg.ConfigureEndpoints(context);
@@ -109,11 +122,11 @@ public static class InfrastructureDependencies
 
     public static IServiceCollection AddElasticsearch(this IServiceCollection services, IConfiguration configuration)
     {
-        var url = configuration["ElasticSearch:Uri"] ?? "http://localhost:9200";
-        var settings = new Elastic.Clients.Elasticsearch.ElasticsearchClientSettings(new Uri(url))
+        var url = configuration["ElasticSearch:Uri"]; // host-> localhost, container -> elasticsearch url
+        var settings = new ElasticsearchClientSettings(new Uri(url))
             .DefaultIndex("problems"); // Fallback default
 
-        var client = new Elastic.Clients.Elasticsearch.ElasticsearchClient(settings);
+        var client = new ElasticsearchClient(settings);
         services.AddSingleton(client);
 
         CreateIndices(client);
@@ -121,38 +134,45 @@ public static class InfrastructureDependencies
         return services;
     }
 
-    private static void CreateIndices(Elastic.Clients.Elasticsearch.ElasticsearchClient client)
+    private static void CreateIndices(ElasticsearchClient client)
     {
         // 1. Create Problems Index
-        var problemsIndexName = "problems";
-        var problemsExists = client.Indices.Exists(problemsIndexName).Exists;
-        if (!problemsExists)
+        try
         {
-            client.Indices.Create(problemsIndexName, c => c
-                .Mappings(m => m
-                    .Properties<CoreJudge.Application.Abstractions.Elasticsearch.ProblemDocument>(p => p
-                        .IntegerNumber(n => n.Id)
-                        .Text(t => t.Name)
-                        .Keyword(k => k.Difficulty)
+            var problemsIndexName = ElasticSearchIndexes.Problems;
+            var problemsExists = client.Indices.Exists(problemsIndexName).Exists;
+            if (!problemsExists)
+            {
+                client.Indices.Create(problemsIndexName, c => c
+                    .Mappings(m => m
+                        .Properties<ProblemDocument>(p => p
+                            .IntegerNumber(n => n.Id)
+                            .Text(t => t.Name)
+                            .Keyword(k => k.Difficulty)
+                        )
                     )
-                )
-            );
-        }
+                );
+            }
 
-        // 2. Create UserAttempts Index
-        var userAttemptsIndexName = "user_attempts";
-        var userAttemptsExists = client.Indices.Exists(userAttemptsIndexName).Exists;
-        if (!userAttemptsExists)
-        {
-            client.Indices.Create(userAttemptsIndexName, c => c
-                .Mappings(m => m
-                    .Properties<CoreJudge.Application.Abstractions.Elasticsearch.UserAttemptDocument>(p => p
-                        .Keyword(k => k.UserId)
-                        .IntegerNumber(n => n.ProblemId)
-                        .Keyword(k => k.Status)
+            // 2. Create UserAttempts Index
+            var userAttemptsIndexName = ElasticSearchIndexes.UserAttempts;
+            var userAttemptsExists = client.Indices.Exists(userAttemptsIndexName).Exists;
+            if (!userAttemptsExists)
+            {
+                client.Indices.Create(userAttemptsIndexName, c => c
+                    .Mappings(m => m
+                        .Properties<UserAttemptDocument>(p => p
+                            .Keyword(k => k.UserId)
+                            .IntegerNumber(n => n.ProblemId)
+                            .Keyword(k => k.Status)
+                        )
                     )
-                )
-            );
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
         }
     }
 }

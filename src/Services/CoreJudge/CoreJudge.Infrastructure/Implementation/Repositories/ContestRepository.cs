@@ -1,4 +1,4 @@
-﻿using CodeSphere.Domain.Abstractions.Repositories;
+using CodeSphere.Domain.Abstractions.Repositories;
 using CoreJudge.Domain.Models;
 using CoreJudge.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +17,19 @@ namespace CoreJudge.Infrastructure.Implementation.Repositories
 
         public async Task<IEnumerable<Tuple<Contest, bool>>> GetAllContestWithRegisteredUserAsync(string? userId)
         {
-            var contests = await context.Contests
-                .Include(c => c.Registrations.Where(r => r.UserId == Guid.Parse(userId))).ToListAsync();
+            bool hasValidUser = Guid.TryParse(userId, out var userGuid);
 
-            return contests.Select(c => new Tuple<Contest, bool>(c, c.Registrations.Any()));
+            var query = context.Contests.AsNoTracking();
+
+            if (hasValidUser)
+            {
+                query = query.Include(c => c.Registrations.Where(r => r.UserId == userGuid));
+            }
+
+            // execute the query
+            var contests = await query.ToListAsync();
+
+            return contests.Select(c => new Tuple<Contest, bool>(c, hasValidUser && c.Registrations != null && c.Registrations.Any()));
         }
 
         //public async Task<IReadOnlyList<(Contest, bool)>> GetAllContestWithRegisteredUserAsync(string userId)
@@ -96,7 +105,12 @@ namespace CoreJudge.Infrastructure.Implementation.Repositories
         //}
 
         public async Task<bool> IsRegistered(string userId, int contestId)
-         => await context.UserContestRegistrations.AnyAsync(x => x.UserId == Guid.Parse(userId)  && x.ContestId == contestId);
+        {
+            if (string.IsNullOrWhiteSpace(userId) || !Guid.TryParse(userId, out var userGuid))
+                return false;
+
+            return await context.UserContestRegistrations.AnyAsync(x => x.UserId == userGuid && x.ContestId == contestId);
+        }
     }
 
 

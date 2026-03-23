@@ -11,5 +11,6 @@ namespace CoreJudge.Application.Features.Problems.Queries.GetAll
         public Difficulty Difficulty { get; set; }
         public SubmissionResult? Status { get; set; }
         public decimal AcceptanceRate { get; set; }
+        public List<string> Topics { get; set; } = new();
     }
 }
