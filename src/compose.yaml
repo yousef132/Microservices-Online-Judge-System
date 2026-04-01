@@ -2,7 +2,7 @@ services:
   users.api:
     build:
       context: .
-      dockerfile: /Services/Users/User.API/Dockerfile
+      dockerfile: Services/Users/User.API/Dockerfile
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 10s
@@ -52,7 +52,7 @@ services:
   corejudge.api:
     build:
       context: .
-      dockerfile: /Services/CoreJudge/CoreJudge.API/Dockerfile
+      dockerfile: Services/CoreJudge/CoreJudge.API/Dockerfile
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 10s
@@ -134,6 +134,33 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+
+  collaboration.api:
+    build:
+      context: ./Services/Collaboration
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/collaboration/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: ./Web
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./Web:/app
+      - /app/node_modules
+    depends_on:
+      - api.gateway
+      - collaboration.api
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5173/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
 volumes:
   users-pgdata:

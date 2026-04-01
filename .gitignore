@@ -469,3 +469,7 @@ TestResults/
 
 # Ignore entire .idea folder under src (workspace.xml, projectSettingsUpdater.xml, etc.)
 src/.idea/
+
+# Collaboration Service persistence
+.yjs-storage/
+.vite/
