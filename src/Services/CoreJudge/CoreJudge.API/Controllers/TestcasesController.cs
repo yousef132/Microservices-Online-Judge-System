@@ -1,8 +1,9 @@
-﻿using BuildingBlocks.Identity;
+using BuildingBlocks.Identity;
 using CoreJudge.Application.Features.Testcases.Commands.Delete;
 using CoreJudge.Application.Features.Testcases.Commands.Update;
 using CoreJudge.Application.Features.Testcases.Queries.GetTestCasesByProblemId;
 using CoreJudge.Application.Features.TestCases.Commands.Create;
+using CoreJudge.Application.Features.TestCases.Commands.BulkCreate;
 using CoreJudge.Domain.Premitives;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,8 +15,14 @@ namespace CoreJudge.API.Controllers
 
     public class TestcasesController : BaseController
     {
+        // POST /api/testcases
         [HttpPost]
         public async Task<ActionResult<Response>> CreateTestcaseAsync(CreateTestcaseCommand command)
+         => ResponseResult(await mediator.Send(command));
+
+        // POST /api/testcases/bulk
+        [HttpPost("bulk")]
+        public async Task<ActionResult<Response>> BulkCreateTestcasesAsync(BulkCreateTestcasesCommand command)
          => ResponseResult(await mediator.Send(command));
 
         [HttpGet("{problemId}")]
