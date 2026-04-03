@@ -1,13 +1,10 @@
 using AutoMapper;
 using BuildingBlocks.Core.CQRS;
 using CodeSphere.Domain.Abstractions;
-using CodeSphere.Domain.Abstractions.Repositories;
-using CoreJudge.Application.Abstractions.Repositories;
+using CoreJudge.Domain.Events;
 using CoreJudge.Domain.Models;
 using CoreJudge.Domain.Premitives;
-using MediatR;
 using System.Net;
-using CoreJudge.Domain.Events;
 
 namespace CoreJudge.Application.Features.Problems.Commands.Create
 {
@@ -39,6 +36,14 @@ namespace CoreJudge.Application.Features.Problems.Commands.Create
             try
             {
                 var mappedProblem = mapper.Map<Domain.Models.Problem>(request);
+                mappedProblem.LanguagesTemplages = request.CodeTemplate.Select(t => new ProblemLangeuageTemplates
+                {
+                    Language = t.Language,
+                    StartingPoint = t.StartingPoint,
+                    UserCodeTemplate = t.CodeTemplate,
+                    UserCodeWrapper = t.CodeWrapper,
+
+                }).ToList();
 
                 await unitOfWork.Repository<Domain.Models.Problem>().AddAsync(mappedProblem);
                 //since we configured outbox by masstransit, it will intercept the publish network call and 

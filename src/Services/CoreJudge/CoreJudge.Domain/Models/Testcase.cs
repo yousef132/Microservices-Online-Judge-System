@@ -4,6 +4,10 @@ namespace CoreJudge.Domain.Models
 {
     public class Testcase : BaseEntity
     {
+        public Testcase()
+        {
+
+        }
         public Testcase(int problemId, string input, string output)
         {
             ProblemId = problemId;

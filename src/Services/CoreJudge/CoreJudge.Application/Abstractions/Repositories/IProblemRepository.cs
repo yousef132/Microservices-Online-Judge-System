@@ -1,5 +1,6 @@
 ﻿
 using CoreJudge.Domain.Models;
+using CoreJudge.Domain.Premitives;
 
 namespace CodeSphere.Domain.Abstractions.Repositories
 {
@@ -11,7 +12,7 @@ namespace CodeSphere.Domain.Abstractions.Repositories
 
         int GetAcceptedProblemCount(int problemId, CancellationToken cancellationToken = default);
         int GetSubmissionsProblemCount(int problemId, CancellationToken cancellationToken = default);
-        Task<Problem?> GetProblemIncludingContestAndTestcases(int problemId);
+        Task<Problem?> GetProblemIncludingContestAndTestcases(int problemId, Language? language = null);
         bool CheckUserSolvedProblem(int problemId, string userId, CancellationToken cancellationToken = default);
 
     }

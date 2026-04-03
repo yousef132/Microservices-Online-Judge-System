@@ -1,4 +1,5 @@
-﻿using CoreJudge.Domain.Premitives;
+﻿using CoreJudge.Domain.Models;
+using CoreJudge.Domain.Premitives;
 using Microsoft.AspNetCore.Http;
 
 namespace CodeSphere.Domain.Abstractions.Services
@@ -10,8 +11,8 @@ namespace CodeSphere.Domain.Abstractions.Services
         Task<string> UploadFileAsync(IFormFile file, string directory);
         Task<string> ReadFile(IFormFile file);
         Task<string> ReadFileAsync(string filePath);
-
-        Task<string> CreateTestCasesFile(string testCase, string requestDirectory);
-        Task<string> CreateCodeFile(string code, Language language, string requestDirectory);
+        Task CreateExpectedOutputFile(List<Testcase> testCases, string directory);
+        Task CreateTestCasesFile(List<Testcase> testCases, string directory);
+        Task<string> CreateCodeFile(string code, ProblemLangeuageTemplates template, Language language, string requestDirectory);
     }
 }

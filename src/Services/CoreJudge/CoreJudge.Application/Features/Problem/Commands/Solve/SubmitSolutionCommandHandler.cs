@@ -3,8 +3,8 @@ using BuildingBlocks.Core.CQRS;
 using CodeSphere.Domain.Abstractions;
 using CodeSphere.Domain.Abstractions.Repositories;
 using CodeSphere.Domain.Abstractions.Services;
+using CoreJudge.Domain.Models;
 using CoreJudge.Domain.Premitives;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -41,7 +41,7 @@ namespace CoreJudge.Application.Features.Problems.Commands.SolveProblem
         }
         public async Task<Response> Handle(SubmitSolutionCommand request, CancellationToken cancellationToken)
         {
-            var problem = await unitOfWork.ProblemRepository.GetProblemIncludingContestAndTestcases(request.ProblemId);
+            var problem = await unitOfWork.ProblemRepository.GetProblemIncludingContestAndTestcases(request.ProblemId, request.Language);
             if (problem == null)
                 return await Response.FailureAsync("Problem Not Found", System.Net.HttpStatusCode.NotFound);
 
@@ -59,24 +59,25 @@ namespace CoreJudge.Application.Features.Problems.Commands.SolveProblem
 
             string codeContent = await fileService.ReadFile(request.Code);
 
-            var result = await executionService.ExecuteCodeAsync(codeContent, request.Language, problem.Testcases.ToList(), problem.RunTimeLimit);
+            var result = await executionService.ExecuteCodeAsync(codeContent, problem.LanguagesTemplages.First(), request.Language, problem.Testcases.ToList(), problem.RunTimeLimit);
 
-            //var baseSubmissionResponse = (result as BaseSubmissionResponse);
-            //var acceptedSubmission = (result as AcceptedResponse);
-            //var compilationError = (result as CompilationErrorResponse);
-            //var submission = new Submit
-            //{
-            //    UserId = UserId,
-            //    SubmissionDate = DateTime.UtcNow,
-            //    ContestId = request.ContestId,
-            //    Language = request.Language,
-            //    Result = baseSubmissionResponse.SubmissionResult,
-            //    Error = (result as CompilationErrorResponse)?.Message ?? null,
-            //    ProblemId = request.ProblemId,
-            //    SubmitTime = acceptedSubmission?.ExecutionTime ?? null,
-            //    Code = codeContent,
-            //    SubmitMemory = 0m // TODO : implement memory usage in the shellscript
-            //};
+            var baseSubmissionResponse = (result as BaseSubmissionResponse);
+            var acceptedSubmission = (result as AcceptedResponse);
+            var compilationError = (result as CompilationErrorResponse);
+            var submission = new Submission
+            {
+                AttemperId = Guid.Parse(UserId),
+                SubmissionDate = DateTime.UtcNow,
+                ContestId = request.ContestId,
+                Language = request.Language,
+                Result = baseSubmissionResponse.SubmissionResult,
+                Error = (result as CompilationErrorResponse)?.Message ?? null,
+                ProblemId = request.ProblemId,
+                SubmitTime = acceptedSubmission?.ExecutionTime ?? null,
+                Code = codeContent,
+                SubmitMemory = 0m,
+
+            };
 
 
             //if (problem.Contest.ContestStatus == ContestStatus.Running)
@@ -107,13 +108,13 @@ namespace CoreJudge.Application.Features.Problems.Commands.SolveProblem
             //        Result = submission.Result
             //    }, UserId, submission.ContestId.Value);
             //}
-            //// insert the result in the database 
+            // insert the result in the database 
 
-            //await unitOfWork.Repository<Submit>().AddAsync(submission);
-            //await unitOfWork.CompleteAsync();
+            await unitOfWork.Repository<Submission>().AddAsync(submission);
+            await unitOfWork.CompleteAsync();
 
             // save submission result in database
-            return await Response.SuccessAsync(null, "Submitted Successfully", System.Net.HttpStatusCode.Created);
+            return await Response.SuccessAsync(result, "Submitted Successfully", System.Net.HttpStatusCode.Created);
         }
     }
 }

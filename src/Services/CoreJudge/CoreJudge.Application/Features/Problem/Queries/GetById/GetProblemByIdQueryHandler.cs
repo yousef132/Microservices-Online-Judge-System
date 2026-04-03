@@ -2,7 +2,6 @@
 using BuildingBlocks.Core.CQRS;
 using CodeSphere.Domain.Abstractions;
 using CoreJudge.Domain.Premitives;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Security.Claims;

@@ -5,7 +5,6 @@ using CoreJudge.Application.Features.Problem.Common;
 using CoreJudge.Application.Features.Problems.Commands.Create;
 using CoreJudge.Application.Features.Problems.Queries.GetAll;
 using CoreJudge.Application.Features.Problems.Queries.GetById;
-using CoreJudge.Application.Mapping.Resolvers;
 using CoreJudge.Domain.Models;
 
 namespace CoreJudge.Application.Mapping;

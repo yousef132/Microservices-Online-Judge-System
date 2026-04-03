@@ -3,6 +3,7 @@ using System;
 using CoreJudge.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CoreJudge.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260403134614_AddProblemWrapperAndTemplate")]
+    partial class AddProblemWrapperAndTemplate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,6 +85,14 @@ namespace CoreJudge.Infrastructure.Migrations
                     b.Property<decimal>("RunTimeLimit")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("UserCodeTemplate")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserCodeWrapper")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ContestId");
@@ -109,39 +120,6 @@ namespace CoreJudge.Infrastructure.Migrations
                     b.HasIndex("ProblemId");
 
                     b.ToTable("ProblemImages");
-                });
-
-            modelBuilder.Entity("CoreJudge.Domain.Models.ProblemLangeuageTemplates", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Language")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProblemId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("StartingPoint")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserCodeTemplate")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserCodeWrapper")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProblemId");
-
-                    b.ToTable("ProblemLangeuageTemplates");
                 });
 
             modelBuilder.Entity("CoreJudge.Domain.Models.ProblemTopic", b =>
@@ -460,17 +438,6 @@ namespace CoreJudge.Infrastructure.Migrations
                     b.Navigation("Problem");
                 });
 
-            modelBuilder.Entity("CoreJudge.Domain.Models.ProblemLangeuageTemplates", b =>
-                {
-                    b.HasOne("CoreJudge.Domain.Models.Problem", "Problem")
-                        .WithMany("LanguagesTemplages")
-                        .HasForeignKey("ProblemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Problem");
-                });
-
             modelBuilder.Entity("CoreJudge.Domain.Models.ProblemTopic", b =>
                 {
                     b.HasOne("CoreJudge.Domain.Models.Problem", "Problem")
@@ -542,8 +509,6 @@ namespace CoreJudge.Infrastructure.Migrations
             modelBuilder.Entity("CoreJudge.Domain.Models.Problem", b =>
                 {
                     b.Navigation("Images");
-
-                    b.Navigation("LanguagesTemplages");
 
                     b.Navigation("ProblemTopics");
 
