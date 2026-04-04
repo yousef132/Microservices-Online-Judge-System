@@ -1,7 +1,9 @@
 ﻿using CodeSphere.Domain.Abstractions.Services;
+using CoreJudge.Domain.Models;
 using CoreJudge.Domain.Premitives;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using System.Text;
 
 namespace CodeSphere.Infrastructure.Implementation.Services
 {
@@ -33,16 +35,40 @@ namespace CodeSphere.Infrastructure.Implementation.Services
                => await System.IO.File.ReadAllTextAsync(filePath);
 
 
-        public async Task<string> CreateTestCasesFile(string testCase, string requestDirectory)
+        public async Task CreateTestCasesFile(List<Testcase> testCases, string directory)
         {
-            string testCasesPath = Path.Combine(requestDirectory, "testcases.txt");
-            await System.IO.File.WriteAllTextAsync(testCasesPath, testCase);
-            return testCasesPath;
+            var sb = new StringBuilder();
+            foreach (var tc in testCases)
+            {
+                sb.Append(tc.Input.TrimEnd().Replace("\r\n", "\n").Replace("\r", "\n"));
+                sb.Append("\n---END---\n");
+            }
+
+            await File.WriteAllTextAsync(
+                Path.Combine(directory, "testcases.txt"),
+                sb.ToString(),
+                new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
         }
 
-        public async Task<string> CreateCodeFile(string code, Language language, string requestDirectory)
+        public async Task CreateExpectedOutputFile(List<Testcase> testCases, string directory)
         {
+            var sb = new StringBuilder();
+            foreach (var tc in testCases)
+            {
+                // Use \n explicitly — never AppendLine which writes \r\n on Windows
+                sb.Append(tc.Output.TrimEnd().Replace("\r\n", "\n").Replace("\r", "\n"));
+                sb.Append("\n---END---\n");
+            }
 
+            await File.WriteAllTextAsync(
+                Path.Combine(directory, "expected.txt"),
+                sb.ToString(),
+                new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+        }
+
+        public async Task<string> CreateCodeFile(string code, ProblemLangeuageTemplates template, Language language, string requestDirectory)
+        {
+            code = template.UserCodeWrapper.Replace(template.StartingPoint, code);
             string testCasesPath = Path.Combine(requestDirectory, $"main.{language.ToString()}");
 
             await System.IO.File.WriteAllTextAsync(testCasesPath, code);

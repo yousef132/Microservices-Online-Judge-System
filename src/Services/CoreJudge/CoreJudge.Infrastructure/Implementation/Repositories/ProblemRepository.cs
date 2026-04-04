@@ -35,13 +35,24 @@ namespace CoreJudge.Infrastructure.Implementation.Repositories
         => _context.Set<Testcase>().Where(x => x.ProblemId == problemId).AsNoTracking();
 
 
-        public async Task<Problem?> GetProblemIncludingContestAndTestcases(int problemId)
-          => await _context.Set<Problem>()
-                     .Include(p => p.Contest)
-                     .Include(p => p.Testcases)
-                     .AsNoTracking()
-                     .FirstOrDefaultAsync(p => p.Id == problemId);
+        public async Task<Problem?> GetProblemIncludingContestAndTestcases(int problemId, Language? language)
+        {
+            var query = _context.Set<Problem>()
+                .Include(p => p.Contest)
+                .Include(p => p.Testcases)
+                .AsQueryable();
 
-        
+            if (language != null)
+            {
+                query = query.Include(p => p.LanguagesTemplages
+                    .Where(t => t.Language == language));
+            }
+
+            return await query
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == problemId);
+        }
+
+
     }
 }

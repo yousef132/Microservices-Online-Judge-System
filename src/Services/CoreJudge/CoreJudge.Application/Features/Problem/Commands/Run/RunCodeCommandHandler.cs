@@ -2,7 +2,6 @@
 using CodeSphere.Domain.Abstractions;
 using CodeSphere.Domain.Abstractions.Services;
 using CoreJudge.Domain.Premitives;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -31,7 +30,7 @@ namespace CoreJudge.Application.Features.Problems.Commands.Run
         }
         public async Task<Response> Handle(RunCodeCommand request, CancellationToken cancellationToken)
         {
-            var problem = await unitOfWork.ProblemRepository.GetProblemIncludingContestAndTestcases(request.ProblemId);
+            var problem = await unitOfWork.ProblemRepository.GetProblemIncludingContestAndTestcases(request.ProblemId, request.Language);
             if (problem == null)
                 return await Response.FailureAsync("Problem Not Found");
 

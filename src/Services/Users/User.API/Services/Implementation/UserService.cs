@@ -1,12 +1,7 @@
-using System.Text.Json;
 using BuildingBlocks.Core.Exceptions;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Users.API.Domain.Models;
 using Users.API.Feature.User;
-using Users.API.Feature.User.Common;
 using Users.API.Infrastructure.Repository.Abstractions;
 using Users.API.Services.Abstraction;
 
@@ -78,36 +73,31 @@ public class UserService(IJwtTokenGenerator _tokenGenerator,
             user.IsPublicProfile,
             user.ProfilePictureUrl
         );
-        
+
     }
 
     public async Task<Login.LoginUserResponse> LoginUserAsync(Login.LoginUserRequestDto loginUserRequestDto, CancellationToken cancellationToken = default)
     {
-        var users =  userManager.Users.ToList();
-        Console.WriteLine("loginUserRequestDto");
-        Console.WriteLine(JsonSerializer.Serialize(loginUserRequestDto));
-        Console.WriteLine("All Users");
-        Console.WriteLine(JsonSerializer.Serialize(users));
         var user = await userManager.FindByEmailAsync(loginUserRequestDto.Email);
 
-         if (user is null)
-             throw new UnAuthorizedException("Invalid credentials");
+        if (user is null)
+            throw new UnAuthorizedException("Invalid credentials");
 
-         var result = await signInManager.CheckPasswordSignInAsync(
-             user,
-             loginUserRequestDto.Password,
-             lockoutOnFailure: true);
+        var result = await signInManager.CheckPasswordSignInAsync(
+            user,
+            loginUserRequestDto.Password,
+            lockoutOnFailure: true);
 
-         if (!result.Succeeded)
-             throw new UnAuthorizedException("Invalid credentials");
+        if (!result.Succeeded)
+            throw new UnAuthorizedException("Invalid credentials");
 
-         user.LastLogin = DateTime.UtcNow;
-         await userManager.UpdateAsync(user);
+        user.LastLogin = DateTime.UtcNow;
+        await userManager.UpdateAsync(user);
 
-         var accessToken = await _tokenGenerator.GenerateTokenAsync(user);
-         // var refreshToken = await jwtTokenGenerator.GenerateRefreshTokenAsync(user);
+        var accessToken = await _tokenGenerator.GenerateTokenAsync(user);
+        // var refreshToken = await jwtTokenGenerator.GenerateRefreshTokenAsync(user);
 
-         return new Login.LoginUserResponse(accessToken);
+        return new Login.LoginUserResponse(accessToken);
     }
     public async Task UpdateUserAsync(UpdateUser.UpdateUserDto updateUserDto, Guid userId, CancellationToken cancellationToken = default)
     {
@@ -128,7 +118,7 @@ public class UserService(IJwtTokenGenerator _tokenGenerator,
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
     }
-    
+
     public async Task AddRoleToUserAsync(Guid userId, string role, CancellationToken cancellationToken = default)
     {
         var user = await userManager.FindByIdAsync(userId.ToString());

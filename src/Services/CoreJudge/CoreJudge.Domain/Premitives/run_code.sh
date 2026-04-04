@@ -1,54 +1,213 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+# ------------------------
+# CONFIG
+# ------------------------
+CODE_DIR="/code"
+VERDICT_DIR="/tmp/verdict"
+TIMEOUT_PER_TESTCASE=${1:-5}
+SEPARATOR="---END---"
+OUTPUT_SENTINEL="---DONE---"
 
-# Clear previous logs
-: > /code/output.txt
-: > /code/runtime.txt
-: > /code/error.txt
-: > /code/runtime_errors.txt
+USER_CPP="$CODE_DIR/main.cpp"
+USER_PY="$CODE_DIR/main.py"
+USER_CS="$CODE_DIR/main.csproj"
+TESTCASES="$CODE_DIR/testcases.txt"
+EXPECTED="$CODE_DIR/expected.txt"
+OUTPUT_LOG="$VERDICT_DIR/output.txt"
+ERROR_LOG="$VERDICT_DIR/error.txt"
+RUNTIME_LOG="$VERDICT_DIR/runtime.txt"
+TLE_LOG="$VERDICT_DIR/tle.txt"
+FIFO_IN="$VERDICT_DIR/in.fifo"
+FIFO_OUT="$VERDICT_DIR/out.fifo"
 
-# Timeout duration for each program
-TIMEOUT_DURATION=${1:-5s}
+# ------------------------
+# CREATE VERDICT DIR + CLEAR FILES
+# ------------------------
+mkdir -p "$VERDICT_DIR"
+: > "$OUTPUT_LOG"
+: > "$ERROR_LOG"
+: > "$RUNTIME_LOG"
+: > "$TLE_LOG"
 
-# Log runtime details and handle timeouts or runtime errors
-log_runtime_info() {
-    local exit_code=$1
-    local runtime_info="$2"
-    
-    if [[ $exit_code -eq 124 ]]; then
-        echo "TIMELIMITEXCEEDED" >> /code/runtime.txt
-    elif [[ $exit_code -eq 0 ]]; then
-        echo "$runtime_info" >> /code/runtime.txt
-    else
-        echo "RUNTIMEERROR: Program terminated with exit code $exit_code" >> /code/runtime_errors.txt
-    fi
+# ------------------------
+# CLEANUP
+# ------------------------
+PID=""
+cleanup_and_exit() {
+    local exit_val=$1
+    [[ -n "$PID" ]] && kill "$PID" 2>/dev/null && wait "$PID" 2>/dev/null
+    exec 6>&- 2>/dev/null
+    exec 5<&- 2>/dev/null
+    rm -f "$FIFO_IN" "$FIFO_OUT"
+    exit "$exit_val"
 }
+trap 'cleanup_and_exit 1' SIGTERM SIGINT
 
-# Execute the appropriate code based on file type
-if [[ -f "/code/main.py" ]]; then
-    # Run Python code
-    runtime_info=$( { time timeout $TIMEOUT_DURATION python3 /code/main.py < /code/testcases.txt > /code/output.txt; } 2>&1 )
-    log_runtime_info $? "$runtime_info"
-
-elif [[ -f "/code/main.cpp" ]]; then
-    # Compile and run C++ code
-    g++ -o /code/main.out /code/main.cpp 2> /code/error.txt
-    if [[ $? -eq 0 ]]; then
-        runtime_info=$( { time timeout $TIMEOUT_DURATION /code/main.out < /code/testcases.txt > /code/output.txt; } 2>&1 )
-        log_runtime_info $? "$runtime_info"
-    else
-        echo "COMPILATIONFAILED" >> /code/error.txt
+# ------------------------
+# COMPILE / BUILD
+# ------------------------
+if [[ -f "$USER_CPP" ]]; then
+    g++ -O2 -std=c++17 -o "$VERDICT_DIR/main.out" "$USER_CPP" 2> "$ERROR_LOG"
+    if [[ $? -ne 0 ]]; then
+        echo "COMPILATIONFAILED" >> "$ERROR_LOG"
+        cleanup_and_exit 1
     fi
+    EXEC_CMD="stdbuf -o0 $VERDICT_DIR/main.out"
 
-elif [[ -f "/code/main.cs" ]]; then
-    # Build and run C# code
-    dotnet build /code/main.csproj -o /code/output 2>> /code/error.txt
-    if [[ $? -eq 0 ]]; then
-        runtime_info=$( { time timeout $TIMEOUT_DURATION dotnet /code/output/main.dll < /code/testcases.txt > /code/output.txt; } 2>&1 )
-        log_runtime_info $? "$runtime_info"
-    else
-        echo "BUILDFAILED" >> /code/error.txt
+elif [[ -f "$USER_PY" ]]; then
+    EXEC_CMD="python3 -u $USER_PY"
+
+elif [[ -f "$USER_CS" ]]; then
+    dotnet build "$USER_CS" -o "$VERDICT_DIR/output" 2>> "$ERROR_LOG"
+    if [[ $? -ne 0 ]]; then
+        echo "BUILDFAILED" >> "$ERROR_LOG"
+        cleanup_and_exit 1
     fi
+    EXEC_CMD="DOTNET_UNBUFFERED_IO=1 dotnet $VERDICT_DIR/output/main.dll"
 
 else
-    echo "UNSUPPORTEDLANGUAGE" >> /code/error.txt
+    echo "UNSUPPORTEDLANGUAGE" >> "$ERROR_LOG"
+    cleanup_and_exit 1
 fi
+
+# ------------------------
+# FIFOS + LAUNCH PROGRAM ONCE
+# ------------------------
+mkfifo "$FIFO_IN" "$FIFO_OUT"
+eval "$EXEC_CMD" < "$FIFO_IN" > "$FIFO_OUT" 2>> "$ERROR_LOG" &
+PID=$!
+exec 6> "$FIFO_IN"
+exec 5< "$FIFO_OUT"
+
+# ------------------------
+# LOAD BLOCKS
+# ------------------------
+load_blocks() {
+    local file="$1"
+    local -n arr="$2"
+    local block=""
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        if [[ "$line" == "$SEPARATOR" ]]; then
+            if [[ -n "$block" ]]; then
+                arr+=("${block%$'\n'}")
+            fi
+            block=""
+        else
+            block+="$line"$'\n'
+        fi
+    done < "$file"
+    [[ -n "$block" ]] && arr+=("${block%$'\n'}")
+}
+
+declare -a testcase_blocks
+declare -a expected_blocks
+load_blocks "$TESTCASES" testcase_blocks
+load_blocks "$EXPECTED"  expected_blocks
+
+if [[ ${#testcase_blocks[@]} -ne ${#expected_blocks[@]} ]]; then
+    echo "TESTCASE_EXPECTED_MISMATCH" >> "$ERROR_LOG"
+    cleanup_and_exit 1
+fi
+
+total=${#testcase_blocks[@]}
+printf '%s\n' "$total" >&6
+
+# ------------------------
+# READ UNTIL SENTINEL
+# ------------------------
+read_until_sentinel() {
+    local block=""
+    local line
+    local deadline=$(( $(date +%s%3N) + TIMEOUT_PER_TESTCASE * 1000 ))
+
+    while true; do
+        now=$(date +%s%3N)
+        (( now >= deadline )) && return 1
+
+        remaining_ms=$(( deadline - now ))
+        printf -v remaining_sec "%d.%03d" \
+            $(( remaining_ms / 1000 )) \
+            $(( remaining_ms % 1000 ))
+
+        if IFS= read -u 5 -t "$remaining_sec" line; then
+            [[ "$line" == "$OUTPUT_SENTINEL" ]] && break
+            block+="$line"$'\n'
+        else
+            return 1
+        fi
+    done
+
+    printf '%s' "${block%$'\n'}"
+    return 0
+}
+
+# ------------------------
+# PROCESS TESTCASES
+# ------------------------
+PASSED=0
+
+for (( i=0; i<total; i++ )); do
+    input="${testcase_blocks[$i]}"
+    expected="${expected_blocks[$i]}"
+
+    printf '%s\n' "$input" >&6
+
+    start_ms=$(date +%s%3N)
+    actual=$(read_until_sentinel)
+    status=$?
+    end_ms=$(date +%s%3N)
+    elapsed=$(( end_ms - start_ms ))
+
+    # TLE
+    if [[ $status -ne 0 ]] || (( elapsed > TIMEOUT_PER_TESTCASE * 1000 )); then
+        {
+            echo "TIMELIMITEXCEEDED"
+            echo "Testcase: $((i+1))"
+            echo "Passed: $PASSED"
+            echo "Time consumed (ms): $elapsed"
+            echo "Time limit (ms): $(( TIMEOUT_PER_TESTCASE * 1000 ))"
+        } >> "$TLE_LOG"
+        cleanup_and_exit 1
+    fi
+
+    # Log output
+    {
+        echo "$actual"
+        echo "$SEPARATOR"
+    } >> "$OUTPUT_LOG"
+
+    # Wrong answer
+    if [[ "$actual" != "$expected" ]]; then
+        {
+            echo "WRONG_ANSWER"
+            echo "Testcase: $((i+1))"
+            echo "Passed: $PASSED"
+            echo "--- Expected ---"
+            echo "$expected"
+            echo "--- Got ---"
+            echo "$actual"
+        } >> "$RUNTIME_LOG"
+        cleanup_and_exit 1
+    fi
+
+    PASSED=$(( PASSED + 1 ))
+    echo "Testcase $((i+1)) time: ${elapsed}ms" >> "$RUNTIME_LOG"
+done
+
+# ------------------------
+# FINAL VERDICT
+# ------------------------
+wait "$PID" 2>/dev/null
+exit_code=$?
+
+if [[ $exit_code -ne 0 ]]; then
+    {
+        echo "RUNTIMEERROR"
+        echo "Passed: $PASSED"
+        echo "Exit code: $exit_code"
+    } >> "$RUNTIME_LOG"
+    cleanup_and_exit 1
+fi
+
+echo "ACCEPTED" >> "$RUNTIME_LOG"
+cleanup_and_exit 0

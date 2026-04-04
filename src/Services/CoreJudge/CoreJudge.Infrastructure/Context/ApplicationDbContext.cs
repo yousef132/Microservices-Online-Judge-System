@@ -1,7 +1,7 @@
 using CoreJudge.Domain.Models;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using MassTransit;
 
 namespace CoreJudge.Infrastructure.Context
 {
@@ -14,6 +14,7 @@ namespace CoreJudge.Infrastructure.Context
         public DbSet<Testcase> Testcases { get; set; }
         public DbSet<Topic> Topics { get; set; }
         public DbSet<ProblemTopic> ProblemTopics { get; set; }
+        public DbSet<ProblemLangeuageTemplates> ProblemLangeuageTemplates { get; set; }
         public DbSet<Submission> Submissions { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }

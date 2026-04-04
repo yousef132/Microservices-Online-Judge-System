@@ -1,7 +1,6 @@
 ﻿using CoreJudge.Domain.Models.Entities;
 using CoreJudge.Domain.Premitives;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Reflection.Metadata;
 
 namespace CoreJudge.Domain.Models
 {
@@ -18,7 +17,6 @@ namespace CoreJudge.Domain.Models
         public string Description { get; set; } = default!;
         public ContestPoints ContestPoints { get; set; }
 
-
         [ForeignKey(nameof(ContestId))]
         public Contest Contest { get; set; } = default!;
         public ICollection<ProblemImage> Images { get; set; } = default!;
@@ -29,9 +27,6 @@ namespace CoreJudge.Domain.Models
 
         public ICollection<Submission> Submissions { get; set; } = default!;
 
-        //[ForeignKey(nameof(Blog))]
-        //public int? BlogId { get; set; }
-        //public Blog Blog { get; set; }
-
+        public ICollection<ProblemLangeuageTemplates> LanguagesTemplages { get; set; } = default!;
     }
 }

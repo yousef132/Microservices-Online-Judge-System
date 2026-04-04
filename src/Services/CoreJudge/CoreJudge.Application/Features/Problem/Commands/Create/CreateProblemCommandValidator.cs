@@ -11,19 +11,33 @@ namespace CoreJudge.Application.Features.Problems.Commands.Create
         {
             RuleFor(x => x.Name).NotEmpty().NotNull().MinimumLength(5).MaximumLength(30);
             RuleFor(x => x.Description).NotEmpty().NotNull().MinimumLength(10).MaximumLength(4000);
-			
+
             RuleFor(x => x.Difficulty)
-					   .NotNull()
-					   .WithMessage("Difficulty must not be null.") // Ensures it's not null
-					   .Must(value => Enum.IsDefined(typeof(Difficulty), value))
-					   .WithMessage("Difficulty must be one of the valid values: 0 (Easy), 1 (Medium), or 2 (Hard)."); RuleFor(x => x.ContestId).NotEmpty().NotNull();
+                       .NotNull()
+                       .WithMessage("Difficulty must not be null.") // Ensures it's not null
+                       .Must(value => Enum.IsDefined(typeof(Difficulty), value))
+                       .WithMessage("Difficulty must be one of the valid values: 0 (Easy), 1 (Medium), or 2 (Hard)."); RuleFor(x => x.ContestId).NotEmpty().NotNull();
             RuleFor(x => x.RunTimeLimit).NotNull();
-			
-			RuleFor(x => x.MemoryLimit)
-					   .NotNull()
-					   .WithMessage("MemoryLimit must not be null.") // Ensures it's not null
-					   .Must(value => Enum.IsDefined(typeof(MemoryLimit), value))
-					   .WithMessage("MemoryLimit must be one of the valid values: 16 (Lowest), 32 (Low), 64 (Medium), 128 (High), or 256 (Highest).");
-		}
+
+            RuleFor(x => x.MemoryLimit)
+                       .NotNull()
+                       .WithMessage("MemoryLimit must not be null.") // Ensures it's not null
+                       .Must(value => Enum.IsDefined(typeof(MemoryLimit), value))
+                       .WithMessage("MemoryLimit must be one of the valid values: 16 (Lowest), 32 (Low), 64 (Medium), 128 (High), or 256 (Highest).");
+
+
+            // validate the list of code templates, that it should contains atleast one template and do duplicate language temlates
+            RuleFor(x => x.CodeTemplate)
+                       .NotNull().WithMessage("Code templates are required")
+                       .Must(x => x != null && x.Any())
+                       .WithMessage("At least one code template is required")
+                       .Must(HaveNoDuplicateLanguages)
+                       .WithMessage("Duplicate language templates are not allowed");
+        }
+        private bool HaveNoDuplicateLanguages(List<ProblemCodeTemplate> templates)
+        {
+            if (templates == null) return true;
+            return templates.Select(t => t.Language).Distinct().Count() == templates.Count;
+        }
     }
 }

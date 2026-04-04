@@ -1,17 +1,16 @@
 ﻿
+using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Http;
 
 namespace CoreJudge.Domain.Premitives
 {
     public static class Helper
     {
         public static string ScriptFilePath;
-        public const string PythonCompiler = "python:3.8-slim";
-        public const string CppCompiler = "gcc:latest";
+        public const string PythonCompiler = "python:3.11-trixie";
+        public const string CppCompiler = "gcc:15-trixie";
         public const string CSharpCompiler = "mcr.microsoft.com/dotnet/sdk:5.0";
-        public const string ImagesDirectory = "UsersImages";
 
         public static string GenerateContestKey(int contestId)
         {
@@ -71,7 +70,7 @@ namespace CoreJudge.Domain.Premitives
             }
 
             // Combine solution path with the Infrastructure project path
-            string infrastructurePath = Path.Combine(directoryInfo.FullName, "CodeSphere.Domain", "Premitives", "run_code.sh");
+            string infrastructurePath = Path.Combine(directoryInfo.FullName, "Services", "CoreJudge", "CoreJudge.Domain", "Premitives", "run_code.sh");
 
 
             return infrastructurePath;
