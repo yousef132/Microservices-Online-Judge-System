@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace CoreJudge.Domain.Premitives
 {
@@ -80,55 +79,6 @@ namespace CoreJudge.Domain.Premitives
         {
             return Directory.GetFiles(directoryPath, searchPattern).Length > 0;
         }
-        public static decimal ExtractExecutionTime(string time)
-        {
-            //"\nreal\t0m0.041s\nuser\t0m0.027s\nsys\t0m0.000s\n"
-            //string temp = "";
-            //bool found = false;
-            //for (int i = 0; i < time.Length; i++)
-            //{
-            //    if (time[i] == 'm')
-            //    {
-            //        found = true;
-            //        continue;
-            //    }
-
-            //    if (time[i] == 's' && found)
-            //        break;
-            //    if (found)
-            //        temp += time[i];
-            //}
-
-            Match match = Regex.Match(time, @"real\t\d+m([\d.]+)s");
-            string seconds = match.Groups[1].Value;
-
-            if (Decimal.TryParse(seconds, out decimal result))
-            {
-                return result;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static decimal ExtractExecutionMemory(string memory)
-        {
-            // the string will be like "Memory Usage: 12345 KB"
-
-            // get the number part in rgex 
-            Match match = Regex.Match(memory, @"\d+");
-            string memoryInKB = match.Value;
-
-            if (Decimal.TryParse(memoryInKB, out decimal result))
-            {
-                return result;
-            }
-            else
-            {
-                return 0;
-            }
-        }
 
         public static bool ValidateFile(Language fileType, decimal maxSizeInMb, decimal minSizeInMb, IFormFile file)
         {
@@ -144,21 +94,5 @@ namespace CoreJudge.Domain.Premitives
 
             return true;
         }
-
-
-        //public static string ConvertUserToRedisMemeber(UserToCache user)
-        //    => $"{user.UserId}|{user.UserName}|{user.ImagePath}";
-
-        //public static UserToCache ConvertRedisMemberToUser(string member)
-        //{
-        //    // TODO : username may have | in it
-        //    string[] parts = member.Split('|');
-        //    return new UserToCache
-        //    {
-        //        UserId = parts[0],
-        //        UserName = parts[1],
-        //        ImagePath = parts[2]
-        //    };
-        //}
     }
 }

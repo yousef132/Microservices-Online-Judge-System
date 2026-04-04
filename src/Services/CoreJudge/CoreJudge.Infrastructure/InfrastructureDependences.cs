@@ -1,20 +1,20 @@
-using MassTransit;
 using CodeSphere.Domain.Abstractions;
 using CodeSphere.Domain.Abstractions.Repositories;
 using CodeSphere.Domain.Abstractions.Services;
 using CodeSphere.Infrastructure.Implementation.Services;
+using CoreJudge.Application.Abstractions.Elasticsearch;
+using CoreJudge.Application.Mapping;
+using CoreJudge.Domain.Premitives;
+using CoreJudge.Infrastructure.Consumers;
 using CoreJudge.Infrastructure.Context;
 using CoreJudge.Infrastructure.Implementation;
 using CoreJudge.Infrastructure.Implementation.Repositories;
+using Elastic.Clients.Elasticsearch;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
-using CoreJudge.Application.Abstractions.Elasticsearch;
-using Elastic.Clients.Elasticsearch;
-using CoreJudge.Application.Mapping;
-using CoreJudge.Domain.Premitives;
-using CoreJudge.Infrastructure.Consumers;
 namespace CoreJudge.Infrastructure;
 
 public static class InfrastructureDependencies
@@ -172,7 +172,7 @@ public static class InfrastructureDependencies
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            Console.WriteLine($"Index Creation Problem : {ex.Message}");
         }
     }
 }

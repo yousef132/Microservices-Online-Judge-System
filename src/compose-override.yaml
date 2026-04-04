@@ -64,6 +64,10 @@
     depends_on:
       corejudge.db:
         condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   caching:
     ports:

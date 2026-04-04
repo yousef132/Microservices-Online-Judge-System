@@ -3,21 +3,21 @@ using Users.API.Services.Abstraction;
 
 namespace Users.API.Services;
 
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using Users.API.Domain.Models;
 
 public sealed class JwtTokenGenerator : IJwtTokenGenerator
 {
     private readonly IConfiguration _configuration;
-    private readonly UserManager<User> _userManager ;
+    private readonly UserManager<User> _userManager;
 
     public JwtTokenGenerator(IConfiguration configuration, UserManager<User> userManager)
     {
         _configuration = configuration;
-        this._userManager  = userManager;
+        this._userManager = userManager;
     }
 
     public async Task<string> GenerateTokenAsync(User user)
@@ -48,7 +48,7 @@ public sealed class JwtTokenGenerator : IJwtTokenGenerator
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(15),
+            expires: DateTime.UtcNow.AddDays(7),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
