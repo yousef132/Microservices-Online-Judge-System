@@ -111,3 +111,10 @@
     ports:
       - "5672:5672"
       - "15672:15672"
+
+  collaboration.api:
+    ports:
+      - "5003:8080"
+    volumes:
+      - ./Services/Collaboration:/app
+    command: ["npm", "run", "dev"]
