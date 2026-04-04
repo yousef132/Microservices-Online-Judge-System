@@ -1,5 +1,6 @@
 ﻿
 using BuildingBlocks.Identity;
+using CoreJudge.Application.Features.Problem.Queries.GetProblemLanguagesPlaceHolders;
 using CoreJudge.Application.Features.Problems.Commands.Create;
 using CoreJudge.Application.Features.Problems.Commands.Delete;
 using CoreJudge.Application.Features.Problems.Commands.Run;
@@ -69,5 +70,8 @@ namespace CoreJudge.API.Controllers
                 order);
             return ResponseResult(await mediator.Send(query));
         }
+        [HttpGet("problem-placeholders/{problemId}")]
+        public async Task<ActionResult<Response>> GetProblemPlaceHolders([FromRoute] int problemId)
+          => ResponseResult(await mediator.Send(new GetProblemLanguagesPlaceholdersQuery(problemId)));
     }
 }
