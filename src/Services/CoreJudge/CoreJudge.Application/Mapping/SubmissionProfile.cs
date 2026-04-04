@@ -12,7 +12,7 @@ public class SubmissionProfile : Profile
     {
         CreateMap<Submission, GetSubmissionDataQueryResponse>();
         CreateMap<Submission, GetProblemSubmissionsResponse>()
-            .ForMember(dest => dest.SubmitTime, opt => opt.MapFrom(src => src.SubmitTime))
+            .ForMember(dest => dest.SubmitTime, opt => opt.MapFrom(src => src.MaxExecutionTimeMs))
             .ForMember(dest => dest.SubmitMemory, opt => opt.MapFrom(src => src.SubmitMemory))
             .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src.Result))
             .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SubmissionDate))
@@ -22,7 +22,7 @@ public class SubmissionProfile : Profile
 
         CreateMap<Submission, GetContestSubmissionsQueryResponse>()
             .ForMember(dest => dest.ProblemName, opt => opt.MapFrom(src => src.Problem.Name))
-            .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.SubmitTime))
+            .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.MaxExecutionTimeMs))
             .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src.Result))
             .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SubmissionDate))
             .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.Language));

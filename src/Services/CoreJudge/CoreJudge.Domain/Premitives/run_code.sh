@@ -3,6 +3,7 @@
 # CONFIG
 # ------------------------
 CODE_DIR="/code"
+VERDICT_DIR="/tmp/verdict"
 TIMEOUT_PER_TESTCASE=${1:-5}
 SEPARATOR="---END---"
 OUTPUT_SENTINEL="---DONE---"
@@ -12,16 +13,17 @@ USER_PY="$CODE_DIR/main.py"
 USER_CS="$CODE_DIR/main.csproj"
 TESTCASES="$CODE_DIR/testcases.txt"
 EXPECTED="$CODE_DIR/expected.txt"
-OUTPUT_LOG="$CODE_DIR/output.txt"
-ERROR_LOG="$CODE_DIR/error.txt"
-RUNTIME_LOG="$CODE_DIR/runtime.txt"
-TLE_LOG="$CODE_DIR/tle.txt"
-FIFO_IN="$CODE_DIR/in.fifo"
-FIFO_OUT="$CODE_DIR/out.fifo"
+OUTPUT_LOG="$VERDICT_DIR/output.txt"
+ERROR_LOG="$VERDICT_DIR/error.txt"
+RUNTIME_LOG="$VERDICT_DIR/runtime.txt"
+TLE_LOG="$VERDICT_DIR/tle.txt"
+FIFO_IN="$VERDICT_DIR/in.fifo"
+FIFO_OUT="$VERDICT_DIR/out.fifo"
 
 # ------------------------
-# CLEAR OLD FILES
+# CREATE VERDICT DIR + CLEAR FILES
 # ------------------------
+mkdir -p "$VERDICT_DIR"
 : > "$OUTPUT_LOG"
 : > "$ERROR_LOG"
 : > "$RUNTIME_LOG"
@@ -30,47 +32,50 @@ FIFO_OUT="$CODE_DIR/out.fifo"
 # ------------------------
 # CLEANUP
 # ------------------------
-cleanup() {
-    kill "$PID" 2>/dev/null
+PID=""
+cleanup_and_exit() {
+    local exit_val=$1
+    [[ -n "$PID" ]] && kill "$PID" 2>/dev/null && wait "$PID" 2>/dev/null
+    exec 6>&- 2>/dev/null
+    exec 5<&- 2>/dev/null
     rm -f "$FIFO_IN" "$FIFO_OUT"
+    exit "$exit_val"
 }
-trap cleanup EXIT
+trap 'cleanup_and_exit 1' SIGTERM SIGINT
 
 # ------------------------
 # COMPILE / BUILD
 # ------------------------
 if [[ -f "$USER_CPP" ]]; then
-    g++ -O2 -std=c++17 -o "$CODE_DIR/main.out" "$USER_CPP" 2> "$ERROR_LOG"
+    g++ -O2 -std=c++17 -o "$VERDICT_DIR/main.out" "$USER_CPP" 2> "$ERROR_LOG"
     if [[ $? -ne 0 ]]; then
         echo "COMPILATIONFAILED" >> "$ERROR_LOG"
-        exit 1
+        cleanup_and_exit 1
     fi
-    EXEC_CMD="stdbuf -o0 $CODE_DIR/main.out"
+    EXEC_CMD="stdbuf -o0 $VERDICT_DIR/main.out"
 
 elif [[ -f "$USER_PY" ]]; then
     EXEC_CMD="python3 -u $USER_PY"
 
 elif [[ -f "$USER_CS" ]]; then
-    dotnet build "$USER_CS" -o "$CODE_DIR/output" 2>> "$ERROR_LOG"
+    dotnet build "$USER_CS" -o "$VERDICT_DIR/output" 2>> "$ERROR_LOG"
     if [[ $? -ne 0 ]]; then
         echo "BUILDFAILED" >> "$ERROR_LOG"
-        exit 1
+        cleanup_and_exit 1
     fi
-    EXEC_CMD="DOTNET_UNBUFFERED_IO=1 dotnet $CODE_DIR/output/main.dll"
+    EXEC_CMD="DOTNET_UNBUFFERED_IO=1 dotnet $VERDICT_DIR/output/main.dll"
 
 else
     echo "UNSUPPORTEDLANGUAGE" >> "$ERROR_LOG"
-    exit 1
+    cleanup_and_exit 1
 fi
 
 # ------------------------
 # FIFOS + LAUNCH PROGRAM ONCE
 # ------------------------
 mkfifo "$FIFO_IN" "$FIFO_OUT"
-
 eval "$EXEC_CMD" < "$FIFO_IN" > "$FIFO_OUT" 2>> "$ERROR_LOG" &
 PID=$!
-
 exec 6> "$FIFO_IN"
 exec 5< "$FIFO_OUT"
 
@@ -91,9 +96,7 @@ load_blocks() {
             block+="$line"$'\n'
         fi
     done < "$file"
-    if [[ -n "$block" ]]; then
-        arr+=("${block%$'\n'}")
-    fi
+    [[ -n "$block" ]] && arr+=("${block%$'\n'}")
 }
 
 declare -a testcase_blocks
@@ -101,24 +104,16 @@ declare -a expected_blocks
 load_blocks "$TESTCASES" testcase_blocks
 load_blocks "$EXPECTED"  expected_blocks
 
-# ------------------------
-# VALIDATE
-# ------------------------
 if [[ ${#testcase_blocks[@]} -ne ${#expected_blocks[@]} ]]; then
-    echo "TESTCASE_EXPECTED_MISMATCH: ${#testcase_blocks[@]} inputs vs ${#expected_blocks[@]} expected" >> "$ERROR_LOG"
-    exit 1
+    echo "TESTCASE_EXPECTED_MISMATCH" >> "$ERROR_LOG"
+    cleanup_and_exit 1
 fi
 
 total=${#testcase_blocks[@]}
-
-# ------------------------
-# SEND T FIRST
-# ------------------------
 printf '%s\n' "$total" >&6
 
 # ------------------------
 # READ UNTIL SENTINEL
-# Reads lines until ---DONE--- received or deadline hit
 # ------------------------
 read_until_sentinel() {
     local block=""
@@ -127,22 +122,18 @@ read_until_sentinel() {
 
     while true; do
         now=$(date +%s%3N)
-        if (( now >= deadline )); then
-            return 1
-        fi
+        (( now >= deadline )) && return 1
 
         remaining_ms=$(( deadline - now ))
-        remaining_sec_int=$(( remaining_ms / 1000 ))
-        remaining_sec_frac=$(( remaining_ms % 1000 ))
-        printf -v remaining_sec "%d.%03d" "$remaining_sec_int" "$remaining_sec_frac"
+        printf -v remaining_sec "%d.%03d" \
+            $(( remaining_ms / 1000 )) \
+            $(( remaining_ms % 1000 ))
 
         if IFS= read -u 5 -t "$remaining_sec" line; then
-            if [[ "$line" == "$OUTPUT_SENTINEL" ]]; then
-                break   # sentinel received — block complete
-            fi
+            [[ "$line" == "$OUTPUT_SENTINEL" ]] && break
             block+="$line"$'\n'
         else
-            return 1    # timeout without sentinel → TLE
+            return 1
         fi
     done
 
@@ -168,17 +159,18 @@ for (( i=0; i<total; i++ )); do
     elapsed=$(( end_ms - start_ms ))
 
     # TLE
-    if [[ $status -ne 0 ]]; then
+    if [[ $status -ne 0 ]] || (( elapsed > TIMEOUT_PER_TESTCASE * 1000 )); then
         {
             echo "TIMELIMITEXCEEDED"
             echo "Testcase: $((i+1))"
             echo "Passed: $PASSED"
             echo "Time consumed (ms): $elapsed"
+            echo "Time limit (ms): $(( TIMEOUT_PER_TESTCASE * 1000 ))"
         } >> "$TLE_LOG"
-        exit 1
+        cleanup_and_exit 1
     fi
 
-    # Log actual output — same delimiter as input/expected
+    # Log output
     {
         echo "$actual"
         echo "$SEPARATOR"
@@ -195,7 +187,7 @@ for (( i=0; i<total; i++ )); do
             echo "--- Got ---"
             echo "$actual"
         } >> "$RUNTIME_LOG"
-        exit 1
+        cleanup_and_exit 1
     fi
 
     PASSED=$(( PASSED + 1 ))
@@ -203,9 +195,8 @@ for (( i=0; i<total; i++ )); do
 done
 
 # ------------------------
-# CLEAN EXIT
+# FINAL VERDICT
 # ------------------------
-exec 6>&-
 wait "$PID" 2>/dev/null
 exit_code=$?
 
@@ -215,7 +206,8 @@ if [[ $exit_code -ne 0 ]]; then
         echo "Passed: $PASSED"
         echo "Exit code: $exit_code"
     } >> "$RUNTIME_LOG"
-    exit 1
+    cleanup_and_exit 1
 fi
 
 echo "ACCEPTED" >> "$RUNTIME_LOG"
+cleanup_and_exit 0

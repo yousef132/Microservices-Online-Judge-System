@@ -17,8 +17,8 @@ public static class DataSeeding
 
         var Contests = await db.Contests.ToListAsync();
 
-        //if (Contests.Any())
-        //    return;
+        if (Contests.Any())
+            return;
         var problems = ConstructProblems(guid);
         var contest = new Contest
         {
@@ -259,9 +259,9 @@ public static class DataSeeding
     static List<Problem> ConstructProblems(Guid guid)
     {
         return new List<Problem>
-    {
-        // 1. TWO SUM
-        new Problem
+        {
+            // 1. TWO SUM
+            new Problem
         {
             Name = "Two Sum",
             Description = "Find indices of two numbers that add up to a target.",
@@ -309,9 +309,9 @@ public static class DataSeeding
                 }
             }
         },
-
-        // 2. VALID PARENTHESES
-        new Problem
+        
+            // 2. VALID PARENTHESES
+            new Problem
         {
             Name = "Valid Parentheses",
             Description = "Determine if the input string of brackets is valid.",
@@ -355,9 +355,9 @@ public static class DataSeeding
                 }
             }
         },
-
-        // 3. REVERSE LIST
-        new Problem
+        
+            // 3. REVERSE LIST
+            new Problem
         {
             Name = "Reverse List",
             Description = "Reverse an array of integers.",
@@ -406,6 +406,6 @@ public static class DataSeeding
                 }
             }
         }
-    };
+        };
     }
 }

@@ -10,7 +10,7 @@ namespace CoreJudge.Domain.Models
         public int? ContestId { get; set; }
         public string? Error { get; set; }
         // the code execution time
-        public decimal? SubmitTime { get; set; }
+        public decimal? MaxExecutionTimeMs { get; set; }
         // the code execution memory
         public decimal? SubmitMemory { get; set; }
         public SubmissionResult Result { get; set; }

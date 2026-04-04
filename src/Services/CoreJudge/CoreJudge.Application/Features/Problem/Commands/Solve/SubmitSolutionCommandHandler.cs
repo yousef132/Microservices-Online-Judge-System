@@ -73,7 +73,7 @@ namespace CoreJudge.Application.Features.Problems.Commands.SolveProblem
                 Result = baseSubmissionResponse.SubmissionResult,
                 Error = (result as CompilationErrorResponse)?.Message ?? null,
                 ProblemId = request.ProblemId,
-                SubmitTime = acceptedSubmission?.ExecutionTime ?? null,
+                MaxExecutionTimeMs = acceptedSubmission?.ExecutionTime ?? null,
                 Code = codeContent,
                 SubmitMemory = 0m,
 
