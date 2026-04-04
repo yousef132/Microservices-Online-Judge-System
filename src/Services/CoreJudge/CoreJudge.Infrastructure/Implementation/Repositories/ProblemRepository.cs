@@ -53,6 +53,7 @@ namespace CoreJudge.Infrastructure.Implementation.Repositories
                 .FirstOrDefaultAsync(p => p.Id == problemId);
         }
 
-
+        public async Task<List<ProblemLangeuageTemplates>> GetProblemPlaceHolders(int problemId, CancellationToken cancellationToken = default)
+         => await _context.Set<ProblemLangeuageTemplates>().Where(x => x.ProblemId == problemId).ToListAsync(cancellationToken);
     }
 }
