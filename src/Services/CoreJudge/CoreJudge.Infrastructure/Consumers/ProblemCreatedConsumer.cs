@@ -17,11 +17,11 @@ public class ProblemCreatedConsumer : IConsumer<ProblemCreatedEvent>
 
     public async Task Consume(ConsumeContext<ProblemCreatedEvent> context)
     {
-        // [INBOX PATTERN]
-        // This consumer is protected by MassTransit's Inbox Pattern (configured via UseEntityFrameworkOutbox).
-        // It uses the InboxState table to track processed message IDs, preventing duplicate work.
+        Console.WriteLine($"[Consumer START] ProblemCreatedEvent received. ProblemId: {context.Message.ProblemId}");
 
         var evt = context.Message;
+
+        Console.WriteLine($"[Consumer INFO] Mapping event to document. ProblemId: {evt.ProblemId}");
 
         var document = new ProblemDocument
         {
@@ -30,16 +30,20 @@ public class ProblemCreatedConsumer : IConsumer<ProblemCreatedEvent>
             Difficulty = Enum.TryParse<Difficulty>(evt.Difficulty, out var d) ? d : Difficulty.Easy
         };
 
-        // For true idempotency with the Inbox Pattern, we use the ProblemId as the Elasticsearch document ID.
-        // This ensures that if the same message is ever processed twice (due to external retries),
-        // it simply overwrites the same document instead of creating a duplicate.
+        Console.WriteLine($"[Consumer INFO] Sending document to Elasticsearch. ProblemId: {evt.ProblemId}");
+
         var response = await _elasticClient.IndexAsync(document, idx => idx
             .Index(ElasticSearchIndexes.Problems)
             .Id(evt.ProblemId));
 
         if (!response.IsValidResponse)
         {
+            Console.WriteLine($"[Consumer ERROR] Failed to index ProblemId: {evt.ProblemId}");
+            Console.WriteLine(response.DebugInformation);
+
             throw new Exception($"Failed to index problem {evt.ProblemId} to Elasticsearch: {response.DebugInformation}");
         }
+
+        Console.WriteLine($"[Consumer SUCCESS] Indexed successfully. ProblemId: {evt.ProblemId}");
     }
 }

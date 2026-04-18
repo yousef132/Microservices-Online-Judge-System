@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Core;
+using BuildingBlocks.Core;
 using BuildingBlocks.Core.Exceptions.Handler.BuildingBlocks.Core.Exceptions.Handler;
 using BuildingBlocks.Identity;
 using BuildingBlocks.Logging;
@@ -46,3 +46,5 @@ app.UseExceptionHandler();
 app.MapControllers();
 app.MapGet("/health", () => Results.Ok("healthy"));
 app.Run();
+
+public partial class Program { }

@@ -1,4 +1,4 @@
-﻿using CoreJudge.Domain.Models;
+using CoreJudge.Domain.Models;
 using CoreJudge.Domain.Models.Entities;
 using CoreJudge.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -32,15 +32,35 @@ public static class DataSeeding
 
         db.Contests.Add(contest);
         await db.SaveChangesAsync();
-        foreach (var problem in problems)
+
+        foreach (var problem in contest.Problems)
         {
-            await bus.Publish(new CoreJudge.Domain.Events.ProblemCreatedEvent
+            if (problem.Id == 0)
             {
-                Difficulty = problem.Difficulty.ToString(),
-                ProblemId = problem.Id,
-                Title = problem.Name
-            });
+                Console.Error.WriteLine("Warning: ProblemId is still 0 for problem: {0}. Skipping publish to avoid indexing error.", problem.Name);
+                continue;
+            }
+
+            try
+            {
+                Console.WriteLine("Publishing ProblemCreatedEvent for ProblemId: {0}", problem.Id);
+
+                await bus.Publish(new CoreJudge.Domain.Events.ProblemCreatedEvent
+                {
+                    Difficulty = problem.Difficulty.ToString(),
+                    ProblemId = problem.Id,
+                    Title = problem.Name
+                });
+
+                Console.WriteLine("Successfully published ProblemCreatedEvent for ProblemId: {0}", problem.Id);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("Failed to publish ProblemCreatedEvent for ProblemId: {0}. Error: {1}", problem.Id, ex.Message);
+            }
         }
+        //aves the Outbox Messages (so they get sent to RabbitMQ).
+        await db.SaveChangesAsync(); 
     }
 
 

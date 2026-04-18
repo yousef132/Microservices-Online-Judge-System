@@ -1,4 +1,4 @@
-﻿services:
+services:
   users.api:
     ports:
       - "5001:8080"
@@ -61,12 +61,15 @@
       RabbitMQ__Username: guest
       RabbitMQ__Password: guest
       ElasticSearch__Uri: http://elasticsearch:9200
+      RUN_CODE_SCRIPT_PATH: /app/Premitives/run_code.sh
     depends_on:
       corejudge.db:
         condition: service_healthy
       elasticsearch:
         condition: service_healthy
       rabbitmq:
+        condition: service_healthy
+      caching:
         condition: service_healthy
 
   caching:
