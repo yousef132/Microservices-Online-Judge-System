@@ -1,4 +1,4 @@
-﻿
+
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 
@@ -54,6 +54,19 @@ namespace CoreJudge.Domain.Premitives
 
         public static string SetScriptFilePath()
         {
+            string envPath = Environment.GetEnvironmentVariable("RUN_CODE_SCRIPT_PATH");
+            Console.WriteLine("Run Code Script Path: " + envPath);
+            if (!string.IsNullOrEmpty(envPath))
+            {
+                if (!File.Exists(envPath))
+                {
+                    throw new FileNotFoundException(
+                        $"RUN_CODE_SCRIPT_PATH was set but file was not found: {envPath}");
+                }
+                // inside container
+                return envPath;
+            }
+            // in host machine
             string currentDirectory = Directory.GetCurrentDirectory();
             DirectoryInfo directoryInfo = new DirectoryInfo(currentDirectory);
 

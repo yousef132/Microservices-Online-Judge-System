@@ -1,4 +1,4 @@
-﻿using CodeSphere.Domain.Abstractions.Services;
+using CodeSphere.Domain.Abstractions.Services;
 using CoreJudge.Domain.Models;
 using CoreJudge.Domain.Premitives;
 using Docker.DotNet;
@@ -10,6 +10,7 @@ public class ExecutionService : IExecutionService
     private readonly DockerClient _dockerClient;
     private readonly IFileService fileService;
     private string _requestDirectory = null;
+    private string _hostRequestDirectory = null;
     private string _containerId = null;
 
     public ExecutionService(IFileService fileService)
@@ -41,9 +42,9 @@ public class ExecutionService : IExecutionService
             return await CalculateResult(testCases);
         }
         catch (CodeExecutionException) { throw; }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new CodeExecutionException("Error while running testcases.");
+            throw new CodeExecutionException($"Error while running testcases. InnerException: {ex.Message}", ex);
         }
         finally
         {
