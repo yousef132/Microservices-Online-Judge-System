@@ -9,17 +9,24 @@ public class ExecutionService : IExecutionService
 {
     private readonly DockerClient _dockerClient;
     private readonly IFileService fileService;
-    private string _requestDirectory = null;
-    private string _hostRequestDirectory = null;
+    private readonly string _requestId;
+    private readonly string _requestDirectory;
+    private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
     private string _containerId = null;
 
-    public ExecutionService(IFileService fileService)
+    public ExecutionService(IFileService fileService, Microsoft.Extensions.Configuration.IConfiguration configuration)
     {
-        _dockerClient = new DockerClientConfiguration(
-            new Uri("tcp://localhost:2375")).CreateClient();
+        _configuration = configuration;
+        string dockerUriString = _configuration["DOCKER_HOST_URI"] ?? "unix:///var/run/docker.sock";
+        var dockerUri = new Uri(dockerUriString);
+        _dockerClient = new DockerClientConfiguration(dockerUri).CreateClient();
 
-        _requestDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        _requestId = Guid.NewGuid().ToString();
+        bool isRunningInContainer = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+        string basePath = isRunningInContainer ? "/workspace" : (_configuration["HOST_EXECUTION_DIR"] ?? "/workspace");
+        _requestDirectory = Path.Combine(basePath, "requests", _requestId);
         Directory.CreateDirectory(_requestDirectory);
+
         this.fileService = fileService;
     }
 
@@ -30,7 +37,15 @@ public class ExecutionService : IExecutionService
         List<Testcase> testCases,
         decimal runTimeLimit)
     {
-        // mounted to /code directory in container
+        string scriptPath = Helper.ScriptFilePath;
+        if (File.Exists(scriptPath)) 
+        {
+            var content = await File.ReadAllTextAsync(scriptPath);
+            content = content.Replace("\r\n", "\n");
+            await File.WriteAllTextAsync(Path.Combine(_requestDirectory, "run_code.sh"), content);
+        }
+
+        // mounted to /code/requests/{requestId} directory in container
         await fileService.CreateCodeFile(code, template, language, _requestDirectory);
         await fileService.CreateTestCasesFile(testCases, _requestDirectory);
         await fileService.CreateExpectedOutputFile(testCases, _requestDirectory);
@@ -38,8 +53,8 @@ public class ExecutionService : IExecutionService
         try
         {
             await CreateAndStartContainer(language);
-            await ExecuteCodeInContainer(runTimeLimit, testCases.Count);
-            return await CalculateResult(testCases);
+            var logs = await ExecuteCodeInContainer(runTimeLimit, testCases.Count);
+            return await CalculateResult(testCases, logs);
         }
         catch (CodeExecutionException) { throw; }
         catch (Exception ex)
@@ -67,20 +82,32 @@ public class ExecutionService : IExecutionService
             _ => throw new ArgumentException("Unsupported language")
         };
 
-        string scriptFilePath = Helper.ScriptFilePath;
+        var binds = new List<string>();
+        string hostExecDir = _configuration["HOST_EXECUTION_DIR"];
+        bool isRunningInContainer = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+        
+        if (!string.IsNullOrEmpty(hostExecDir) && !isRunningInContainer)
+        {
+            // If HOST_EXECUTION_DIR is set and we're not in a container, we assume we are running on host (e.g., local debug or tests)
+            // and need to bind mount the local path.
+            binds.Add($"{_requestDirectory}:/code/requests/{_requestId}");
+        }
+        else
+        {
+            // If HOST_EXECUTION_DIR is missing or we're in a container, we should use the shared named volume 'judge_data'.
+            binds.Add("judge_data:/code");
+        }
 
         var createContainerResponse = await _dockerClient.Containers.CreateContainerAsync(
             new CreateContainerParameters
             {
                 HostConfig = new HostConfig
                 {
-                    Binds = new[]
-                    {
-                        $"{_requestDirectory}:/code",
-                        $"{scriptFilePath}:/run_code.sh"
-                    },
-                    NetworkMode = "bridge",
+                    Binds = binds,
+                    NetworkMode = "none",
                     Memory = 256 * 1024 * 1024,
+                    NanoCPUs = 1000000000,
+                    Privileged = false,
                     AutoRemove = false
                 },
                 Image = image,
@@ -92,13 +119,13 @@ public class ExecutionService : IExecutionService
             _containerId, new ContainerStartParameters());
     }
 
-    private async Task ExecuteCodeInContainer(decimal timeLimit, int testCaseCount)
+    private async Task<string> ExecuteCodeInContainer(decimal timeLimit, int testCaseCount)
     {
         var execCreateResponse = await _dockerClient.Exec.ExecCreateContainerAsync(
             _containerId,
             new ContainerExecCreateParameters
             {
-                Cmd = new[] { "/usr/bin/bash", "/run_code.sh", timeLimit.ToString("F0") },
+                Cmd = new[] { "/usr/bin/bash", $"/code/requests/{_requestId}/run_code.sh", _requestId, timeLimit.ToString("F0") },
                 AttachStdout = true,
                 AttachStderr = true,
                 Tty = false
@@ -107,14 +134,13 @@ public class ExecutionService : IExecutionService
         using var stream = await _dockerClient.Exec.StartAndAttachContainerExecAsync(
             execCreateResponse.ID, tty: false);
 
-        // Total timeout = per-testcase limit × count + buffer for compile/startup
-        // to limit conatiner running time
         int outerTimeoutMs = (int)(timeLimit * 1000 * testCaseCount) + 10_000;
         using var cts = new CancellationTokenSource(outerTimeoutMs);
 
         try
         {
-            await stream.ReadOutputToEndAsync(cts.Token);
+            var output = await stream.ReadOutputToEndAsync(cts.Token);
+            return $"stdout: {output.stdout}, stderr: {output.stderr}";
         }
         catch (OperationCanceledException)
         {
@@ -122,7 +148,7 @@ public class ExecutionService : IExecutionService
         }
     }
 
-    private async Task<object> CalculateResult(List<Testcase> testCases)
+    private async Task<object> CalculateResult(List<Testcase> testCases, string logs)
     {
         int total = testCases.Count;
 
@@ -133,13 +159,21 @@ public class ExecutionService : IExecutionService
         if (error.Contains("COMPILATIONFAILED") ||
             error.Contains("BUILDFAILED") ||
             error.Contains("UNSUPPORTEDLANGUAGE"))
+        {
+            string formattedError = error
+                .Replace("COMPILATIONFAILED", "")
+                .Replace("BUILDFAILED", "")
+                .Replace("UNSUPPORTEDLANGUAGE", "")
+                .Trim();
+
             return new CompilationErrorResponse
             {
-                Message = error,
+                Message = formattedError,
                 SubmissionResult = SubmissionResult.CompilationError,
                 NumberOfPassedTestCases = 0,
                 TotalTestcases = total
             };
+        }
 
         if (tle.Contains("TIMELIMITEXCEEDED"))
         {
@@ -195,26 +229,17 @@ public class ExecutionService : IExecutionService
                 ExecutionTime = ExtractMaxExecutionTime(runtime)
             };
 
-        throw new CodeExecutionException("Unrecognised verdict in runtime.txt");
+        throw new CodeExecutionException($"Unrecognised verdict in runtime.txt. error.txt: {error}, logs: {logs}");
     }
 
     private async Task<string> ReadContainerFile(string filename)
     {
-        var execResponse = await _dockerClient.Exec.ExecCreateContainerAsync(
-            _containerId,
-            new ContainerExecCreateParameters
-            {
-                Cmd = new[] { "cat", $"/tmp/verdict/{filename}" },
-                AttachStdout = true,
-                AttachStderr = true,
-                Tty = false
-            });
-
-        using var stream = await _dockerClient.Exec.StartAndAttachContainerExecAsync(
-            execResponse.ID, tty: false);
-
-        var (stdout, _) = await stream.ReadOutputToEndAsync(CancellationToken.None);
-        return stdout.Trim();
+        string filePath = Path.Combine(_requestDirectory, filename);
+        if (File.Exists(filePath))
+        {
+            return (await File.ReadAllTextAsync(filePath)).Trim();
+        }
+        return string.Empty;
     }
 
     private int ExtractPassed(string content)

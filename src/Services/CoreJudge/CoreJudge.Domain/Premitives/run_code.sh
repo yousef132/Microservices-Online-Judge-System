@@ -2,28 +2,37 @@
 # ------------------------
 # CONFIG
 # ------------------------
-CODE_DIR="/code"
-VERDICT_DIR="/tmp/verdict"
-TIMEOUT_PER_TESTCASE=${1:-5}
+REQUEST_ID="$1"
+TIMEOUT_PER_TESTCASE="${2:-5}"
+
+if [[ -z "$REQUEST_ID" ]]; then
+    echo "ERROR: REQUEST_ID is missing"
+    exit 1
+fi
+
+CODE_DIR="/code/requests/$REQUEST_ID"
+mkdir -p "$CODE_DIR"
+cd "$CODE_DIR" || exit 1
+
+VERDICT_DIR="."
 SEPARATOR="---END---"
 OUTPUT_SENTINEL="---DONE---"
 
-USER_CPP="$CODE_DIR/main.cpp"
-USER_PY="$CODE_DIR/main.py"
-USER_CS="$CODE_DIR/main.csproj"
-TESTCASES="$CODE_DIR/testcases.txt"
-EXPECTED="$CODE_DIR/expected.txt"
-OUTPUT_LOG="$VERDICT_DIR/output.txt"
-ERROR_LOG="$VERDICT_DIR/error.txt"
-RUNTIME_LOG="$VERDICT_DIR/runtime.txt"
-TLE_LOG="$VERDICT_DIR/tle.txt"
-FIFO_IN="$VERDICT_DIR/in.fifo"
-FIFO_OUT="$VERDICT_DIR/out.fifo"
+USER_CPP="main.cpp"
+USER_PY="main.py"
+USER_CS="main.csproj"
+TESTCASES="testcases.txt"
+EXPECTED="expected.txt"
+OUTPUT_LOG="output.txt"
+ERROR_LOG="error.txt"
+RUNTIME_LOG="runtime.txt"
+TLE_LOG="tle.txt"
+FIFO_IN="in.fifo"
+FIFO_OUT="out.fifo"
 
 # ------------------------
-# CREATE VERDICT DIR + CLEAR FILES
+# CLEAR FILES
 # ------------------------
-mkdir -p "$VERDICT_DIR"
 : > "$OUTPUT_LOG"
 : > "$ERROR_LOG"
 : > "$RUNTIME_LOG"

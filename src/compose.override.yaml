@@ -42,6 +42,7 @@ services:
       - "16686:16686"
 
   corejudge.api:
+    user: root
     ports:
       - "5002:8080"
     environment:
@@ -62,6 +63,7 @@ services:
       RabbitMQ__Password: guest
       ElasticSearch__Uri: http://elasticsearch:9200
       RUN_CODE_SCRIPT_PATH: /app/Premitives/run_code.sh
+      DOCKER_HOST_URI: unix:///var/run/docker.sock
     depends_on:
       corejudge.db:
         condition: service_healthy

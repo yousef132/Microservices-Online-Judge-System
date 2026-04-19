@@ -53,6 +53,9 @@ services:
     build:
       context: .
       dockerfile: Services/CoreJudge/CoreJudge.API/Dockerfile
+    volumes:
+      - judge_data:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 10s
@@ -168,3 +171,5 @@ volumes:
   keycloak-pgdata:
   redis-data:
   elasticsearch-data:
+  judge_data:
+    name: judge_data
