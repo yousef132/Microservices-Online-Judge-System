@@ -10,6 +10,17 @@ services:
       retries: 10
       start_period: 20s
 
+  community.api:
+    build:
+      context: .
+      dockerfile: Services/Community/Community.API/Dockerfile
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
   users.db:
     image: postgres:16
     pull_policy: if_not_present
@@ -28,6 +39,24 @@ services:
       - corejudge-pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  community.mongo:
+    image: mongo:8
+    pull_policy: if_not_present
+    container_name: community-mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: StrongMongoPassword123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -171,5 +200,6 @@ volumes:
   keycloak-pgdata:
   redis-data:
   elasticsearch-data:
+  mongo-data:
   judge_data:
     name: judge_data
