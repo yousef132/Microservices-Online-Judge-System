@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import Editor from "@monaco-editor/react";
 import * as Y from "yjs";
 import { SocketIOProvider as YSocketIO } from "y-socket.io";
@@ -8,7 +8,7 @@ export default function CollaborativeEditor({ socket, room, userId }) {
   const providerRef = useRef(null);
   const bindingRef = useRef(null);
 
-  function handleEditorDidMount(editor, monaco) {
+  function handleEditorDidMount(editor) {
     try {
       const ydoc = new Y.Doc();
 

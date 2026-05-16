@@ -11,6 +11,12 @@ export default defineConfig({
       interval: 100,
     },
     proxy: {
+      '/community-api': {
+        target: 'https://localhost:7014',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/community-api/, '')
+      },
       '/collaboration': {
         target: 'http://collaboration.api:8080',
         changeOrigin: true,

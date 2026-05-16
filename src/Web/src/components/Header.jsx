@@ -1,7 +1,6 @@
-import React from 'react';
-import { Terminal, Copy, Share, Activity } from 'lucide-react';
+import { Terminal, Share, Activity } from 'lucide-react';
 
-const Header = ({ isConnected, room }) => {
+const Header = ({ isConnected }) => {
   return (
     <header className="header animate-fade-in">
       <div className="header-title">
