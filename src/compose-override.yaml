@@ -86,7 +86,6 @@ services:
     ports:
       - "5004:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
       MongoDB__ConnectionString: mongodb://admin:StrongMongoPassword123@community.mongo:27017
       MongoDB__DatabaseName: CommunityDb
     depends_on:

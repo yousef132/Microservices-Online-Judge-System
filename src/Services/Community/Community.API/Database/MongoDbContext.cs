@@ -12,8 +12,9 @@ public class MongoDbContext
     public MongoDbContext(IConfiguration configuration)
     {
         var connectionString = configuration["MongoDB:ConnectionString"] ?? "mongodb://localhost:27017";
+        Console.WriteLine(connectionString);
         var databaseName = configuration["MongoDB:DatabaseName"] ?? "CommunityDb";
-
+        Console.WriteLine(databaseName);
         var client = new MongoClient(connectionString);
         _database = client.GetDatabase(databaseName);
         Client = client;

@@ -5,8 +5,8 @@ using MongoDB.Driver;
 namespace Community.API.BackgroundJobs;
 
 public class HotScoreRecalculator(
-    IArticleRepository articleRepository,
-    ILogger<HotScoreRecalculator> logger) : BackgroundService
+    ILogger<HotScoreRecalculator> logger,
+    IServiceScopeFactory scopeFactory) : BackgroundService
 {
     private static readonly TimeSpan _interval = TimeSpan.FromHours(1);
 
@@ -19,7 +19,11 @@ public class HotScoreRecalculator(
             try
             {
                 logger.LogInformation("Running hot score recalculation...");
-                await RecalculateHotScores();
+
+                using var scope = scopeFactory.CreateScope();
+                var articleRepository = scope.ServiceProvider.GetRequiredService<IArticleRepository>();
+
+                await RecalculateHotScores(articleRepository);
             }
             catch (Exception ex)
             {
@@ -30,7 +34,7 @@ public class HotScoreRecalculator(
         }
     }
 
-    private async Task RecalculateHotScores()
+    private async Task RecalculateHotScores(IArticleRepository articleRepository)
     {
         var articles = await articleRepository.GetAllPublishedAsync();
         var updates = new List<WriteModel<Article>>();
