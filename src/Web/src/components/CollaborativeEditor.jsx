@@ -4,7 +4,7 @@ import * as Y from "yjs";
 import { SocketIOProvider as YSocketIO } from "y-socket.io";
 import { MonacoBinding } from "y-monaco";
 
-export default function CollaborativeEditor({ socket, room, userId }) {
+export default function CollaborativeEditor({ room, userId }) {
   const providerRef = useRef(null);
   const bindingRef = useRef(null);
 

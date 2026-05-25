@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BrowserRouter,
   Link,
@@ -43,6 +43,9 @@ import "./App.css";
 
 const API_BASE =
   import.meta.env.VITE_COMMUNITY_API_URL?.replace(/\/$/, "") || "/community-api";
+
+const GET_DEDUPE_WINDOW_MS = 500;
+const IN_FLIGHT_GET_REQUESTS = new Map();
 
 const ENDPOINTS = [
   { method: "GET", path: "/api/articles", auth: false, label: "List articles" },
@@ -171,51 +174,161 @@ function useApi() {
 
   const request = useCallback(
     async (path, options = {}) => {
+      const method = (options.method || "GET").toUpperCase();
+      const requestKey = method === "GET" ? `${token || "anonymous"}:${path}` : "";
+      if (requestKey && IN_FLIGHT_GET_REQUESTS.has(requestKey)) {
+        return IN_FLIGHT_GET_REQUESTS.get(requestKey);
+      }
+
       const headers = new Headers(options.headers || {});
       if (options.body && !headers.has("Content-Type")) {
         headers.set("Content-Type", "application/json");
       }
       if (token) headers.set("Authorization", `Bearer ${token}`);
 
-      const response = await fetch(`${API_BASE}${path}`, {
-        ...options,
-        headers,
-      });
+      const requestPromise = (async () => {
+        const response = await fetch(`${API_BASE}${path}`, {
+          ...options,
+          headers,
+        });
 
-      const contentType = response.headers.get("content-type") || "";
-      const data = contentType.includes("application/json")
-        ? await response.json()
-        : await response.text();
+        const contentType = response.headers.get("content-type") || "";
+        const data = contentType.includes("application/json")
+          ? await response.json()
+          : await response.text();
 
-      if (!response.ok) {
-        const error = new Error(problemMessage(data) || `${response.status} ${response.statusText}`);
-        error.status = response.status;
-        error.details = data;
-        throw error;
+        if (!response.ok) {
+          const error = new Error(problemMessage(data) || `${response.status} ${response.statusText}`);
+          error.status = response.status;
+          error.details = data;
+          throw error;
+        }
+
+        return data || null;
+      })();
+
+      if (requestKey) {
+        IN_FLIGHT_GET_REQUESTS.set(requestKey, requestPromise);
+        requestPromise.then(
+          () => window.setTimeout(() => IN_FLIGHT_GET_REQUESTS.delete(requestKey), GET_DEDUPE_WINDOW_MS),
+          () => window.setTimeout(() => IN_FLIGHT_GET_REQUESTS.delete(requestKey), GET_DEDUPE_WINDOW_MS),
+        );
       }
 
-      return data || null;
+      return requestPromise;
     },
     [token],
   );
 
-  return { request, token, setToken, isAuthenticated: Boolean(token) };
+  return useMemo(
+    () => ({ request, token, setToken, isAuthenticated: Boolean(token) }),
+    [request, setToken, token],
+  );
+}
+
+function useDebouncedValue(value, delay = 350) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => setDebouncedValue(value), delay);
+    return () => window.clearTimeout(timeoutId);
+  }, [delay, value]);
+
+  return debouncedValue;
+}
+
+function useResource(api, fetchFn, deps) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [isEmpty, setIsEmpty] = useState(false);
+  const apiRef = useRef(api);
+  const fetchFnRef = useRef(fetchFn);
+
+  apiRef.current = api;
+  fetchFnRef.current = fetchFn;
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    setIsEmpty(false);
+    setData(null);
+    try {
+      const result = await fetchFnRef.current(apiRef.current);
+      setData(result);
+    } catch (err) {
+      if (err.status === 404) {
+        setIsEmpty(true);
+      } else {
+        setError(err.message || "Request failed");
+      }
+    } finally {
+      setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return { data, loading, error, isEmpty, reload: load };
+}
+
+class PageErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error) {
+    console.error("Page render failed", error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="error-boundary-fallback">
+          <h1>Something went wrong</h1>
+          <p>An unexpected error occurred. Please try reloading the page.</p>
+          <button
+            className="button primary"
+            type="button"
+            onClick={() => {
+              this.setState({ hasError: false, error: null });
+              window.location.reload();
+            }}
+          >
+            <RefreshCcw size={16} />
+            Reload page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 function Shell({ api }) {
   return (
     <div className="community-app">
       <Header api={api} />
-      <Routes>
-        <Route path="/" element={<Dashboard api={api} />} />
-        <Route path="/articles/new" element={<ArticleEditor api={api} mode="create" />} />
-        <Route path="/articles/:slug" element={<ArticleDetails api={api} />} />
-        <Route path="/articles/:slug/edit" element={<ArticleEditor api={api} mode="edit" />} />
-        <Route path="/me" element={<ArticleCollection api={api} mode="mine" />} />
-        <Route path="/bookmarks" element={<ArticleCollection api={api} mode="bookmarks" />} />
-        <Route path="/recommendations" element={<Recommendations api={api} />} />
-        <Route path="/endpoints" element={<EndpointWorkbench api={api} />} />
-      </Routes>
+      <PageErrorBoundary>
+        <Routes>
+          <Route path="/" element={<Dashboard api={api} />} />
+          <Route path="/articles/new" element={<ArticleEditor api={api} mode="create" />} />
+          <Route path="/articles/:slug" element={<ArticleDetails api={api} />} />
+          <Route path="/articles/:slug/edit" element={<ArticleEditor api={api} mode="edit" />} />
+          <Route path="/me" element={<ArticleCollection api={api} mode="mine" />} />
+          <Route path="/bookmarks" element={<ArticleCollection api={api} mode="bookmarks" />} />
+          <Route path="/recommendations" element={<Recommendations api={api} />} />
+          <Route path="/endpoints" element={<EndpointWorkbench api={api} />} />
+        </Routes>
+      </PageErrorBoundary>
     </div>
   );
 }
@@ -223,10 +336,6 @@ function Shell({ api }) {
 function Header({ api }) {
   const [draftToken, setDraftToken] = useState(api.token);
   const [tokenOpen, setTokenOpen] = useState(false);
-
-  useEffect(() => {
-    setDraftToken(api.token);
-  }, [api.token]);
 
   return (
     <header className="topbar">
@@ -263,7 +372,15 @@ function Header({ api }) {
           <Plus size={18} />
           <span>Write</span>
         </Link>
-        <button className="icon-button" type="button" onClick={() => setTokenOpen(true)} title="Set bearer token">
+        <button
+          className="icon-button"
+          type="button"
+          onClick={() => {
+            setDraftToken(api.token);
+            setTokenOpen(true);
+          }}
+          title="Set bearer token"
+        >
           <KeyRound size={18} />
           <span>{api.isAuthenticated ? "Token set" : "Token"}</span>
         </button>
@@ -321,15 +438,20 @@ function Header({ api }) {
 function Dashboard({ api }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [articles, setArticles] = useState(null);
-  const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const recResource = useResource(
+    api,
+    (a) => (a.isAuthenticated ? a.request("/api/recommendations?limit=5") : Promise.resolve([])),
+    [api, api.isAuthenticated],
+  );
 
   const filters = {
     tag: searchParams.get("tag") || "",
     sort: searchParams.get("sort") || "new",
     page: Number(searchParams.get("page") || 1),
   };
+  const debouncedTag = useDebouncedValue(filters.tag);
 
   const loadFeed = useCallback(async () => {
     setLoading(true);
@@ -339,23 +461,16 @@ function Dashboard({ api }) {
       page: String(filters.page),
       pageSize: "12",
     });
-    if (filters.tag) query.set("tag", filters.tag);
+    if (debouncedTag) query.set("tag", debouncedTag);
 
     try {
-      const [feed, picks] = await Promise.all([
-        api.request(`/api/articles?${query}`),
-        api.isAuthenticated
-          ? api.request("/api/recommendations?limit=5").catch(() => [])
-          : Promise.resolve([]),
-      ]);
-      setArticles(feed);
-      setRecommendations(Array.isArray(picks) ? picks : []);
+      setArticles(await api.request(`/api/articles?${query}`));
     } catch (loadError) {
       setError(loadError.message);
     } finally {
       setLoading(false);
     }
-  }, [api, filters.page, filters.sort, filters.tag]);
+  }, [api, debouncedTag, filters.page, filters.sort]);
 
   useEffect(() => {
     loadFeed();
@@ -431,9 +546,35 @@ function Dashboard({ api }) {
             <h2>Recommendations</h2>
           </div>
           {api.isAuthenticated ? (
-            <CompactArticleList articles={recommendations} emptyText="No recommendations yet." />
+            recResource.loading ? (
+              <div className="loading-state">
+                <Loader2 className="spin" size={22} />
+                Loading
+              </div>
+            ) : recResource.isEmpty ? (
+              <EmptyState
+                icon={Sparkles}
+                title="No recommendations"
+                body="We don't have personalized picks for you yet."
+              />
+            ) : recResource.error ? (
+              <EmptyState
+                title="Could not load picks"
+                body={recResource.error}
+                action={{ label: "Retry", onClick: recResource.reload }}
+              />
+            ) : (
+              <CompactArticleList
+                articles={Array.isArray(recResource.data) ? recResource.data : []}
+                emptyText="No recommendations yet."
+              />
+            )
           ) : (
-            <EmptyState title="Token required" body="Paste a bearer token to load personalized picks." />
+            <EmptyState
+              icon={Sparkles}
+              title="Token required"
+              body="Paste a bearer token to load personalized picks."
+            />
           )}
         </section>
       </aside>
@@ -486,26 +627,12 @@ function ArticleCollection({ api, mode }) {
 
 function Recommendations({ api }) {
   const [limit, setLimit] = useState(10);
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const result = await api.request(`/api/recommendations?limit=${limit}`);
-      setArticles(Array.isArray(result) ? result : []);
-    } catch (loadError) {
-      setError(loadError.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [api, limit]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
+  const debouncedLimit = useDebouncedValue(limit);
+  const resource = useResource(
+    api,
+    (a) => a.request(`/api/recommendations?limit=${debouncedLimit}`),
+    [api, debouncedLimit],
+  );
 
   return (
     <main className="single-column-page">
@@ -525,9 +652,27 @@ function Recommendations({ api }) {
           </label>
         }
       />
-      <AsyncState loading={loading} error={error}>
-        <ArticleList articles={articles} />
-      </AsyncState>
+      {resource.loading ? (
+        <div className="loading-state">
+          <Loader2 className="spin" size={22} />
+          Loading
+        </div>
+      ) : resource.isEmpty ? (
+        <EmptyState
+          icon={Sparkles}
+          title="No recommendations"
+          body="We don't have personalized picks for you yet."
+        />
+      ) : resource.error ? (
+        <EmptyState
+          icon={X}
+          title="Could not load recommendations"
+          body={resource.error}
+          action={{ label: "Retry", onClick: resource.reload }}
+        />
+      ) : (
+        <ArticleList articles={Array.isArray(resource.data) ? resource.data : []} />
+      )}
     </main>
   );
 }
@@ -536,7 +681,6 @@ function ArticleDetails({ api }) {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [article, setArticle] = useState(null);
-  const [comments, setComments] = useState([]);
   const [commentBody, setCommentBody] = useState("");
   const [replyTo, setReplyTo] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -545,18 +689,17 @@ function ArticleDetails({ api }) {
   const [uploadState, setUploadState] = useState({ contentType: "image/png", result: null, error: "" });
 
   const articleId = getField(article, "id", "");
+  const commentsResource = useResource(
+    api,
+    (a) => (articleId ? a.request(`/api/articles/${articleId}/comments`) : Promise.resolve([])),
+    [api, articleId],
+  );
 
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const nextArticle = await api.request(`/api/articles/${slug}`);
-      setArticle(nextArticle);
-      const nextArticleId = getField(nextArticle, "id", "");
-      if (nextArticleId) {
-        const nextComments = await api.request(`/api/articles/${nextArticleId}/comments`);
-        setComments(Array.isArray(nextComments) ? nextComments : []);
-      }
+      setArticle(await api.request(`/api/articles/${slug}`));
     } catch (loadError) {
       setError(loadError.message);
     } finally {
@@ -582,7 +725,7 @@ function ArticleDetails({ api }) {
           userVote: getField(result, "userVote", value),
         }));
       } else {
-        setComments((current) => updateCommentTree(current, targetId, result));
+        await commentsResource.reload();
       }
     } catch (voteError) {
       setError(voteError.message);
@@ -619,7 +762,7 @@ function ArticleDetails({ api }) {
       });
       setCommentBody("");
       setReplyTo(null);
-      setComments(await api.request(`/api/articles/${articleId}/comments`));
+      await commentsResource.reload();
     } catch (commentError) {
       setError(commentError.message);
     } finally {
@@ -662,7 +805,7 @@ function ArticleDetails({ api }) {
     setBusy(`delete-${commentId}`);
     try {
       await api.request(`/api/articles/${articleId}/comments/${commentId}`, { method: "DELETE" });
-      setComments(await api.request(`/api/articles/${articleId}/comments`));
+      await commentsResource.reload();
     } catch (deleteError) {
       setError(deleteError.message);
     } finally {
@@ -728,18 +871,37 @@ function ArticleDetails({ api }) {
                     placeholder="Add to the discussion"
                     rows={4}
                   />
-                  <button className="button primary" type="submit" disabled={busy === "comment"}>
-                    <Send size={16} />
-                    Comment
-                  </button>
+                <button className="button primary" type="submit" disabled={busy === "comment"}>
+                  <Send size={16} />
+                  Comment
+                </button>
                 </form>
-                <CommentTree
-                  comments={comments}
-                  busy={busy}
-                  onReply={setReplyTo}
-                  onDelete={removeComment}
-                  onVote={(commentId, value) => vote(commentId, "Comment", value)}
-                />
+                {commentsResource.loading ? (
+                  <div className="loading-state">
+                    <Loader2 className="spin" size={22} />
+                    Loading comments
+                  </div>
+                ) : commentsResource.isEmpty ? (
+                  <EmptyState
+                    icon={MessageSquare}
+                    title="No comments"
+                    body="Comments are not available for this article."
+                  />
+                ) : commentsResource.error ? (
+                  <EmptyState
+                    title="Could not load comments"
+                    body={commentsResource.error}
+                    action={{ label: "Retry", onClick: commentsResource.reload }}
+                  />
+                ) : (
+                  <CommentTree
+                    comments={Array.isArray(commentsResource.data) ? commentsResource.data : []}
+                    busy={busy}
+                    onReply={setReplyTo}
+                    onDelete={removeComment}
+                    onVote={(commentId, value) => vote(commentId, "Comment", value)}
+                  />
+                )}
               </div>
 
               <div className="panel-block">
@@ -1236,39 +1398,28 @@ function AsyncState({ loading, error, children }) {
     );
   }
   if (error) {
-    return <EmptyState title="Request failed" body={error} />;
+    return <EmptyState icon={X} title="Request failed" body={error} />;
   }
   return children;
 }
 
-function EmptyState({ title, body }) {
+function EmptyState({ title, body, icon: Icon, action }) {
   return (
     <div className="empty-state">
+      {Icon && <Icon className="empty-state-icon" size={48} />}
       <h2>{title}</h2>
-      <p>{body}</p>
+      {body && <p>{body}</p>}
+      {action && (
+        <button className="button subtle" type="button" onClick={action.onClick}>
+          {action.label}
+        </button>
+      )}
     </div>
   );
 }
 
 function MethodBadge({ method }) {
   return <span className={`method-badge ${method.toLowerCase()}`}>{method}</span>;
-}
-
-function updateCommentTree(comments, targetId, result) {
-  return comments.map((comment) => {
-    const commentId = getField(comment, "id", "");
-    if (commentId === targetId) {
-      return {
-        ...comment,
-        voteCount: getField(result, "newVoteCount", getField(comment, "voteCount", 0)),
-        userVote: getField(result, "userVote", getField(comment, "userVote", 0)),
-      };
-    }
-    return {
-      ...comment,
-      replies: updateCommentTree(getField(comment, "replies", []), targetId, result),
-    };
-  });
 }
 
 function App() {

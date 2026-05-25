@@ -18,7 +18,7 @@ services:
       users.db:
         condition: service_healthy
 
-  corejudge.db:
+  corejudge.db: 
     ports:
       - "5435:5432"
     environment:
@@ -88,8 +88,18 @@ services:
     environment:
       MongoDB__ConnectionString: mongodb://admin:StrongMongoPassword123@community.mongo:27017
       MongoDB__DatabaseName: CommunityDb
+    
+      Minio__Endpoint: minio:9000 # for connection within the Docker network
+      Minio__PublicEndpoint: localhost:9000 # for external access (e.g., presigned URLs)
+      Minio__AccessKey: admin
+      Minio__SecretKey: password
+      Minio__BucketName: community-service
+      Minio__UseSSL: "false"
+    
     depends_on:
       community.mongo:
+        condition: service_healthy
+      minio:
         condition: service_healthy
 
   api.gateway:
@@ -127,7 +137,6 @@ services:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 
   rabbitmq:
-    image: rabbitmq:4.2-management-alpine
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
@@ -141,3 +150,12 @@ services:
     volumes:
       - ./Services/Collaboration:/app
     command: ["npm", "run", "dev"]
+
+  minio:
+    ports:
+      - "9000:9000" # S3 API
+      - "9001:9001" # MinIO Console
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password
+      MINIO_SERVER_URL: http://localhost:9000

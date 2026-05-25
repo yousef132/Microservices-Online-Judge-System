@@ -1,6 +1,10 @@
+using BuildingBlocks.Core;
+using BuildingBlocks.Identity;
+using BuildingBlocks.Logging;
 using Community.API.BackgroundJobs;
 using Community.API.Common.Behaviors;
 using Community.API.Common.Extensions;
+using Community.API.Common.Helpers;
 using Community.API.Database;
 using Community.API.Middleware;
 using Community.API.Persistence;
@@ -16,6 +20,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Database
 // ────────────────────────────────────────────
 builder.Services.AddSingleton<MongoDbContext>();
+
+
+builder.Services.Configure<MinioOptions>(
+    builder.Configuration.GetSection("Minio"));
 
 // ────────────────────────────────────────────
 // Repositories
@@ -58,15 +66,29 @@ builder.Services.AddHostedService<HotScoreRecalculator>();
 // ────────────────────────────────────────────
 // Authentication / Authorization
 // ────────────────────────────────────────────
-builder.Services.AddAuthentication()
-    .AddJwtBearer();
-builder.Services.AddAuthorization();
+
+builder.Services.AddSwaggerDocumentation()
+    .AddIdentity(builder.Configuration)
+    .AddLoggingConfigs(builder.Configuration);
 
 // ────────────────────────────────────────────
 // API / Swagger
 // ────────────────────────────────────────────
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// add cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "https://localhost:5173"
+              )
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -78,6 +100,7 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<MongoDbContext>();
     await MongoDbInitializer.InitializeAsync(dbContext.Database);
 }
+
 
 // ────────────────────────────────────────────
 // Middleware Pipeline
@@ -91,6 +114,7 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<GlobalExceptionHandler>();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("AllowReactApp");
 
 // ────────────────────────────────────────────
 // Map all IEndpoint implementations via reflection
