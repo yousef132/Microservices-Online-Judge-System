@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevStack - Communities</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#31394d",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-primary-container": "#00285d",
+                        "outline": "#8c909f",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "tertiary": "#4cd7f6",
+                        "on-secondary-container": "#d6a9ff",
+                        "tertiary-fixed": "#acedff",
+                        "on-background": "#dae2fd",
+                        "surface-container-low": "#131b2e",
+                        "secondary-container": "#6f00be",
+                        "on-surface": "#dae2fd",
+                        "surface": "#0b1326",
+                        "secondary-fixed": "#f0dbff",
+                        "on-surface-variant": "#c2c6d6",
+                        "primary-container": "#4d8eff",
+                        "on-tertiary-container": "#002f38",
+                        "outline-variant": "#424754",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#ddb7ff",
+                        "error-container": "#93000a",
+                        "surface-dim": "#0b1326",
+                        "on-secondary-fixed": "#2c0051",
+                        "on-tertiary-fixed": "#001f26",
+                        "on-secondary": "#490080",
+                        "inverse-primary": "#005ac2",
+                        "surface-container-high": "#222a3d",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "surface-container-lowest": "#060e20",
+                        "inverse-surface": "#dae2fd",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface-variant": "#2d3449",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "surface-container": "#171f33",
+                        "primary": "#adc6ff",
+                        "on-tertiary": "#003640",
+                        "on-primary": "#002e6a",
+                        "tertiary-container": "#009eb9",
+                        "on-primary-fixed": "#001a42",
+                        "background": "#0b1326",
+                        "primary-fixed-dim": "#adc6ff",
+                        "inverse-on-surface": "#283044",
+                        "surface-tint": "#adc6ff",
+                        "surface-container-highest": "#2d3449"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "stack-md": "1rem",
+                        "stack-sm": "0.5rem",
+                        "margin-mobile": "1rem",
+                        "stack-lg": "2rem",
+                        "stack-xs": "0.25rem",
+                        "gutter": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-surface');
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-panel {
+            background: theme('colors.surface-container');
+            border: 1px solid theme('colors.outline-variant');
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row bg-background text-on-surface">
+<!-- TopNavBar (Web & Mobile) -->
+<nav class="bg-surface-container/80 backdrop-blur-xl shadow-sm border-b border-white/5 fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary">DevStack</span>
+</div>
+<div class="flex-1 max-w-xl hidden md:flex mx-8">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-dim border border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none pl-10 pr-4 py-1.5 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant" placeholder="Search communities..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-bright/50 transition-colors p-2 rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-bright/50 transition-colors p-2 rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+<button class="bg-inverse-primary text-white font-label-md text-label-md px-4 py-2 rounded hover:bg-inverse-primary/90 transition-colors active:scale-95 duration-150 hidden md:block">
+                Create
+            </button>
+<img alt="User avatar" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A close-up studio portrait of a young male software developer with glasses, looking directly at the camera with a subtle smile. The lighting is soft and cinematic, highlighting his features against a deep, dark slate background. The aesthetic is clean, professional, and slightly moody, fitting a modern tech environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR_eEuMCD-vTygLI_jdEt2dCblZdG5lmwnzkJVK9b4Ti8TUGy9UGD1Dq9eEVzXV5S-8NYwdwFKmzo5halgetCYu0WXjSXyje1UvJ5h0Xpe6exIkHRkNX2IugMag70WbLo5MN4opLbhoAi1FtEbFUSVXtmAbu3Qcofj1gz5fLRhwQhun1TXKdKRNaG9R4FPqKWbw0HAUC-NBLO0HRiirMLsHo8WTOuWRTr9VsVaxDvNq-fPUBgMf57HryKBO3qnA1eZB_vYTvXnK4I"/>
+</div>
+</nav>
+<!-- SideNavBar (Web Only) -->
+<aside class="bg-surface-container-low fixed left-0 top-16 h-[calc(100vh-64px)] w-64 border-r border-white/5 hidden md:flex flex-col py-stack-lg gap-stack-md z-40 overflow-y-auto">
+<div class="px-6 mb-4">
+<h2 class="font-label-md text-label-md text-on-surface">Developer Hub</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Community-First Platform</p>
+</div>
+<nav class="flex-1 flex flex-col gap-1 px-4">
+<a class="flex items-center gap-3 px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out rounded-r" href="#">
+<span class="material-symbols-outlined">home</span>
+                Home
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 font-label-md text-label-md text-primary font-bold border-l-2 border-primary bg-primary/5 transition-all duration-200 ease-in-out rounded-r" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+                Communities
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out rounded-r" href="#">
+<span class="material-symbols-outlined">sell</span>
+                Tags
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out rounded-r" href="#">
+<span class="material-symbols-outlined">dynamic_feed</span>
+                Custom Feeds
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out rounded-r" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+                Saved
+            </a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-surface-container-high text-on-surface font-label-md text-label-md py-2 px-4 rounded border border-outline-variant hover:bg-surface-bright transition-colors mb-4">
+                Start a Discussion
+            </button>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-2 py-1.5 font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-3 px-2 py-1.5 font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+                    Help
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 pt-20 px-gutter pb-24 md:pb-8 min-h-screen bg-background">
+<div class="max-w-container-max mx-auto">
+<header class="mb-stack-lg flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/5 pb-stack-md">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface font-bold">Communities</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Hubs you follow and participate in.</p>
+</div>
+<button class="bg-inverse-primary text-white font-label-md text-label-md px-6 py-2.5 rounded hover:bg-inverse-primary/90 transition-colors flex items-center gap-2 w-fit">
+<span class="material-symbols-outlined text-[18px]">explore</span>
+                    Discover More
+                </button>
+</header>
+<!-- Bento Grid of Communities -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-stack-md">
+<!-- Community Card 1 -->
+<article class="glass-panel rounded-lg p-stack-md flex flex-col group relative overflow-hidden transition-transform duration-300 hover:-translate-y-1">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div class="w-12 h-12 rounded bg-surface-dim border border-outline-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<button class="font-label-sm text-label-sm px-3 py-1 rounded border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-colors">
+                            Joined
+                        </button>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2 relative z-10 font-bold">Rustaceans</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex-1 mb-4 relative z-10 line-clamp-2">Safe, concurrent, and fast systems programming discussions. Share crates and patterns.</p>
+<div class="flex items-center gap-4 mt-auto pt-4 border-t border-white/5 relative z-10">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">group</span>
+                            142k Members
+                        </div>
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-tertiary">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                            1.2k Online
+                        </div>
+</div>
+</article>
+<!-- Community Card 2 -->
+<article class="glass-panel rounded-lg p-stack-md flex flex-col group relative overflow-hidden transition-transform duration-300 hover:-translate-y-1">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div class="w-12 h-12 rounded bg-surface-dim border border-outline-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">javascript</span>
+</div>
+<button class="font-label-sm text-label-sm px-3 py-1 rounded border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-colors">
+                            Joined
+                        </button>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2 relative z-10 font-bold">React Advanced</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex-1 mb-4 relative z-10 line-clamp-2">Deep dives into React internals, performance optimization, and complex state management.</p>
+<div class="flex items-center gap-4 mt-auto pt-4 border-t border-white/5 relative z-10">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">group</span>
+                            385k Members
+                        </div>
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-tertiary">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                            4.5k Online
+                        </div>
+</div>
+</article>
+<!-- Community Card 3 -->
+<article class="glass-panel rounded-lg p-stack-md flex flex-col group relative overflow-hidden transition-transform duration-300 hover:-translate-y-1">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div class="w-12 h-12 rounded bg-surface-dim border border-outline-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">cloud</span>
+</div>
+<button class="font-label-sm text-label-sm px-3 py-1 rounded bg-inverse-primary text-white border border-transparent hover:bg-inverse-primary/80 transition-colors">
+                            Join
+                        </button>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2 relative z-10 font-bold">DevOps Mastery</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex-1 mb-4 relative z-10 line-clamp-2">CI/CD pipelines, container orchestration, infrastructure as code, and site reliability engineering.</p>
+<div class="flex items-center gap-4 mt-auto pt-4 border-t border-white/5 relative z-10">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">group</span>
+                            89k Members
+                        </div>
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+                            800 Online
+                        </div>
+</div>
+</article>
+</div>
+</div>
+</main>
+</body></html>

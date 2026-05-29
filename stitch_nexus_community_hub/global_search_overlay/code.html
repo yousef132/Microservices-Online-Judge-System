@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Global Search Overlay</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#d6a9ff",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed-variant": "#004395",
+                        "on-primary": "#002e6a",
+                        "surface-bright": "#31394d",
+                        "surface-tint": "#adc6ff",
+                        "on-secondary-fixed": "#2c0051",
+                        "on-surface-variant": "#c2c6d6",
+                        "on-background": "#dae2fd",
+                        "on-surface": "#dae2fd",
+                        "surface-container-highest": "#2d3449",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "secondary-container": "#6f00be",
+                        "on-tertiary-container": "#002f38",
+                        "inverse-surface": "#dae2fd",
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary": "#003640",
+                        "surface": "#0b1326",
+                        "background": "#0b1326",
+                        "tertiary": "#4cd7f6",
+                        "primary": "#adc6ff",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "secondary": "#ddb7ff",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "secondary-fixed": "#f0dbff",
+                        "on-secondary": "#490080",
+                        "primary-fixed-dim": "#adc6ff",
+                        "surface-container-lowest": "#060e20",
+                        "tertiary-container": "#009eb9",
+                        "inverse-on-surface": "#283044",
+                        "tertiary-fixed": "#acedff",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "surface-container-high": "#222a3d",
+                        "on-primary-fixed": "#001a42",
+                        "surface-dim": "#0b1326",
+                        "surface-container-low": "#131b2e",
+                        "on-primary-container": "#00285d",
+                        "primary-container": "#4d8eff",
+                        "outline-variant": "#424754",
+                        "on-tertiary-fixed": "#001f26",
+                        "surface-variant": "#2d3449",
+                        "inverse-primary": "#005ac2",
+                        "surface-container": "#171f33",
+                        "error": "#ffb4ab",
+                        "outline": "#8c909f",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-xs": "0.25rem",
+                        "stack-md": "1rem",
+                        "container-max": "1280px",
+                        "stack-sm": "0.5rem",
+                        "gutter": "1.5rem",
+                        "stack-lg": "2rem",
+                        "margin-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "label-md": ["JetBrains Mono"],
+                        "headline-xl": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen font-body-md">
+<!-- Background Context (Mock Home Feed) -->
+<div class="fixed inset-0 z-0 overflow-hidden opacity-30 pointer-events-none flex">
+<!-- Mock Nav -->
+<div class="w-64 border-r border-white/5 bg-surface-dim h-full p-6">
+<div class="w-32 h-8 bg-surface-container rounded mb-8"></div>
+<div class="space-y-4">
+<div class="w-full h-6 bg-surface-container rounded"></div>
+<div class="w-3/4 h-6 bg-surface-container rounded"></div>
+<div class="w-5/6 h-6 bg-surface-container rounded"></div>
+</div>
+</div>
+<!-- Mock Content -->
+<div class="flex-1 p-8 max-w-4xl mx-auto space-y-6">
+<div class="w-full h-32 bg-surface-container rounded-lg border border-white/5"></div>
+<div class="w-full h-48 bg-surface-container rounded-lg border border-white/5"></div>
+<div class="w-full h-24 bg-surface-container rounded-lg border border-white/5"></div>
+</div>
+</div>
+<!-- Global Search Overlay Backdrop -->
+<div class="fixed inset-0 z-50 bg-background/80 backdrop-blur-md flex items-start justify-center pt-24 px-4 sm:px-6">
+<!-- Command Palette Modal -->
+<div class="w-full max-w-2xl bg-surface-container-high rounded-xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col transform transition-all">
+<!-- Search Input Area -->
+<div class="relative flex items-center px-4 py-4 border-b border-white/10 bg-surface-container group">
+<span class="material-symbols-outlined text-on-surface-variant ml-2 mr-3 group-focus-within:text-primary transition-colors">search</span>
+<input autofocus="" class="w-full bg-transparent border-none text-on-surface font-body-lg focus:ring-0 focus:outline-none placeholder:text-on-surface-variant/50" placeholder="Search communities, tags, users..." type="text"/>
+<div class="flex items-center gap-2 ml-4">
+<kbd class="font-label-sm text-label-sm px-2 py-1 bg-surface-variant rounded border border-white/10 text-on-surface-variant">Esc</kbd>
+</div>
+</div>
+<!-- Scrollable Content Area -->
+<div class="max-h-[614px] overflow-y-auto overscroll-contain">
+<!-- Trending / Quick Links -->
+<div class="p-4 border-b border-white/5">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant mb-3 uppercase tracking-wider">Trending Now</h3>
+<div class="flex flex-wrap gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-variant hover:bg-surface-bright rounded-full border border-white/5 transition-colors group">
+<span class="material-symbols-outlined text-[16px] text-tertiary">trending_up</span>
+<span class="font-label-md text-label-md text-on-surface">#React19</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-variant hover:bg-surface-bright rounded-full border border-white/5 transition-colors group">
+<span class="material-symbols-outlined text-[16px] text-primary">tag</span>
+<span class="font-label-md text-label-md text-on-surface">SystemDesign</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-variant hover:bg-surface-bright rounded-full border border-white/5 transition-colors group">
+<span class="material-symbols-outlined text-[16px] text-secondary">forum</span>
+<span class="font-label-md text-label-md text-on-surface">AI Integration</span>
+</button>
+</div>
+</div>
+<!-- Recent Searches -->
+<div class="p-2 border-b border-white/5">
+<div class="px-2 py-2 flex justify-between items-center">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Recent</h3>
+<button class="font-label-sm text-label-sm text-primary hover:text-primary-fixed transition-colors">Clear</button>
+</div>
+<ul class="space-y-0.5">
+<li>
+<button class="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-surface-bright transition-colors group text-left">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">history</span>
+<span class="font-body-md text-body-md text-on-surface">Tailwind grid layout patterns</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity text-[18px]">north_west</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-surface-bright transition-colors group text-left">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">history</span>
+<span class="font-body-md text-body-md text-on-surface">@sarah_dev profile</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity text-[18px]">north_west</span>
+</button>
+</li>
+</ul>
+</div>
+<!-- Suggested Results (Simulated "As you type") -->
+<div class="p-2">
+<h3 class="px-2 py-2 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Suggestions</h3>
+<!-- Community Suggestion -->
+<button class="w-full flex flex-col px-3 py-3 rounded-lg hover:bg-surface-bright transition-colors group text-left mb-1 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-0.5 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-center gap-3 mb-1">
+<div class="w-8 h-8 rounded bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">groups</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors">Frontend Architecture</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Community • 12k members</p>
+</div>
+</div>
+</button>
+<!-- User Suggestion -->
+<button class="w-full flex flex-col px-3 py-3 rounded-lg hover:bg-surface-bright transition-colors group text-left mb-1 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-0.5 bg-secondary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-center gap-3 mb-1">
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary border border-secondary/20">
+<span class="font-label-md text-label-md">AL</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface group-hover:text-secondary transition-colors">Alex Lin</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">@alexlin_dev • Top Contributor</p>
+</div>
+</div>
+</button>
+<!-- Post/Thread Suggestion -->
+<button class="w-full flex flex-col px-3 py-3 rounded-lg hover:bg-surface-bright transition-colors group text-left relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-0.5 bg-tertiary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary mt-0.5 text-[20px]">article</span>
+<div>
+<h4 class="font-body-md text-body-md text-on-surface mb-1 line-clamp-1 group-hover:text-tertiary transition-colors">Best practices for state management in large scale applications?</h4>
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">forum</span> 45 replies</span>
+<span>•</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded border border-white/5">Architecture</span>
+</div>
+</div>
+</div>
+</button>
+</div>
+</div>
+<!-- Footer Hints -->
+<div class="px-4 py-3 bg-surface-container-lowest border-t border-white/5 flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5">
+<kbd class="px-1.5 py-0.5 bg-surface-variant rounded border border-white/10 text-on-surface">↑</kbd>
+<kbd class="px-1.5 py-0.5 bg-surface-variant rounded border border-white/10 text-on-surface">↓</kbd>
+                        to navigate
+                    </span>
+<span class="flex items-center gap-1.5">
+<kbd class="px-1.5 py-0.5 bg-surface-variant rounded border border-white/10 text-on-surface">↵</kbd>
+                        to select
+                    </span>
+</div>
+<div>
+<span class="flex items-center gap-1.5">
+                        Search by <span class="font-bold text-on-surface">DevStack</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+</body></html>

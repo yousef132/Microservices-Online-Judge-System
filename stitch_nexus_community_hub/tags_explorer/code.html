@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tags - DevStack</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-bright": "#31394d",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-primary-container": "#00285d",
+                        "outline": "#8c909f",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "tertiary": "#4cd7f6",
+                        "on-secondary-container": "#d6a9ff",
+                        "tertiary-fixed": "#acedff",
+                        "on-background": "#dae2fd",
+                        "surface-container-low": "#131b2e",
+                        "secondary-container": "#6f00be",
+                        "on-surface": "#dae2fd",
+                        "surface": "#0b1326",
+                        "secondary-fixed": "#f0dbff",
+                        "on-surface-variant": "#c2c6d6",
+                        "primary-container": "#4d8eff",
+                        "on-tertiary-container": "#002f38",
+                        "outline-variant": "#424754",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#ddb7ff",
+                        "error-container": "#93000a",
+                        "surface-dim": "#0b1326",
+                        "on-secondary-fixed": "#2c0051",
+                        "on-tertiary-fixed": "#001f26",
+                        "on-secondary": "#490080",
+                        "inverse-primary": "#005ac2",
+                        "surface-container-high": "#222a3d",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "surface-container-lowest": "#060e20",
+                        "inverse-surface": "#dae2fd",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface-variant": "#2d3449",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "surface-container": "#171f33",
+                        "primary": "#adc6ff",
+                        "on-tertiary": "#003640",
+                        "on-primary": "#002e6a",
+                        "tertiary-container": "#009eb9",
+                        "on-primary-fixed": "#001a42",
+                        "background": "#0b1326",
+                        "primary-fixed-dim": "#adc6ff",
+                        "inverse-on-surface": "#283044",
+                        "surface-tint": "#adc6ff",
+                        "surface-container-highest": "#2d3449"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "container-max": "1280px",
+                        "stack-md": "1rem",
+                        "stack-sm": "0.5rem",
+                        "margin-mobile": "1rem",
+                        "stack-lg": "2rem",
+                        "stack-xs": "0.25rem",
+                        "gutter": "1.5rem"
+                    },
+                    fontFamily: {
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-xl": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Custom Scrollbar for IDE feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b1326; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3449; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #424754; 
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md min-h-screen overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="bg-surface-container/80 dark:bg-surface-container/80 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-white/10 shadow-sm flex justify-between items-center px-gutter h-16 transition-all">
+<div class="flex items-center gap-stack-md w-1/3">
+<button class="md:hidden p-2 text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-headline-md text-headline-md font-bold text-primary tracking-tight">DevStack</div>
+</div>
+<div class="flex-1 max-w-lg hidden md:flex items-center bg-surface-container-low border border-outline-variant rounded focus-within:border-primary focus-within:ring-1 focus-within:ring-primary px-3 py-1.5 transition-all shadow-inner">
+<span class="material-symbols-outlined text-outline text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface w-full font-label-md text-label-md placeholder-outline p-0" placeholder="Command Palette... (⌘K)" type="text"/>
+</div>
+<div class="flex items-center justify-end gap-stack-sm w-1/3">
+<button class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-bright/50 transition-colors rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-bright/50 transition-colors rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+<button class="ml-2 bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded shadow-sm hover:bg-primary-fixed transition-colors active:scale-95 duration-150 font-bold tracking-wide">
+                Create
+            </button>
+<div class="ml-4 h-8 w-8 rounded-full bg-gradient-to-tr from-secondary-container to-tertiary-container border border-outline-variant flex items-center justify-center cursor-pointer relative overflow-hidden" title="User avatar">
+<div class="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity"></div>
+<span class="font-label-sm text-label-sm text-white font-bold">U</span>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<nav class="hidden md:flex bg-surface-dim dark:bg-surface-dim fixed left-0 top-16 h-[calc(100vh-64px)] w-64 border-r border-white/5 flex-col py-stack-lg gap-stack-md z-40">
+<div class="px-gutter mb-stack-md">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-8 h-8 rounded bg-surface-container border border-outline-variant flex items-center justify-center shadow-inner" title="DevStack Logo">
+<span class="material-symbols-outlined text-primary text-lg">code_blocks</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">Developer Hub</h2>
+</div>
+<p class="font-label-sm text-label-sm text-outline">Community-First Platform</p>
+</div>
+<div class="flex flex-col gap-1 px-3 flex-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">home</span>
+                Home
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">groups</span>
+                Communities
+            </a>
+<!-- ACTIVE TAB: Tags -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-primary font-bold border-l-2 border-primary bg-primary/5 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px] fill">sell</span>
+                Tags
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">dynamic_feed</span>
+                Custom Feeds
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">bookmark</span>
+                Saved
+            </a>
+</div>
+<div class="px-gutter mt-auto pt-stack-md border-t border-white/5">
+<button class="w-full py-2 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-label-md rounded shadow-sm transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">chat_bubble</span>
+                Start a Discussion
+            </button>
+<div class="flex gap-4 mt-stack-md px-1">
+<a class="text-outline hover:text-on-surface transition-colors flex items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-[16px] group-hover:text-primary">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+<a class="text-outline hover:text-on-surface transition-colors flex items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-[16px] group-hover:text-primary">help</span>
+<span class="font-label-sm text-label-sm">Help</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-16 md:ml-64 px-margin-mobile md:px-gutter max-w-container-max mx-auto min-h-screen">
+<!-- Header & Search Area -->
+<div class="mb-stack-lg border-b border-white/10 pb-stack-md flex flex-col md:flex-row md:items-end justify-between gap-stack-md">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-2">Explore Tags</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+                    Tags act as the central nervous system of DevStack. Follow tags to curate your feed, discover niche communities, and find specialized technical solutions.
+                </p>
+</div>
+<div class="relative w-full md:w-80 group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">search</span>
+</div>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none text-on-surface py-2.5 pl-10 pr-4 font-label-md text-label-md shadow-inner transition-all placeholder:text-outline-variant" placeholder="Filter tags by name..." type="text"/>
+</div>
+</div>
+<!-- Featured Tags (Bento Grid Style) -->
+<section class="mb-stack-lg">
+<div class="flex items-center gap-2 mb-stack-md">
+<span class="material-symbols-outlined text-tertiary">local_fire_department</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Trending &amp; Featured</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-stack-md auto-rows-min">
+<!-- Primary Featured Tag (Spans 2 columns on desktop) -->
+<a class="md:col-span-2 relative overflow-hidden bg-surface-container border border-white/10 rounded-xl p-stack-lg group hover:border-primary/40 transition-all duration-300 hover:shadow-[0_10px_30px_rgba(77,142,255,0.05)] flex flex-col justify-between min-h-[220px]" href="#">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative z-10 flex justify-between items-start mb-stack-sm">
+<div class="inline-flex items-center font-label-sm text-label-sm bg-gradient-to-r from-secondary-container to-tertiary-container text-white px-3 py-1.5 rounded font-bold shadow-sm tracking-wider uppercase">
+                            react
+                        </div>
+<button class="bg-surface-bright border border-outline-variant text-on-surface font-label-sm text-label-sm px-3 py-1 rounded hover:bg-surface-variant transition-colors flex items-center gap-1 z-20">
+<span class="material-symbols-outlined text-[16px]">add</span> Follow
+                        </button>
+</div>
+<div class="relative z-10">
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-2 group-hover:text-primary transition-colors">The React Ecosystem</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 max-w-lg">
+                            A JavaScript library for building user interfaces. Discussions cover React Core, Next.js, hooks, state management, and component architecture patterns for enterprise applications.
+                        </p>
+</div>
+<div class="relative z-10 mt-stack-md flex gap-stack-md font-label-sm text-label-sm text-outline border-t border-white/5 pt-stack-sm">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">forum</span> 142k Topics</div>
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">group</span> 850k Followers</div>
+<div class="flex items-center gap-1 text-tertiary"><span class="material-symbols-outlined text-[14px]">trending_up</span> +2.4k this week</div>
+</div>
+</a>
+<!-- Secondary Featured Tag -->
+<a class="bg-surface-container-low border border-white/10 rounded-xl p-stack-md group hover:border-tertiary/40 transition-all duration-300 hover:shadow-[0_10px_30px_rgba(76,215,246,0.05)] flex flex-col justify-between" href="#">
+<div>
+<div class="flex justify-between items-start mb-stack-sm">
+<div class="inline-flex items-center font-label-sm text-label-sm bg-surface-bright border border-outline-variant text-on-surface px-2 py-1 rounded">
+                                rust
+                            </div>
+<span class="material-symbols-outlined text-outline group-hover:text-tertiary transition-colors">arrow_outward</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 line-clamp-3">
+                            A language empowering everyone to build reliable and efficient software. Focus on memory safety, concurrency, and WebAssembly.
+                        </p>
+</div>
+<div class="mt-stack-md flex justify-between items-center font-label-sm text-label-sm text-outline">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">auto_graph</span> High Growth</div>
+<div>52k Followers</div>
+</div>
+</a>
+<!-- Secondary Featured Tag -->
+<a class="bg-surface-container-low border border-white/10 rounded-xl p-stack-md group hover:border-secondary/40 transition-all duration-300 hover:shadow-[0_10px_30px_rgba(221,183,255,0.05)] flex flex-col justify-between" href="#">
+<div>
+<div class="flex justify-between items-start mb-stack-sm">
+<div class="inline-flex items-center font-label-sm text-label-sm bg-surface-bright border border-outline-variant text-on-surface px-2 py-1 rounded">
+                                machine-learning
+                            </div>
+<span class="material-symbols-outlined text-outline group-hover:text-secondary transition-colors">arrow_outward</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 line-clamp-3">
+                            Algorithms and statistical models that systems use to perform specific tasks without explicit instructions. TensorFlow, PyTorch, LLMs.
+                        </p>
+</div>
+<div class="mt-stack-md flex justify-between items-center font-label-sm text-label-sm text-outline">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">psychology</span> Deep Dive</div>
+<div>110k Followers</div>
+</div>
+</a>
+<!-- Secondary Featured Tag -->
+<a class="bg-surface-container-low border border-white/10 rounded-xl p-stack-md group hover:border-primary-fixed/40 transition-all duration-300 hover:shadow-[0_10px_30px_rgba(216,226,255,0.05)] flex flex-col justify-between" href="#">
+<div>
+<div class="flex justify-between items-start mb-stack-sm">
+<div class="inline-flex items-center font-label-sm text-label-sm bg-surface-bright border border-outline-variant text-on-surface px-2 py-1 rounded">
+                                system-design
+                            </div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary-fixed transition-colors">arrow_outward</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 line-clamp-3">
+                            Defining architecture, components, modules, interfaces, and data for a system to satisfy specified requirements at scale.
+                        </p>
+</div>
+<div class="mt-stack-md flex justify-between items-center font-label-sm text-label-sm text-outline">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">architecture</span> Architecture</div>
+<div>89k Followers</div>
+</div>
+</a>
+</div>
+</section>
+<!-- All Tags Directory -->
+<section>
+<div class="flex items-center justify-between border-b border-white/10 pb-stack-sm mb-stack-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">sort_by_alpha</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Tag Directory</h2>
+</div>
+<!-- Filter Tabs -->
+<div class="hidden sm:flex bg-surface-container-low rounded p-1 border border-outline-variant">
+<button class="px-3 py-1 rounded bg-surface-variant text-on-surface font-label-sm text-label-sm shadow-sm">Name</button>
+<button class="px-3 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm">Popular</button>
+<button class="px-3 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm">New</button>
+</div>
+</div>
+<!-- Alphabetical Group: A -->
+<div class="mb-stack-lg relative pl-8">
+<div class="absolute left-0 top-1 font-headline-xl text-headline-xl text-surface-variant font-bold select-none leading-none">A</div>
+<div class="flex flex-wrap gap-3 pt-1">
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">algorithms</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">12k</span>
+</a>
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">android</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">84k</span>
+</a>
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">angular</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">45k</span>
+</a>
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">api-design</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">18k</span>
+</a>
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">aws</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">110k</span>
+</a>
+</div>
+</div>
+<!-- Alphabetical Group: B -->
+<div class="mb-stack-lg relative pl-8">
+<div class="absolute left-0 top-1 font-headline-xl text-headline-xl text-surface-variant font-bold select-none leading-none">B</div>
+<div class="flex flex-wrap gap-3 pt-1">
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">backend</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">56k</span>
+</a>
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">bash</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">22k</span>
+</a>
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">blockchain</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">15k</span>
+</a>
+</div>
+</div>
+<!-- Alphabetical Group: C -->
+<div class="mb-stack-lg relative pl-8">
+<div class="absolute left-0 top-1 font-headline-xl text-headline-xl text-surface-variant font-bold select-none leading-none">C</div>
+<div class="flex flex-wrap gap-3 pt-1">
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">c++</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">68k</span>
+</a>
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">cloud-native</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">34k</span>
+</a>
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">css</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">92k</span>
+</a>
+<a class="inline-flex items-center justify-between min-w-[140px] px-3 py-2 bg-surface-container-low border border-white/5 rounded hover:border-primary/50 hover:bg-surface-container transition-all group" href="#">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">cybersecurity</span>
+<span class="font-label-sm text-label-sm text-outline ml-2">41k</span>
+</a>
+</div>
+</div>
+<!-- Load More -->
+<div class="mt-stack-lg flex justify-center">
+<button class="px-6 py-2 border border-outline-variant text-on-surface-variant hover:text-on-surface hover:border-outline hover:bg-surface-container-low rounded shadow-sm transition-all font-label-md text-label-md flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+                    Load More Tags
+                </button>
+</div>
+</section>
+</main>
+</body></html>

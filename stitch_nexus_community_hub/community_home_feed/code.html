@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevStack - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-highest": "#2d3449",
+                        "on-tertiary-fixed": "#001f26",
+                        "surface-container": "#171f33",
+                        "inverse-on-surface": "#283044",
+                        "surface-bright": "#31394d",
+                        "inverse-surface": "#dae2fd",
+                        "on-surface": "#dae2fd",
+                        "secondary": "#ddb7ff",
+                        "primary-fixed": "#d8e2ff",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-primary-container": "#00285d",
+                        "error-container": "#93000a",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "surface-dim": "#0b1326",
+                        "secondary-fixed": "#f0dbff",
+                        "on-secondary": "#490080",
+                        "on-background": "#dae2fd",
+                        "tertiary": "#4cd7f6",
+                        "primary-fixed-dim": "#adc6ff",
+                        "primary-container": "#4d8eff",
+                        "tertiary-container": "#009eb9",
+                        "surface-container-high": "#222a3d",
+                        "on-primary": "#002e6a",
+                        "on-primary-fixed": "#001a42",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface-container-lowest": "#060e20",
+                        "outline": "#8c909f",
+                        "secondary-container": "#6f00be",
+                        "surface-variant": "#2d3449",
+                        "surface-tint": "#adc6ff",
+                        "on-error": "#690005",
+                        "primary": "#adc6ff",
+                        "on-secondary-container": "#d6a9ff",
+                        "on-tertiary": "#003640",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "background": "#0b1326",
+                        "outline-variant": "#424754",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "surface-container-low": "#131b2e",
+                        "surface": "#0b1326",
+                        "tertiary-fixed": "#acedff",
+                        "inverse-primary": "#005ac2",
+                        "on-surface-variant": "#c2c6d6",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#002f38",
+                        "on-secondary-fixed": "#2c0051"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "stack-sm": "0.5rem",
+                        "stack-lg": "2rem",
+                        "margin-mobile": "1rem",
+                        "stack-xs": "0.25rem",
+                        "gutter": "1.5rem",
+                        "container-max": "1280px",
+                        "stack-md": "1rem"
+                    },
+                    fontFamily: {
+                        "body-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    fontSize: {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(23, 31, 51, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .feed-card {
+            background: rgba(34, 42, 61, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+        .feed-card:hover {
+            border-color: rgba(173, 198, 255, 0.3);
+            background: rgba(34, 42, 61, 0.8);
+        }
+        .thread-line {
+            width: 1px;
+            background-color: #2d3449;
+            transition: background-color 0.2s ease;
+        }
+        .thread-line:hover {
+            background-color: #adc6ff;
+        }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b1326;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3449;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #424754;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md min-h-screen antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar (Shared Component) -->
+<nav class="fixed top-0 w-full z-50 bg-surface-container/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-white/10 shadow-sm flex justify-between items-center px-gutter h-16">
+<div class="flex items-center gap-stack-md">
+<span class="font-headline-md text-headline-md font-bold text-primary">DevStack</span>
+<div class="hidden md:flex relative ml-stack-lg items-center">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-label-md" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="w-96 bg-surface-container-highest border border-white/10 rounded-lg py-2 pl-10 pr-4 text-on-surface font-label-md text-label-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-on-surface-variant" placeholder="Search discussions, tags, or users..." type="text"/>
+<div class="absolute right-3 flex gap-1">
+<kbd class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-dim border border-white/10 text-on-surface-variant">⌘</kbd>
+<kbd class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-dim border border-white/10 text-on-surface-variant">K</kbd>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="text-on-surface-variant hover:bg-surface-bright/50 transition-colors p-2 rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-bright/50 transition-colors p-2 rounded-full active:scale-95 duration-150 hidden md:block">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">terminal</span>
+</button>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-lg font-bold hover:bg-primary-fixed transition-colors active:scale-95 duration-150 ml-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">add</span>
+                Create
+            </button>
+<img alt="User avatar" class="w-8 h-8 rounded-full border border-white/10 ml-stack-sm cursor-pointer hover:ring-2 hover:ring-primary transition-all" data-alt="A close-up portrait of a young professional wearing futuristic glasses, lit by soft blue and purple neon lights, giving a cyberpunk yet clean aesthetic. The background is a dark, out-of-focus tech environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzA5A97lfSBHCJXYqBgRqFUFFKlmb0ofeS5ZY11MsDQiRWNztiLgEHDAHjif8eMPvzSI6SRnzZDCCWw0mHitLJ73siNPj8TTh3Hwk22qNVek1At0X3MGScRhrRb-G5NuXBjZa6IarAUg9kGwBWlJwQXWuux8FRWQq-4T3zN8muleo39z4kwgz30Q8QYRcAghKUZE00S6yz3raoz4fYy8i4kD_4251QS93i2wUloGRhcvnOWtFEH5b2a-5TvgMyknqS4L8KNgCcBn0"/>
+</div>
+</nav>
+<!-- Main Layout Grid -->
+<div class="pt-16 max-w-container-max mx-auto w-full h-[calc(100vh-64px)] flex relative">
+<!-- SideNavBar (Shared Component) -->
+<aside class="hidden md:flex flex-col py-stack-lg gap-stack-md fixed left-0 top-16 h-[calc(100vh-64px)] w-[240px] xl:w-[280px] bg-surface-dim dark:bg-surface-dim border-r border-white/5 overflow-y-auto px-gutter">
+<div class="mb-stack-md px-2">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-1">Developer Hub</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Community-First Platform</p>
+</div>
+<nav class="flex flex-col gap-1">
+<!-- Active Item -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary font-bold border-l-2 border-primary bg-primary/5 transition-all duration-200 ease-in-out font-label-md text-label-md group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">home</span>
+                    Home
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md border-l-2 border-transparent group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">groups</span>
+                    Communities
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md border-l-2 border-transparent group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">sell</span>
+                    Tags
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md border-l-2 border-transparent group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">dynamic_feed</span>
+                    Custom Feeds
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md border-l-2 border-transparent group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">bookmark</span>
+                    Saved
+                </a>
+</nav>
+<div class="mt-auto flex flex-col gap-stack-sm pt-stack-lg border-t border-white/5">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 0;">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 0;">help</span>
+                    Help
+                </a>
+<button class="mt-4 w-full bg-surface-container-high text-primary font-label-md text-label-md py-2.5 rounded-lg border border-white/10 hover:border-primary/50 hover:bg-surface-bright transition-all active:scale-95 duration-150">
+                    Start a Discussion
+                </button>
+</div>
+</aside>
+<!-- Center Feed Canvas -->
+<main class="flex-1 md:ml-[240px] xl:ml-[280px] lg:mr-[300px] xl:mr-[340px] p-margin-mobile md:p-gutter overflow-y-auto h-full">
+<!-- Feed Header & Tabs -->
+<header class="mb-stack-lg sticky top-0 bg-background/90 backdrop-blur-md z-10 pb-4 pt-2 -mt-2">
+<div class="flex justify-between items-end mb-4">
+<h1 class="font-headline-lg md:font-headline-xl text-headline-lg md:text-headline-xl text-on-surface">Your Feed</h1>
+<button class="flex items-center gap-1 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">tune</span>
+                        Customize
+                    </button>
+</div>
+<div class="flex gap-4 border-b border-white/10 font-label-md text-label-md">
+<button class="px-2 py-3 text-primary border-b-2 border-primary font-bold">All</button>
+<button class="px-2 py-3 text-on-surface-variant hover:text-on-surface transition-colors">Blogs</button>
+<button class="px-2 py-3 text-on-surface-variant hover:text-on-surface transition-colors">Questions</button>
+<button class="px-2 py-3 text-on-surface-variant hover:text-on-surface transition-colors">Media</button>
+</div>
+</header>
+<!-- Feed Content List -->
+<div class="flex flex-col gap-6 pb-20">
+<!-- Card 1 (Article) -->
+<article class="feed-card rounded-xl p-5 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-tertiary-container opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<img alt="Author avatar" class="w-10 h-10 rounded-lg" data-alt="A headshot of a confident software engineer against a dark grey background with a subtle lens flare in the corner. High-contrast lighting, sharp focus, professional yet modern vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdxy5YTwWBuGoTNZQpumM0RhzTS1OJdjyxwFqd3RxXIp_KlRTngzPOQi8FUPoK1g75eZzsSiL0ZBBo0XEVwZlTDMcIhLO07ZJQalYFcJRS-MGvTks5RIWV2lSzPjaXmr8MGaJHC-Y-oOTQk2ezLIb8th1_fj8zPcHeT5hW37FBOKlElLKTZAF95fE_Snk8gRr1SIkTlesJknMXgnJmEgOkSJfoY9Gd06M5vKrW3vVQdUJp06nP5SZ9Pkq2zP8b9T6_G4zCC5AMDO8"/>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Alex Mercer</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">2 hours ago · Senior Rustacean</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface p-1">
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</button>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2 mt-2 group-hover:text-primary transition-colors cursor-pointer">
+                        Why Rust's Borrow Checker is Actually Your Best Friend
+                    </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-3">
+                        After fighting the borrow checker for 6 months, something finally clicked. It's not there to punish you; it's there to force you into architecture patterns that scale without subtle concurrency bugs. Let's break down the mental model shift required to stop fighting and start loving lifetime annotations.
+                    </p>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-2.5 py-1 rounded bg-surface-container text-tertiary font-label-sm text-label-sm border border-white/5">Rust</span>
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm border border-white/5">Architecture</span>
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm border border-white/5">Deep Dive</span>
+</div>
+<div class="flex items-center gap-6 mt-4 pt-4 border-t border-white/5">
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md group/btn">
+<span class="material-symbols-outlined text-sm group-hover/btn:scale-110 transition-transform">arrow_upward</span>
+                            342
+                        </button>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md group/btn">
+<span class="material-symbols-outlined text-sm group-hover/btn:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+                            89 Comments
+                        </button>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md ml-auto">
+<span class="material-symbols-outlined text-sm">bookmark_border</span>
+</button>
+</div>
+</article>
+<!-- Card 2 (Question/Thread) -->
+<article class="feed-card rounded-xl p-5 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-secondary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<img alt="Author avatar" class="w-10 h-10 rounded-lg" data-alt="A portrait of a young female developer looking thoughtfully off-camera. She is in a dimly lit room with glowing monitors reflecting off her face, creating a moody, cinematic tech atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2zsuBPUtSZZQZdMNXSsJ57vl1-G4G8GpR9dY_W68CMKVZz_cllIWXrkJFrxnYuDV9pqgAnXOoOuFoQXbac46uWeLn2Eqd02b3SCtF-ysx0uLfxs-NYLW3NFNIoWH5aj6mW9YczS9id6uwVB4gY62txwAM8stGiaPeRfk7FFxM_wMWOL0-dOqKr7du6Nrb0OedlWMq94gcN0hIBhS9OGXuaoA62PhlGjLvRDLESIyWjOL8E4ORcPIY-I2aHQt0suwbTmkiUiCWjQA"/>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface flex items-center gap-2">
+                                    Sarah Jenkins
+                                    <span class="bg-gradient-to-r from-secondary-container to-tertiary-container text-white px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Pro</span>
+</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">5 hours ago · Frontend Architect</p>
+</div>
+</div>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2 mt-2 group-hover:text-secondary transition-colors cursor-pointer">
+                        React Server Components vs Traditional SSR: When to use what?
+                    </h2>
+<div class="bg-surface-container-lowest p-4 rounded-lg font-label-md text-label-md text-on-surface-variant font-mono border border-white/5 mb-4 overflow-x-auto">
+<pre><code>// Is this pattern still relevant with RSC?
+export async function getServerSideProps(context) {
+  const data = await fetcher();
+  return { props: { data } }
+}</code></pre>
+</div>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-2.5 py-1 rounded bg-surface-container text-secondary-fixed-dim font-label-sm text-label-sm border border-white/5">React</span>
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm border border-white/5">Next.js</span>
+<span class="px-2.5 py-1 rounded bg-surface-container text-error-container font-label-sm text-label-sm border border-error-container/20 text-error">Question</span>
+</div>
+<div class="flex items-center gap-6 mt-4 pt-4 border-t border-white/5">
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md group/btn">
+<span class="material-symbols-outlined text-sm group-hover/btn:scale-110 transition-transform">arrow_upward</span>
+                            156
+                        </button>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md group/btn">
+<span class="material-symbols-outlined text-sm group-hover/btn:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+                            42 Comments
+                        </button>
+</div>
+<!-- Nested Comment Preview -->
+<div class="mt-4 pl-4 border-l-2 border-surface-container-high relative">
+<div class="flex items-start gap-3">
+<img alt="Reply avatar" class="w-6 h-6 rounded-full mt-1" data-alt="A small circular avatar showing a male user with a beard, wearing a dark hoodie. The background is completely black, emphasizing a minimalist developer identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDV0xpDlvxWlne1vAa-Yavbe1TVFw8mNaBvoPUPcxMGd9md-lZLWmKTizybgZ39oIS5DxI3a0VHK94dFGeR8J9YL2oKGrvXgDwxb8q_s0cuHBz6cr42lTMysDqvpbUPjyIZ4qKENnfC4olbrhbwWoLxs3YrJHKcWuaBI-OypvLnxguvEYyqRCM5F7xhl_ixs_xo8lK43ZHZVqEqvtN4uFJzOHnMmEUh0m3Z762yxHmbKhIC5UTntCTWfHSeTKlfc54HfKR52xFWzS0"/>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface font-bold">DanAbramov_Fan</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant">2h ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">
+                                    The mental model is fundamentally different. RSCs execute *exclusively* on the server and never hydrate on the client. It reduces bundle size massively. SSR just pre-renders HTML but still sends all JS to hydrate...
+                                </p>
+</div>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Right Sidebar Widgets -->
+<aside class="hidden lg:flex flex-col gap-6 fixed right-0 top-16 h-[calc(100vh-64px)] w-[300px] xl:w-[340px] px-gutter py-stack-lg overflow-y-auto bg-background/50 backdrop-blur-sm border-l border-white/5">
+<!-- Trending Widget -->
+<div class="glass-panel rounded-xl p-5">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-tertiary">trending_up</span>
+<h3 class="font-headline-md text-headline-md text-on-surface text-lg">Trending Topics</h3>
+</div>
+<ul class="flex flex-col gap-4">
+<li class="group cursor-pointer">
+<div class="font-label-sm text-label-sm text-on-surface-variant mb-1 group-hover:text-primary transition-colors">#1 • AI / ML</div>
+<div class="font-label-md text-label-md text-on-surface font-bold">Local LLMs for Code Completion</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-1">12.4k posts this week</div>
+</li>
+<li class="group cursor-pointer">
+<div class="font-label-sm text-label-sm text-on-surface-variant mb-1 group-hover:text-primary transition-colors">#2 • WebAssembly</div>
+<div class="font-label-md text-label-md text-on-surface font-bold">Wasm GC Finally Lands</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-1">8.2k posts this week</div>
+</li>
+<li class="group cursor-pointer">
+<div class="font-label-sm text-label-sm text-on-surface-variant mb-1 group-hover:text-primary transition-colors">#3 • DevOps</div>
+<div class="font-label-md text-label-md text-on-surface font-bold">Post-Kubernetes Era?</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-1">5.1k posts this week</div>
+</li>
+</ul>
+</div>
+<!-- Leaderboard Widget -->
+<div class="glass-panel rounded-xl p-5">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">workspace_premium</span>
+<h3 class="font-headline-md text-headline-md text-on-surface text-lg">Top Contributors</h3>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container transition-colors cursor-pointer">
+<div class="w-6 font-label-md text-label-md text-secondary font-bold text-center">1</div>
+<img alt="Top user" class="w-8 h-8 rounded-full" data-alt="A portrait of a male developer smiling warmly, wearing a grey t-shirt. The background is a blurred office space with natural lighting, conveying approachability and expertise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyFsDqiadeWehLQoQ6e6VP4mdqAstS_7JTItqW_AModzNz92IISAUycmslNJOTVpTKZXUKCVZotYV5ATW_t79Hsa9BYNrM-mAnlI_0LUE3wsogAba5W5lu49lXL5QtGT9wTMxT-Q_l0KN9WQmckKYeA6xS3b-xEfaAaLvQxug1ieR9NpCOzO3tCJIpskg2_VH5rURofsgB84fqNfF9HGupniAuI4aihMLHdng7-DsmAqkL1iqNn4JsSQM8sWiZwhoqQ2-s0_YJlL4"/>
+<div class="flex-1 min-w-0">
+<div class="font-label-md text-label-md text-on-surface truncate">David Chen</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">15k Rep</div>
+</div>
+</div>
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-container transition-colors cursor-pointer">
+<div class="w-6 font-label-md text-label-md text-on-surface-variant text-center">2</div>
+<img alt="Top user 2" class="w-8 h-8 rounded-full" data-alt="A portrait of a female professional with glasses, looking directly at the camera with a slight smile. Soft, neutral background lighting, corporate yet modern style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBskC5RDMAW-y4bSUIHhqzigjeyhY89cJAhZ39tdHqxOTRqsHxvG9a6o5408fb6Is1Ev7G_TVjoLDFK_eIIQ0mTlndoVoT9y_oVSztioapj63ZojorpUXpsHqt42RPTvMV9Hb8IQIVMSAkkGmfZEQ8A3tV8cLut3IN_ObonFrwghMhl2QE-l--nG_ijv8CLJPp2ddjOQnALp0e0hjOuRqyLYAjsLTIkr8oVSp-YnqLrM4tpmzAFRdKFV1F2ZWmswmSYMCBvX83wLG8"/>
+<div class="flex-1 min-w-0">
+<div class="font-label-md text-label-md text-on-surface truncate">Maria Rodriguez</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">12.2k Rep</div>
+</div>
+</div>
+</div>
+<button class="w-full mt-4 text-primary font-label-sm text-label-sm hover:underline py-1">View Full Leaderboard</button>
+</div>
+<!-- Upcoming Events -->
+<div class="glass-panel rounded-xl p-5 border border-primary/20 bg-primary/5">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">event</span>
+<h3 class="font-headline-md text-headline-md text-on-surface text-lg">Upcoming AMA</h3>
+</div>
+<div class="bg-surface-container-high rounded-lg p-3 border border-white/5 mb-3">
+<div class="text-xs text-primary font-bold uppercase tracking-wide mb-1">Tomorrow • 10:00 AM PST</div>
+<div class="font-label-md text-label-md text-on-surface font-bold mb-1">Guido van Rossum</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Creator of Python discusses the future of the GIL.</div>
+</div>
+<button class="w-full bg-surface-container border border-white/10 text-on-surface font-label-md text-label-md py-2 rounded-lg hover:bg-surface-bright transition-colors">
+                    Set Reminder
+                </button>
+</div>
+<!-- Footer links minimal -->
+<div class="flex flex-wrap gap-x-4 gap-y-2 mt-auto pt-4 font-label-sm text-label-sm text-on-surface-variant/50">
+<a class="hover:text-on-surface-variant" href="#">About</a>
+<a class="hover:text-on-surface-variant" href="#">Guidelines</a>
+<a class="hover:text-on-surface-variant" href="#">Privacy</a>
+<a class="hover:text-on-surface-variant" href="#">Terms</a>
+<span>© 2024 DevStack</span>
+</div>
+</aside>
+</div>
+</body></html>

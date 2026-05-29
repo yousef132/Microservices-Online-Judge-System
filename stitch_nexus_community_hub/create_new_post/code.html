@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevStack - Create Post</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#2d3449",
+                        "on-tertiary-fixed": "#001f26",
+                        "surface-container": "#171f33",
+                        "inverse-on-surface": "#283044",
+                        "surface-bright": "#31394d",
+                        "inverse-surface": "#dae2fd",
+                        "on-surface": "#dae2fd",
+                        "secondary": "#ddb7ff",
+                        "primary-fixed": "#d8e2ff",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-primary-container": "#00285d",
+                        "error-container": "#93000a",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "surface-dim": "#0b1326",
+                        "secondary-fixed": "#f0dbff",
+                        "on-secondary": "#490080",
+                        "on-background": "#dae2fd",
+                        "tertiary": "#4cd7f6",
+                        "primary-fixed-dim": "#adc6ff",
+                        "primary-container": "#4d8eff",
+                        "tertiary-container": "#009eb9",
+                        "surface-container-high": "#222a3d",
+                        "on-primary": "#002e6a",
+                        "on-primary-fixed": "#001a42",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface-container-lowest": "#060e20",
+                        "outline": "#8c909f",
+                        "secondary-container": "#6f00be",
+                        "surface-variant": "#2d3449",
+                        "surface-tint": "#adc6ff",
+                        "on-error": "#690005",
+                        "primary": "#adc6ff",
+                        "on-secondary-container": "#d6a9ff",
+                        "on-tertiary": "#003640",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "background": "#0b1326",
+                        "outline-variant": "#424754",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "surface-container-low": "#131b2e",
+                        "surface": "#0b1326",
+                        "tertiary-fixed": "#acedff",
+                        "inverse-primary": "#005ac2",
+                        "on-surface-variant": "#c2c6d6",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#002f38",
+                        "on-secondary-fixed": "#2c0051"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-sm": "0.5rem",
+                        "stack-lg": "2rem",
+                        "margin-mobile": "1rem",
+                        "stack-xs": "0.25rem",
+                        "gutter": "1.5rem",
+                        "container-max": "1280px",
+                        "stack-md": "1rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0b1326;
+            color: #dae2fd;
+        }
+        /* Custom scrollbar for text area */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #171f33;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3449;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #424754;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md text-body-md">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface-container/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-white/10 shadow-sm flex justify-between items-center px-gutter h-16 w-full text-on-surface-variant font-body-md text-body-md">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary">DevStack</span>
+<div class="hidden md:flex items-center bg-surface-container-high rounded-full px-4 py-1.5 border border-white/5 focus-within:border-primary/50 transition-colors ml-4">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none outline-none text-on-surface text-sm w-48 placeholder-on-surface-variant/50 focus:ring-0 p-0 font-body-md" placeholder="Search discussions..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-bright/50 transition-colors rounded-full active:scale-95 duration-150 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-bright/50 transition-colors rounded-full active:scale-95 duration-150 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+<button class="hidden md:flex items-center justify-center bg-primary text-on-primary px-4 py-1.5 rounded-DEFAULT font-label-md text-label-md hover:bg-primary/90 transition-colors active:scale-95">
+                Create
+            </button>
+<img alt="User avatar" class="w-8 h-8 rounded-full border border-white/10 ml-2 object-cover cursor-pointer hover:border-primary transition-colors" data-alt="A close up portrait of a software developer with a thoughtful expression. The lighting is soft and moody, emphasizing a professional yet modern tech atmosphere. Deep shadows contrast with subtle highlights on the face. The overall color grading leans towards cool blue tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSxizC8l1ePCHkzGgiMxlmWdlKiqX6E24WCdwyJj6hhaeHVkltqtwPHPi_-DQLxQSuXi-412zwJNn-TphpZWZvmCbdqekxhBB549bccF_XmzAkQhi7DEPC3oPuSk-_FedVNtLacPAoxY69F3_TX8Gf1OJ2BFWffXegn_FS-0pYk-_IR6U1D1XyacU92y9Fo2Q2oGSSCGDD2yw8BTxCf2joh_bOvl9jw8z0w88CiR_aHxaZ3kkt0okKyx0Ch2Fy1qtKJiFT5jmvsn8"/>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col py-stack-lg gap-stack-md fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-surface-dim dark:bg-surface-dim border-r border-white/5 font-label-md text-label-md">
+<div class="px-gutter mb-4">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Developer Hub</h2>
+<p class="text-on-surface-variant text-xs mt-1 font-body-md opacity-70">Community-First Platform</p>
+</div>
+<nav class="flex-1 flex flex-col gap-1 px-4">
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+                Home
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+                Communities
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="sell">sell</span>
+                Tags
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dynamic_feed">dynamic_feed</span>
+                Custom Feeds
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+                Saved
+            </a>
+<div class="mt-6 pt-6 border-t border-white/5">
+<button class="w-full flex items-center justify-center gap-2 bg-primary/10 text-primary border border-primary/20 px-4 py-2 rounded-DEFAULT hover:bg-primary/20 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                    Start a Discussion
+                </button>
+</div>
+</nav>
+<div class="mt-auto px-4 pb-4 flex flex-col gap-1 border-t border-white/5 pt-4">
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                Help
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 mt-16 md:ml-64 p-margin-mobile md:p-gutter max-w-container-max mx-auto w-full">
+<div class="flex flex-col lg:flex-row gap-gutter relative">
+<!-- Editor Column -->
+<div class="flex-1 flex flex-col gap-stack-md max-w-[800px]">
+<div class="flex items-center justify-between border-b border-white/10 pb-4">
+<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Create a new post</h1>
+<div class="flex bg-surface-container-high rounded-DEFAULT p-1 border border-white/5">
+<button class="px-4 py-1.5 rounded bg-surface-bright text-on-surface font-label-sm text-label-sm shadow-sm transition-colors">Edit</button>
+<button class="px-4 py-1.5 rounded text-on-surface-variant font-label-sm text-label-sm hover:text-on-surface transition-colors">Preview</button>
+</div>
+</div>
+<!-- Input Area -->
+<div class="bg-surface-container/60 backdrop-blur-xl border border-white/10 rounded-xl flex flex-col overflow-hidden shadow-lg shadow-black/20">
+<!-- Title -->
+<div class="p-4 border-b border-white/5">
+<input class="w-full bg-transparent border-none outline-none font-headline-md text-headline-md text-on-surface placeholder-on-surface-variant/50 focus:ring-0 p-0" placeholder="Post title..." type="text"/>
+</div>
+<!-- Tags -->
+<div class="p-4 border-b border-white/5 flex items-center gap-2 flex-wrap">
+<div class="flex items-center bg-surface-bright border border-white/10 rounded px-2 py-1 gap-1">
+<span class="font-label-sm text-label-sm text-primary">javascript</span>
+<button class="text-on-surface-variant hover:text-error transition-colors flex items-center"><span class="material-symbols-outlined text-[14px]" data-icon="close">close</span></button>
+</div>
+<div class="flex items-center bg-surface-bright border border-white/10 rounded px-2 py-1 gap-1">
+<span class="font-label-sm text-label-sm text-tertiary">react</span>
+<button class="text-on-surface-variant hover:text-error transition-colors flex items-center"><span class="material-symbols-outlined text-[14px]" data-icon="close">close</span></button>
+</div>
+<input class="bg-transparent border-none outline-none font-label-sm text-label-sm text-on-surface placeholder-on-surface-variant/50 focus:ring-0 p-1 min-w-[150px]" placeholder="Add up to 5 tags..." type="text"/>
+</div>
+<!-- Toolbar -->
+<div class="bg-surface-container px-4 py-2 border-b border-white/5 flex items-center gap-1 overflow-x-auto">
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-bright hover:text-on-surface rounded transition-colors" title="Bold"><span class="material-symbols-outlined text-[20px]" data-icon="format_bold">format_bold</span></button>
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-bright hover:text-on-surface rounded transition-colors" title="Italic"><span class="material-symbols-outlined text-[20px]" data-icon="format_italic">format_italic</span></button>
+<div class="w-[1px] h-4 bg-white/10 mx-1"></div>
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-bright hover:text-on-surface rounded transition-colors" title="Link"><span class="material-symbols-outlined text-[20px]" data-icon="link">link</span></button>
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-bright hover:text-on-surface rounded transition-colors" title="Quote"><span class="material-symbols-outlined text-[20px]" data-icon="format_quote">format_quote</span></button>
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-bright hover:text-on-surface rounded transition-colors" title="Code Block"><span class="material-symbols-outlined text-[20px]" data-icon="code">code</span></button>
+<div class="w-[1px] h-4 bg-white/10 mx-1"></div>
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-bright hover:text-on-surface rounded transition-colors" title="Image"><span class="material-symbols-outlined text-[20px]" data-icon="image">image</span></button>
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-bright hover:text-on-surface rounded transition-colors" title="List"><span class="material-symbols-outlined text-[20px]" data-icon="format_list_bulleted">format_list_bulleted</span></button>
+</div>
+<!-- Text Area -->
+<div class="relative min-h-[400px] flex flex-col">
+<textarea class="w-full flex-1 bg-transparent border-none outline-none p-4 font-body-md text-body-md text-on-surface placeholder-on-surface-variant/40 resize-y min-h-[300px] focus:ring-0 focus:outline-none" placeholder="Write your post content here... Markdown is supported."></textarea>
+<!-- Drag & Drop Overlay Hint -->
+<div class="absolute inset-0 pointer-events-none border-2 border-dashed border-primary/0 rounded-b-xl flex items-center justify-center bg-surface-container/0 transition-all duration-200">
+<!-- JS would toggle this on dragover -->
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="p-4 bg-surface-container-low border-t border-white/5 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="markdown">markdown</span>
+                            Markdown supported
+                        </span>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded text-on-surface-variant font-label-md text-label-md hover:bg-surface-bright transition-colors">Save Draft</button>
+<button class="px-6 py-2 bg-primary text-on-primary rounded font-label-md text-label-md hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 font-bold">
+                                Publish
+                                <span class="material-symbols-outlined text-[18px]" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Widget Column -->
+<div class="w-full lg:w-[280px] flex flex-col gap-stack-md shrink-0">
+<div class="bg-surface-container/40 backdrop-blur-md border border-white/10 rounded-xl p-5 sticky top-24">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2 mb-4 pb-3 border-b border-white/5">
+<span class="material-symbols-outlined text-tertiary" data-icon="rule">rule</span>
+                        Posting Rules
+                    </h3>
+<ul class="space-y-4 font-body-md text-body-md text-on-surface-variant text-sm">
+<li class="flex items-start gap-3">
+<span class="bg-primary/10 text-primary w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+<div>
+<strong class="text-on-surface block mb-1">Be specific</strong>
+                                Provide clear context, error messages, and what you've already tried.
+                            </div>
+</li>
+<li class="flex items-start gap-3">
+<span class="bg-primary/10 text-primary w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+<div>
+<strong class="text-on-surface block mb-1">Format code</strong>
+                                Use markdown code blocks with language tags for readability.
+                            </div>
+</li>
+<li class="flex items-start gap-3">
+<span class="bg-primary/10 text-primary w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+<div>
+<strong class="text-on-surface block mb-1">Keep it professional</strong>
+                                Maintain a constructive and respectful tone towards all members.
+                            </div>
+</li>
+</ul>
+<div class="mt-6 pt-4 border-t border-white/5 text-xs text-on-surface-variant text-center">
+                        Need help formatting? <a class="text-primary hover:underline" href="#">Read the guide</a>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple script to handle tab switching visual state
+        const editTab = document.querySelector('button:contains("Edit")');
+        const previewTab = document.querySelector('button:contains("Preview")');
+        
+        // This is just a placeholder for actual logic, targeting pseudo-elements for demonstration
+        if(editTab && previewTab) {
+            previewTab.addEventListener('click', () => {
+                previewTab.classList.remove('text-on-surface-variant');
+                previewTab.classList.add('bg-surface-bright', 'text-on-surface', 'shadow-sm');
+                editTab.classList.remove('bg-surface-bright', 'text-on-surface', 'shadow-sm');
+                editTab.classList.add('text-on-surface-variant');
+            });
+            editTab.addEventListener('click', () => {
+                editTab.classList.remove('text-on-surface-variant');
+                editTab.classList.add('bg-surface-bright', 'text-on-surface', 'shadow-sm');
+                previewTab.classList.remove('bg-surface-bright', 'text-on-surface', 'shadow-sm');
+                previewTab.classList.add('text-on-surface-variant');
+            });
+        }
+        
+        // Utility for contains selector
+        jQuery.expr[':'].contains = function(a, i, m) {
+            return jQuery(a).text().toUpperCase()
+                .indexOf(m[3].toUpperCase()) >= 0;
+        };
+    </script>
+</body></html>

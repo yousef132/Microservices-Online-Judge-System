@@ -1,29 +1,22 @@
 <!--
 Sync Impact Report
 ==================
-Version change: [TEMPLATE] → 1.0.0
+Version change: 1.1.0 → 1.2.0
 Added sections:
-  - I. Global System Architecture
-  - II. Service Architecture (Clean vs Vertical Slice)
-  - III. Database Ownership
-  - IV. Tech Stack (Non-Negotiable)
-  - V. API Conventions
-  - VI. Security & Authentication
-  - VII. Async Messaging & Reliability
-  - VIII. Observability
-  - IX. Deployment & Containerisation
-  - X. Frontend Architecture
-  - XI. Code Style & Patterns
-  - Governance
-Modified principles: N/A (initial generation from codebase)
-Removed sections: All placeholder tokens replaced
+  - XIII. Missing API Mocking Strategy & UI Development
+      — A. Missing API Gateways & State Machine
+      — B. MSW Mocking & Sandboxing
+      — C. Missing API Documentation Compilation
+      — D. Design System Source
+Modified principles:
+  - XII.H. Anti-Patterns — Tailwind row updated to reflect exception for new UI components
+  - IV. Tech Stack — Tailwind CSS authorized for new UI components
+Removed sections: none
 Templates requiring updates:
-  ✅ plan-template.md — Constitution Check section now maps to named principles (I–XI)
+  ✅ plan-template.md — Constitution Check section now maps to named principles (I–XIII)
   ✅ spec-template.md — No structural conflicts detected
   ✅ tasks-template.md — No structural conflicts detected
-  ✅ commands/*.md — No agent-specific names (CLAUDE-only) detected
-Deferred TODOs:
-  - RATIFICATION_DATE: set to first-commit date estimate 2026-05-22 (project bootstrapped today)
+Deferred TODOs: none
 -->
 
 # Microservices Online Judge System — Constitution
@@ -342,6 +335,7 @@ All .NET services MUST call `AddLoggingConfigs(configuration)` from `BuildingBlo
 ## X. Frontend Architecture
 
 The `web` service is a **React 19 SPA** built with **Vite 8**.
+For detailed structural guidance on adding or modifying frontend features, see **Section XII**.
 
 ### Structure
 
@@ -404,6 +398,450 @@ src/Web/src/
 
 ---
 
+## XII. Web App Architecture Blueprint (AI Agent Guidance)
+
+This section is a **mandatory reference for any AI model** (or human contributor) that adds, edits, or removes features from the frontend or full-stack system. It codifies the architectural patterns, file conventions, and step-by-step recipes that MUST be followed.
+
+### A. File Organization & Module Boundaries
+
+#### Current File Map
+
+```
+src/Web/
+├── index.html                 # HTML shell — single <div id="root">
+├── vite.config.js             # Vite dev server + proxy config
+├── package.json               # Dependencies — type: "module"
+├── .env                       # VITE_COMMUNITY_API_URL
+├── eslint.config.js           # ESLint 9 flat config
+└── src/
+    ├── main.jsx               # ReactDOM.createRoot — NEVER edit unless changing providers
+    ├── App.jsx                # PRIMARY FILE — routing, pages, shared components, hooks
+    ├── App.css                # ALL component styles (scoped by class names)
+    ├── index.css              # Global resets, CSS custom properties, font imports
+    ├── components/
+    │   ├── Header.jsx         # Standalone header (legacy/shared)
+    │   └── CollaborativeEditor.jsx  # Monaco + Yjs real-time editor
+    └── assets/                # Static images, SVGs
+```
+
+#### Module Boundary Rules
+
+1. **`App.jsx` is the monolith file**. All page-level components, utility functions, custom hooks, and shared UI components currently live here. When adding a new feature:
+   - If it is a **page component** or **inline UI component** → add it to `App.jsx`.
+   - If it is a **standalone reusable widget** with its own lifecycle (e.g., a complex editor, a real-time component) → create a new file in `components/`.
+   - The threshold: if the component exceeds ~150 lines AND is used in only one place AND has complex internal state (WebSocket connections, external library integration), it MAY be extracted to `components/`.
+
+2. **`index.css`** contains ONLY:
+   - `@import` for Google Fonts
+   - CSS custom properties on `:root`
+   - Global resets (`*`, `html`, `body`, `button`, `input`, etc.)
+   - Focus-visible styles
+   - Legacy collaboration component styles (`.app-container`, `.header`, `.panel`, etc.)
+   - Yjs remote selection styles
+
+3. **`App.css`** contains ALL component-level styles scoped by class name. New styles MUST be added here. Style blocks MUST be grouped by component and separated by a comment header.
+
+4. **`main.jsx`** MUST NOT be modified unless adding a global React context provider or changing the root mount strategy.
+
+5. **`vite.config.js`** MUST be updated when:
+   - A new backend service requires a dev proxy route.
+   - The dev server configuration changes.
+
+#### When to Create a New File
+
+| Scenario | Action |
+|---|---|
+| New page component (< 150 lines) | Add to `App.jsx` |
+| New page component (> 150 lines, self-contained) | Add to `App.jsx` — extract later if reuse emerges |
+| New shared UI component (used by ≥ 2 pages) | Add to `App.jsx` as a function, near other shared components |
+| Complex widget with external library (Monaco, Yjs, charts) | Create `components/<WidgetName>.jsx` |
+| New custom hook (< 30 lines) | Add to `App.jsx` near other hooks |
+| New custom hook (> 30 lines or reused across files) | Create `hooks/<hookName>.js` |
+| New utility function | Add to `App.jsx` near existing utilities |
+| New CSS styles | Add to `App.css` under a component comment header |
+| New CSS custom property | Add to `index.css` inside `:root` |
+
+### B. Component Taxonomy & Composition Rules
+
+#### Component Categories
+
+The frontend uses four categories of components. Each has specific rules:
+
+**1. Page Components** (rendered by `<Route>`)
+- Examples: `Dashboard`, `ArticleDetails`, `ArticleEditor`, `ArticleCollection`, `Recommendations`, `EndpointWorkbench`
+- MUST receive `api` as a prop (the `useApi()` return value)
+- MUST be registered in the `<Routes>` inside `Shell`
+- MUST use `<AsyncState>` or manual loading/error states for API calls
+- MUST use `<PageHeading>` for the page title area
+
+**2. Layout Components** (structural wrappers)
+- Examples: `Shell`, `PageErrorBoundary`
+- `Shell` owns the `<Header>` + `<Routes>` composition
+- `PageErrorBoundary` wraps `<Routes>` to catch uncaught render errors
+
+**3. Shared UI Components** (reusable across pages)
+- Examples: `ArticleCard`, `ArticleList`, `CompactArticleList`, `CommentTree`, `CommentNode`, `VoteControl`, `TagRow`, `AuthorLine`, `EndpointCoverage`, `PageHeading`, `Pagination`, `AsyncState`, `EmptyState`, `MethodBadge`
+- MUST be pure presentational where possible — receive data via props, emit events via callbacks
+- MUST NOT call `useApi()` directly (exception: components that explicitly need auth state)
+
+**4. External Integration Components** (in `components/`)
+- Examples: `CollaborativeEditor`, `Header`
+- MAY manage their own state, WebSocket connections, or external library instances
+- MUST be imported into `App.jsx` when used
+
+#### Composition Pattern
+
+```
+App (BrowserRouter)
+└── Shell (receives api)
+    ├── Header (receives api — for token management)
+    └── PageErrorBoundary
+        └── Routes
+            ├── Dashboard (page)
+            │   ├── ArticleList → ArticleCard (shared)
+            │   ├── Pagination (shared)
+            │   └── CompactArticleList (shared)
+            ├── ArticleDetails (page)
+            │   ├── VoteControl (shared)
+            │   ├── CommentTree → CommentNode (shared)
+            │   └── TagRow (shared)
+            ├── ArticleEditor (page)
+            ├── ArticleCollection (page)
+            ├── Recommendations (page)
+            └── EndpointWorkbench (page)
+```
+
+#### Adding a New Page Component — Checklist
+
+1. Define the function component in `App.jsx` (before the `App()` function, near other page components).
+2. Accept `{ api }` as props.
+3. Add a `<Route path="/your-path" element={<YourPage api={api} />} />` inside `Shell`'s `<Routes>`.
+4. Add a `<NavLink>` in `Header` if it should appear in the navigation bar.
+5. Add styles to `App.css` under a `/* YourPage */` comment header.
+6. Update the `ENDPOINTS` array if the page consumes new API endpoints.
+
+### C. Data Flow & State Management
+
+#### State Architecture
+
+```
+┌──────────────────────────────────────────────────────┐
+│                      App()                           │
+│  ┌──────────────┐                                    │
+│  │  useApi()    │ → { request, token, setToken,      │
+│  │  (hook)      │    isAuthenticated }               │
+│  └──────┬───────┘                                    │
+│         │ passed as `api` prop                       │
+│         ▼                                            │
+│  ┌──────────────┐                                    │
+│  │   Shell      │                                    │
+│  │  ┌─────────┐ │                                    │
+│  │  │ Header  │ │ ← api.token, api.setToken          │
+│  │  └─────────┘ │                                    │
+│  │  ┌─────────────────────────────────────────────┐  │
+│  │  │ Page Components                             │  │
+│  │  │  - Own loading/error/data state (useState)  │  │
+│  │  │  - Fetch via api.request(path, options)     │  │
+│  │  │  - useResource() for secondary resources    │  │
+│  │  │  - useCallback for stable fetch functions   │  │
+│  │  └─────────────────────────────────────────────┘  │
+│  └──────────────┘                                    │
+└──────────────────────────────────────────────────────┘
+```
+
+#### Data Fetching Patterns
+
+**Pattern 1: Page-Critical Data** (loading blocks the entire page)
+```jsx
+const [data, setData] = useState(null);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState("");
+
+const load = useCallback(async () => {
+  setLoading(true);
+  setError("");
+  try {
+    setData(await api.request("/api/path"));
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+}, [api, /* other deps */]);
+
+useEffect(() => { load(); }, [load]);
+```
+Use `<AsyncState loading={loading} error={error}>` to render.
+
+**Pattern 2: Secondary/Optional Data** (404 = empty, not error)
+```jsx
+const resource = useResource(
+  api,
+  (a) => a.request("/api/optional-data"),
+  [api]
+);
+// resource = { data, loading, error, isEmpty, reload }
+```
+Use conditional rendering: `resource.loading ? <Loader> : resource.isEmpty ? <EmptyState> : resource.error ? <ErrorState> : <Content>`
+
+**Pattern 3: Mutations** (user-triggered actions)
+```jsx
+const [busy, setBusy] = useState("");
+
+const doAction = async () => {
+  setBusy("action-name");
+  try {
+    await api.request("/api/path", { method: "POST", body: JSON.stringify(payload) });
+    // Update local state or reload
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setBusy("");
+  }
+};
+```
+
+#### Rules
+
+- `useApi()` MUST be called exactly once in `App()` and passed down as a prop. NEVER call `useApi()` in child components.
+- All API paths MUST be relative (e.g., `/api/articles`). The `API_BASE` prefix is prepended by `useApi().request`.
+- GET request deduplication is handled automatically by `IN_FLIGHT_GET_REQUESTS` — do not add your own deduplication.
+- `useCallback` MUST wrap any function passed as a dependency to `useEffect` or `useResource`.
+- `useMemo` MUST wrap any derived data that is expensive to compute or used as a dependency.
+- `useRef` MUST be used for mutable values that should not trigger re-renders (e.g., `apiRef` in `useResource`).
+
+### D. Routing & Navigation
+
+#### Route Registration
+
+All routes MUST be registered in the `Shell` component:
+
+```jsx
+<Routes>
+  <Route path="/" element={<Dashboard api={api} />} />
+  <Route path="/articles/new" element={<ArticleEditor api={api} mode="create" />} />
+  <Route path="/articles/:slug" element={<ArticleDetails api={api} />} />
+  <Route path="/articles/:slug/edit" element={<ArticleEditor api={api} mode="edit" />} />
+  <Route path="/me" element={<ArticleCollection api={api} mode="mine" />} />
+  <Route path="/bookmarks" element={<ArticleCollection api={api} mode="bookmarks" />} />
+  <Route path="/recommendations" element={<Recommendations api={api} />} />
+  <Route path="/endpoints" element={<EndpointWorkbench api={api} />} />
+</Routes>
+```
+
+#### Rules
+
+- Route paths MUST be lowercase kebab-case.
+- Dynamic segments MUST use `:paramName` syntax.
+- `useParams()` MUST be used to read route parameters.
+- `useNavigate()` MUST be used for programmatic navigation.
+- `useSearchParams()` MUST be used for query string state (e.g., filters, pagination).
+- `<NavLink>` MUST be used in navigation bars (provides active state styling).
+- `<Link>` MUST be used for all other in-app navigation — no `<a href>` for internal routes.
+
+### E. Styling Conventions
+
+#### CSS Architecture
+
+| File | Purpose | When to Edit |
+|---|---|---|
+| `index.css` | Global resets, `:root` custom properties, font imports, legacy collab styles | Adding a new CSS variable or modifying global resets |
+| `App.css` | All component styles, scoped by class names | Adding/modifying any component's appearance |
+
+#### Naming Convention
+
+- CSS class names MUST use **kebab-case** (e.g., `article-card`, `page-heading`, `vote-control`).
+- Component-specific classes MUST be prefixed with the component's semantic name (e.g., `article-card-main`, `comment-header`, `endpoint-layout`).
+- State modifiers MUST use separate classes (e.g., `active`, `compact`, `narrow`) — no BEM notation.
+- Method-specific classes use the method name (e.g., `.method-badge.get`, `.method-badge.post`).
+
+#### Design Tokens (from `:root`)
+
+```css
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, ...;
+  color: #202124;
+  background: #f7f4ee;
+}
+```
+
+When adding new features:
+- Background tones MUST harmonize with `#f7f4ee` (warm off-white).
+- Text MUST use `#202124` or lighter shades for secondary text.
+- Primary accent: teal `#216869` (derived from focus-visible outline).
+- Interactive focus: `rgba(33, 104, 105, 0.28)` outline.
+- MUST NOT introduce a conflicting colour palette.
+
+#### Style Block Template
+
+When adding styles for a new component, use this structure in `App.css`:
+
+```css
+/* ── YourComponentName ── */
+
+.your-component { ... }
+.your-component-header { ... }
+.your-component .active { ... }
+```
+
+### F. Feature Addition Recipe (Step-by-Step)
+
+Follow this exact sequence when adding a new frontend feature:
+
+#### Step 1: Constitution Check
+
+Before writing any code, verify the feature does not violate principles I–XII. Document findings in the plan's "Constitution Check" table.
+
+#### Step 2: API Surface
+
+1. Identify which backend service(s) the feature calls.
+2. Verify the API routes exist in the backend.
+3. Add new entries to the `ENDPOINTS` array in `App.jsx` if adding new API paths.
+4. If calling a new backend service, add a proxy route in `vite.config.js`.
+
+#### Step 3: Data Layer
+
+1. Define the data fetching approach (Pattern 1, 2, or 3 from Section C).
+2. Add any new helper functions (e.g., `getField` wrappers, formatters) near existing helpers.
+3. If the feature needs a new custom hook, add it near `useApi()` and `useResource()`.
+
+#### Step 4: Component Implementation
+
+1. Add the page component function to `App.jsx`.
+2. Accept `{ api }` as props.
+3. Implement loading, error, and data states.
+4. Compose using existing shared components (`AsyncState`, `EmptyState`, `Pagination`, `PageHeading`, etc.).
+5. Add the `<Route>` in `Shell`.
+6. Add the `<NavLink>` in `Header` (if navigable).
+
+#### Step 5: Styling
+
+1. Add component styles to `App.css` under a comment header.
+2. Reuse existing class patterns (`.button`, `.panel-block`, `.loading-state`, `.toolbar`, etc.).
+3. If a new CSS variable is needed, add it to `:root` in `index.css`.
+
+#### Step 6: Verification
+
+1. Verify the page renders without errors.
+2. Verify loading states display correctly.
+3. Verify error states display correctly (simulate a failed API call).
+4. Verify 404 responses are handled gracefully (empty state, not crash).
+5. Verify navigation to/from the new page works.
+6. Verify the page is responsive (min-width: 320px).
+
+### G. Feature Modification Recipe
+
+When modifying an existing feature:
+
+1. **Locate** the component in `App.jsx` — search by function name or route path.
+2. **Identify scope**: Is it the page component, a shared component, a hook, or a utility?
+3. **Assess blast radius**: What other components use the same shared components or hooks?
+4. **Make the change**: Follow the same patterns used by surrounding code.
+5. **Preserve existing behaviour**: Do not change function signatures, prop interfaces, or return shapes of hooks unless the plan explicitly calls for it.
+6. **Update styles**: If the change affects layout or appearance, update `App.css`.
+7. **Update `ENDPOINTS`**: If API paths changed, update the array.
+
+### H. Anti-Patterns (MUST NOT)
+
+The following patterns are explicitly **FORBIDDEN** and MUST NOT be introduced:
+
+| Anti-Pattern | Why Forbidden | Do Instead |
+|---|---|---|
+| Calling `useApi()` in child components | Creates duplicate token state; breaks single-source-of-truth | Pass `api` as a prop from `App()` |
+| Using `fetch()` directly | Bypasses token injection, deduplication, and error normalisation | Use `api.request()` |
+| Storing state in global variables | Breaks React's rendering model | Use `useState`, `useRef`, or `useCallback` |
+| Using `class` components | Violates React 19 hooks-only rule | Functional components (exception: `PageErrorBoundary`) |
+| Adding Redux, Zustand, or Jotai | Over-engineering for current scale | Prop drilling + `useApi()` pattern |
+| Inline styles (`style={{}}`) | Defeats CSS organisation | Add classes to `App.css` |
+| CSS-in-JS (styled-components, emotion) | Violates Vanilla CSS rule | `App.css` |
+| Tailwind / Bootstrap / any CSS framework | Violates tech stack rule — **exception**: Tailwind CSS is authorized for new UI components per Section XIII | Vanilla CSS (unless component is new) |
+| Direct DOM manipulation (`document.querySelector`) | Breaks React's virtual DOM | Use refs (`useRef`) |
+| Magic string API URLs | Breaks proxy and gateway routing | Use `API_BASE` + relative paths |
+| `any` type assertions (if TypeScript is ever added) | Defeats type safety | Proper typing |
+| Creating a separate `services/` or `api/` directory | Premature abstraction for current codebase scale | `useApi()` hook in `App.jsx` |
+| Importing icons from anything other than `lucide-react` | Violates icon library rule | `import { IconName } from "lucide-react"` |
+
+### I. Backend Feature Addition Reference
+
+When a frontend feature requires backend changes, follow these patterns per service:
+
+#### CoreJudge (Clean Architecture)
+
+1. **Domain**: Add entity in `CoreJudge.Domain/Entities/`, domain event in `Events/`.
+2. **Application**: Add command/query in `Application/Features/<Feature>/`, handler, validator, DTOs.
+3. **Infrastructure**: Add EF Core configuration in `Infrastructure/Configurations/`, repository implementation.
+4. **API**: Add controller in `API/Controllers/`, register in DI.
+5. **Migration**: `dotnet ef migrations add <Name>` from the API project.
+
+#### Community (Vertical Slice)
+
+1. Create folder: `Features/<FeatureName>/<ActionName>/`.
+2. Add `<Action>Command.cs`, `<Action>Handler.cs`, `<Action>Endpoint.cs`, `<Action>Validator.cs`.
+3. Endpoint auto-registers via `IEndpoint` scanning.
+
+#### Users (Carter)
+
+1. Add `ICarterModule` implementation.
+2. Delegate logic to `IUserService`.
+3. Register module in `Program.cs`.
+
+#### Cross-Service Communication
+
+1. Define event record in the publishing service's `Domain/Events/`.
+2. Define consumer `IConsumer<TEvent>` in the subscribing service.
+3. Register consumer with `x.AddConsumer<TConsumer>()`.
+4. Verify outbox pattern is enabled if the publisher uses EF Core.
+
+#### Gateway
+
+1. Add route cluster in `api.gateway`'s YARP configuration.
+2. Follow existing route pattern: `/<service-prefix>/{**catch-all}`.
+
+---
+
+## XIII. Missing API Mocking Strategy & UI Development
+
+When adding features not yet supported by the backend or developing new UI components, all AI agents MUST strictly comply with the following instructions:
+
+### A. Missing API Gateways & State Machine
+
+If a screen or component relies on data/actions not yet provided by the current backend:
+
+1. **Full Implementation Required**: Write complete React state hooks, custom fetch actions, local storage binders, validation states, and components as if the backend endpoints already exist. DO NOT skip coding the interactions, submit buttons, loading indicators, empty slots, or error display banners.
+2. **Hook Pattern**: Create structured hooks (e.g., using the `useResource` or `useApi` pattern) to encapsulate the data loading flow.
+
+### B. MSW Mocking & Sandboxing
+
+1. **Mock Service Worker**: All unimplemented endpoints MUST be mocked in `src/Web/src/mocks/handlers.js` using MSW v2.
+2. **Deterministic Data Simulation**: MSW handlers MUST mock realistic data payload matrices (e.g., paginated lists, model entities, validation faults) to enable complete front-end manual testing without launching an updated backend stack.
+3. **State Simulators**: Include mock latency (e.g., `delay(500)`) and expose states to trigger edge cases (empty search results, resource 404s, backend 500 crashes) to verify front-end resilience.
+4. **Worker Registration**: The MSW service worker MUST be conditionally started in `src/Web/src/main.jsx` for development mode only. The worker script (`mockServiceWorker.js`) MUST be initialized in `src/Web/public/` via `npx msw init public/ --save`.
+
+### C. Missing API Documentation Compilation
+
+All missing APIs developed during UI development MUST be documented in a central file `src/Web/src/docs/missing-apis.md`. For each endpoint, the document MUST list:
+
+1. **Metadata**: Endpoint URL Route, HTTP Verb, and Auth Requirements.
+2. **Usage Context**: Which UI component or Hook initiates this request.
+3. **Request Specification**: Expected Headers and Request JSON body format.
+4. **Response Specification**: JSON schemas for:
+   - Success Responses (HTTP 200/201)
+   - Validation Failures (HTTP 400 with Problem Details)
+   - Resource Not Found (HTTP 404)
+5. **Data Contract**: Entity JSON structures with accurate data types (e.g., UUID strings, datetime stamps).
+
+### D. Design System Source
+
+The application design system MUST adhere to the following rules:
+
+- **Color palette**: Deep slate backgrounds (`#0b1326`), primary accent (`#adc6ff` / `#4d8eff`), secondary (`#ddb7ff`), tertiary (`#4cd7f6`), error (`#ffb4ab`).
+- **Typography**: Inter for UI text; JetBrains Mono for labels, metadata, and reputation scores.
+- **Elevation model**: Layered glassmorphism — `backdrop-filter: blur(12px)`, 1px borders at 8–15% white opacity.
+- **Spacing rhythm**: 8px base unit; component padding `16px`; feed item gap `24–32px`.
+- **Shapes**: Rounded 4px (small), 8px (cards), pill (badges/avatars).
+
+---
+
 ## Governance
 
 - This constitution supersedes all informal coding conventions, PR comments, and README guidelines.
@@ -416,4 +854,4 @@ src/Web/src/
 - Complexity violations (e.g., adding a 5th service, introducing a new database engine) MUST be explicitly justified in the plan's "Complexity Tracking" table.
 - Compliance MUST be reviewed at every PR by checking against the principles above.
 
-**Version**: 1.0.0 | **Ratified**: 2026-05-22 | **Last Amended**: 2026-05-22
+**Version**: 1.2.0 | **Ratified**: 2026-05-22 | **Last Amended**: 2026-05-29

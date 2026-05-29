@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+@import "tailwindcss";
 
 :root {
   font-family:
@@ -9,8 +10,8 @@
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  color: #202124;
-  background: #f7f4ee;
+  color: #ffffff;
+  background: #202124;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -23,14 +24,14 @@
 
 html {
   min-height: 100%;
-  background: #f7f4ee;
+  background: #202124;
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background: #f7f4ee;
+  background: #202124;
 }
 
 button,

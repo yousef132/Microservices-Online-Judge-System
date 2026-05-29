@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevStack - Authentication</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-tint": "#adc6ff",
+                        "on-surface": "#dae2fd",
+                        "surface-container-highest": "#2d3449",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "background": "#0b1326",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "inverse-primary": "#005ac2",
+                        "on-error": "#690005",
+                        "surface-container": "#171f33",
+                        "primary": "#adc6ff",
+                        "on-tertiary-fixed": "#001f26",
+                        "inverse-surface": "#dae2fd",
+                        "surface-bright": "#31394d",
+                        "on-primary-fixed": "#001a42",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "secondary-fixed": "#f0dbff",
+                        "primary-container": "#4d8eff",
+                        "on-primary-fixed-variant": "#004395",
+                        "secondary-container": "#6f00be",
+                        "on-secondary": "#490080",
+                        "on-primary": "#002e6a",
+                        "on-surface-variant": "#c2c6d6",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "surface-container-high": "#222a3d",
+                        "tertiary-container": "#009eb9",
+                        "surface-dim": "#0b1326",
+                        "secondary": "#ddb7ff",
+                        "tertiary-fixed": "#acedff",
+                        "tertiary": "#4cd7f6",
+                        "on-tertiary": "#003640",
+                        "surface-container-lowest": "#060e20",
+                        "outline": "#8c909f",
+                        "on-secondary-fixed": "#2c0051",
+                        "error-container": "#93000a",
+                        "surface": "#0b1326",
+                        "on-tertiary-container": "#002f38",
+                        "surface-variant": "#2d3449",
+                        "outline-variant": "#424754",
+                        "surface-container-low": "#131b2e",
+                        "on-background": "#dae2fd",
+                        "primary-fixed": "#d8e2ff",
+                        "on-secondary-container": "#d6a9ff",
+                        "on-primary-container": "#00285d",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#283044"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "stack-md": "1rem",
+                        "container-max": "1280px",
+                        "stack-sm": "0.5rem",
+                        "gutter": "1.5rem",
+                        "margin-mobile": "1rem",
+                        "stack-xs": "0.25rem",
+                        "stack-lg": "2rem"
+                    },
+                    fontFamily: {
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["JetBrains Mono"]
+                    },
+                    fontSize: {
+                        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+                        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+                        "headline-lg-mobile": ["24px", { lineHeight: "32px", fontWeight: "700" }],
+                        "headline-xl": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "800" }],
+                        "headline-lg": ["30px", { lineHeight: "38px", letterSpacing: "-0.01em", fontWeight: "700" }],
+                        "label-md": ["14px", { lineHeight: "20px", fontWeight: "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(45, 52, 73, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .input-glow:focus {
+            box-shadow: 0 0 0 2px rgba(77, 142, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row font-body-md selection:bg-primary selection:text-on-primary antialiased">
+<!-- Left Side: Branding / Graphic -->
+<div class="hidden md:flex md:w-1/2 lg:w-5/12 bg-surface-container-lowest relative overflow-hidden items-center justify-center p-gutter">
+<!-- Abstract Background Image -->
+<div class="absolute inset-0 z-0">
+<img alt="Developer ecosystem background" class="w-full h-full object-cover opacity-30 mix-blend-screen" data-alt="A highly stylized, deep dark mode conceptual abstract photograph representing a modern developer ecosystem. Intricate server rack lights and circuit-like pathways glow with vibrant electric blue and subtle cyan accents against a deep midnight black canvas. The scene implies connectivity, high-performance computing, and a global infrastructure. Soft lens flares and a shallow depth of field add a premium, SaaS-Deep cinematic aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2ZDffMhi80NkAZIi-ZaIFXAlDNN0nyFDjuJFOGjxvA4vJrNrZmw5yknI2eW0-P_-265PpcGP5F-vVdWRvB09C8ospUyN4Ufs1Ju1wVT_tVKBgfup1qLZz3sT_YnZA95vbH0shIdm7JDBytJo2BrMMnpSCj6OObN4SLFH4JJ0ZAhQtYGt8nXkPNfHV3_LKPHRzNOMEvdWU9nWocons22c5SQwTJkE5kHHOn6xdj05-n1BkrJRtAxaU9Iph5d_XDTwKYoka4h9HupM"/>
+<div class="absolute inset-0 bg-gradient-to-b from-background/80 via-background/50 to-background"></div>
+</div>
+<!-- Branding Content -->
+<div class="relative z-10 max-w-md w-full flex flex-col gap-stack-lg glass-panel p-stack-lg rounded-xl">
+<div class="flex items-center gap-stack-sm">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<span class="font-headline-lg text-headline-lg text-on-surface tracking-tight">DevStack</span>
+</div>
+<div class="flex flex-col gap-stack-md">
+<h1 class="font-headline-xl text-headline-xl text-on-surface">The hub for serious developers.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Join a high-signal community where engineers build, discuss, and scale tomorrow's infrastructure. No noise, just code.</p>
+</div>
+<div class="flex flex-col gap-stack-sm mt-stack-md">
+<div class="flex items-center gap-stack-sm text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+<span>100k+ Active Engineers</span>
+</div>
+<div class="flex items-center gap-stack-sm text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+<span>Deep Technical Discussions</span>
+</div>
+<div class="flex items-center gap-stack-sm text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+<span>Curated Resources &amp; Tools</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Form -->
+<div class="flex-1 flex items-center justify-center p-margin-mobile md:p-gutter bg-surface">
+<div class="w-full max-w-md flex flex-col gap-stack-lg">
+<!-- Mobile Logo Header (Hidden on Desktop) -->
+<div class="md:hidden flex items-center gap-stack-sm mb-stack-md justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<span class="font-headline-md text-headline-md text-on-surface tracking-tight">DevStack</span>
+</div>
+<div class="text-center md:text-left flex flex-col gap-stack-xs">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Welcome back</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Sign in to your account to continue.</p>
+</div>
+<!-- Social Auth -->
+<div class="flex flex-col gap-stack-sm">
+<button class="w-full flex items-center justify-center gap-stack-sm px-4 py-3 rounded-DEFAULT border border-outline-variant bg-surface-container hover:bg-surface-bright transition-colors font-label-md text-label-md text-on-surface" type="button">
+<svg aria-hidden="true" class="w-5 h-5 fill-current" viewbox="0 0 24 24"><path clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" fill-rule="evenodd"></path></svg>
+                    Continue with GitHub
+                </button>
+<button class="w-full flex items-center justify-center gap-stack-sm px-4 py-3 rounded-DEFAULT border border-outline-variant bg-surface-container hover:bg-surface-bright transition-colors font-label-md text-label-md text-on-surface" type="button">
+<svg aria-hidden="true" class="w-5 h-5" viewbox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path></svg>
+                    Continue with Google
+                </button>
+</div>
+<!-- Divider -->
+<div class="relative flex items-center py-stack-sm">
+<div class="flex-grow border-t border-outline-variant"></div>
+<span class="flex-shrink-0 mx-4 text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Or continue with email</span>
+<div class="flex-grow border-t border-outline-variant"></div>
+</div>
+<!-- Email Form -->
+<form action="#" class="flex flex-col gap-stack-md" method="POST">
+<div class="flex flex-col gap-stack-xs">
+<label class="font-label-sm text-label-sm text-on-surface" for="email">Email Address</label>
+<input class="w-full bg-surface-dim border border-outline-variant rounded-DEFAULT px-4 py-3 text-on-surface font-body-md focus:border-primary focus:ring-0 input-glow transition-all" id="email" name="email" placeholder="developer@company.com" required="" type="email"/>
+</div>
+<div class="flex flex-col gap-stack-xs">
+<div class="flex items-center justify-between">
+<label class="font-label-sm text-label-sm text-on-surface" for="password">Password</label>
+<a class="font-label-sm text-label-sm text-primary hover:text-primary-container transition-colors" href="#">Forgot password?</a>
+</div>
+<input class="w-full bg-surface-dim border border-outline-variant rounded-DEFAULT px-4 py-3 text-on-surface font-body-md focus:border-primary focus:ring-0 input-glow transition-all" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+<div class="flex items-center justify-between mt-stack-xs">
+<div class="flex items-center">
+<input class="h-4 w-4 rounded-DEFAULT border-outline-variant bg-surface-dim text-primary focus:ring-primary focus:ring-offset-background" id="remember-me" name="remember-me" type="checkbox"/>
+<label class="ml-2 block font-label-sm text-label-sm text-on-surface-variant" for="remember-me">
+                            Remember me for 30 days
+                        </label>
+</div>
+</div>
+<button class="w-full flex justify-center py-3 px-4 mt-stack-sm rounded-DEFAULT text-on-primary bg-primary hover:bg-primary-container focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background font-label-md text-label-md transition-colors shadow-[0_0_15px_rgba(77,142,255,0.3)]" type="submit">
+                    Sign in to Workspace
+                </button>
+</form>
+<!-- Security Footer -->
+<div class="flex flex-col items-center gap-stack-sm mt-stack-md pt-stack-md border-t border-outline-variant/30 text-center">
+<div class="flex items-center justify-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+<span>Secure end-to-end encryption</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Don't have an account? 
+                    <a class="font-label-md text-label-md text-primary hover:text-primary-container transition-colors ml-1" href="#">Request Access</a>
+</p>
+</div>
+</div>
+</div>
+</body></html>

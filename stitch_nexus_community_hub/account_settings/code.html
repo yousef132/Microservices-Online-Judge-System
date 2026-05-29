@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Account Settings - DevStack</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#060e20",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "on-secondary-container": "#d6a9ff",
+                        "error-container": "#93000a",
+                        "inverse-surface": "#dae2fd",
+                        "on-background": "#dae2fd",
+                        "inverse-primary": "#005ac2",
+                        "on-primary": "#002e6a",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "on-surface-variant": "#c2c6d6",
+                        "outline": "#8c909f",
+                        "secondary-fixed": "#f0dbff",
+                        "surface": "#0b1326",
+                        "secondary": "#ddb7ff",
+                        "surface-container-highest": "#2d3449",
+                        "outline-variant": "#424754",
+                        "inverse-on-surface": "#283044",
+                        "tertiary-fixed": "#acedff",
+                        "surface-container-high": "#222a3d",
+                        "surface-container": "#171f33",
+                        "surface-tint": "#adc6ff",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-secondary-fixed": "#2c0051",
+                        "on-primary-container": "#00285d",
+                        "secondary-container": "#6f00be",
+                        "on-tertiary-fixed": "#001f26",
+                        "background": "#0b1326",
+                        "tertiary": "#4cd7f6",
+                        "on-primary-fixed": "#001a42",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-surface": "#dae2fd",
+                        "surface-variant": "#2d3449",
+                        "surface-bright": "#31394d",
+                        "on-tertiary": "#003640",
+                        "surface-dim": "#0b1326",
+                        "primary": "#adc6ff",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#131b2e",
+                        "on-primary-fixed-variant": "#004395",
+                        "on-error": "#690005",
+                        "tertiary-container": "#009eb9",
+                        "primary-container": "#4d8eff",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary-container": "#002f38",
+                        "on-secondary": "#490080"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "1rem",
+                        "container-max": "1280px",
+                        "gutter": "1.5rem",
+                        "stack-sm": "0.5rem",
+                        "stack-md": "1rem",
+                        "stack-xs": "0.25rem",
+                        "stack-lg": "2rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-xl": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background antialiased font-body-md overflow-x-hidden selection:bg-primary/30 selection:text-primary">
+<!-- TopNavBar Shared Component -->
+<nav class="bg-surface-container/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-white/10 shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16 w-full">
+<div class="flex items-center gap-stack-md">
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tight">DevStack</span>
+</div>
+<div class="flex-1 max-w-md mx-gutter hidden md:block">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm transition-colors group-focus-within:text-primary">search</span>
+<input class="w-full bg-surface-dim border border-white/10 rounded-DEFAULT py-2 pl-10 pr-4 text-on-surface font-label-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-on-surface-variant/50" placeholder="Search Command Palette (⌘K)" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="p-2 text-on-surface-variant hover:bg-surface-bright/50 transition-colors active:scale-95 duration-150 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-bright/50 transition-colors active:scale-95 duration-150 rounded-full flex items-center justify-center hidden sm:flex">
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+</button>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-DEFAULT hover:bg-primary-container hover:text-on-primary-container transition-colors active:scale-95 duration-150 ml-2 shadow-[0_0_15px_rgba(77,142,255,0.2)]">
+                Create
+            </button>
+<div class="w-8 h-8 rounded-full border border-white/20 overflow-hidden ml-2 cursor-pointer hover:border-primary transition-colors">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A striking portrait of a professional individual set against a deep, minimalist studio backdrop. The lighting is high-key yet moody, casting soft shadows that highlight structural features. The overall aesthetic leans into a sophisticated, modern tech vibe with cool slate undertones. The composition is tight and focused, conveying quiet authority and focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqfmZeC_y6uhqNitrNRM0TbrvWlSukvsFtWYSTVTS1FnxJQJ0WTP1AdH-frKKwZHgK1z7pZVkqpCLPNpy--W8If_Rlpe7uOHw3hAYLuLwP0I588HRD5PVoQnDkrGZjqae1GNs50pN8ZfFotErsBECP_yY_MFnIYTpOhfpkA42Zi2D0tQRt_IrLWbcK8gk-OTl7O_NKz_9VMh2whs-bCVU2Dc2gAFYFjVVsq-ZRCG0R7IDBQJNe3iDciuCMaM3j_VcE5D0AureuBgc"/>
+</div>
+</div>
+</nav>
+<!-- SideNavBar Shared Component (Desktop only) -->
+<aside class="hidden md:flex bg-surface-dim dark:bg-surface-dim border-r border-white/5 fixed left-0 top-16 h-[calc(100vh-64px)] w-64 flex-col py-stack-lg gap-stack-md z-40">
+<div class="px-gutter mb-4">
+<h2 class="font-headline-sm text-[16px] font-semibold text-on-surface">Developer Hub</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Community-First Platform</p>
+<button class="mt-4 w-full bg-surface-container-high text-primary border border-white/5 py-2 rounded-DEFAULT font-label-md text-label-sm hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[16px]">add_circle</span>
+                Start a Discussion
+            </button>
+</div>
+<nav class="flex-1 flex flex-col gap-1 px-3">
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md flex items-center gap-3 px-3 py-2 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">home</span>
+                Home
+            </a>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md flex items-center gap-3 px-3 py-2 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+                Communities
+            </a>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md flex items-center gap-3 px-3 py-2 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">sell</span>
+                Tags
+            </a>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md flex items-center gap-3 px-3 py-2 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">dynamic_feed</span>
+                Custom Feeds
+            </a>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md flex items-center gap-3 px-3 py-2 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+                Saved
+            </a>
+</nav>
+<div class="px-3 flex flex-col gap-1 mt-auto">
+<!-- Active State Navigation -->
+<a class="text-primary font-bold border-l-2 border-primary bg-primary/5 transition-all duration-200 ease-in-out font-label-md text-label-md flex items-center gap-3 px-3 py-2 rounded-r-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">settings</span>
+                Settings
+            </a>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md flex items-center gap-3 px-3 py-2 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+                Help
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 mt-16 p-gutter min-h-[calc(100vh-64px)] pb-24">
+<div class="max-w-[720px] mx-auto">
+<header class="mb-stack-lg border-b border-white/5 pb-stack-md">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Account Settings</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Manage your email, password, and security preferences.</p>
+</header>
+<div class="flex flex-col gap-stack-lg">
+<!-- Email Management Card -->
+<section class="bg-surface-container-low border border-white/5 rounded-xl p-stack-lg relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+<div class="flex items-center gap-4 mb-stack-md">
+<span class="material-symbols-outlined text-primary text-[28px]">mail</span>
+<h2 class="font-headline-md text-[20px] text-on-surface">Email Address</h2>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant mb-stack-md">The email address associated with your DevStack account. This is used for notifications and login.</p>
+<div class="flex flex-col sm:flex-row gap-stack-sm items-end">
+<div class="flex-1 w-full">
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-stack-xs uppercase tracking-wider">Primary Email</label>
+<input class="w-full bg-surface-dim border border-outline-variant rounded-DEFAULT px-4 py-2 text-on-surface font-label-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all shadow-inner" type="email" value="developer@nexus.io"/>
+</div>
+<button class="bg-surface-container-high border border-white/10 text-on-surface px-5 py-2 rounded-DEFAULT font-label-md hover:bg-surface-bright transition-colors h-[42px] w-full sm:w-auto">
+                            Update
+                        </button>
+</div>
+<div class="mt-4 flex items-center gap-2 text-xs font-label-sm text-emerald-400/80 bg-emerald-400/10 inline-flex px-2 py-1 rounded-DEFAULT border border-emerald-400/20">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                        Email Verified
+                    </div>
+</section>
+<!-- Security & Password Card -->
+<section class="bg-surface-container-low border border-white/5 rounded-xl p-stack-lg relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+<div class="flex items-center gap-4 mb-stack-md">
+<span class="material-symbols-outlined text-primary text-[28px]">lock</span>
+<h2 class="font-headline-md text-[20px] text-on-surface">Security &amp; Password</h2>
+</div>
+<div class="space-y-stack-md border-b border-white/5 pb-stack-md mb-stack-md">
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-stack-xs uppercase tracking-wider">Current Password</label>
+<input class="w-full bg-surface-dim border border-outline-variant rounded-DEFAULT px-4 py-2 text-on-surface font-label-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="••••••••" type="password"/>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-stack-sm">
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-stack-xs uppercase tracking-wider">New Password</label>
+<input class="w-full bg-surface-dim border border-outline-variant rounded-DEFAULT px-4 py-2 text-on-surface font-label-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="password"/>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-stack-xs uppercase tracking-wider">Confirm Password</label>
+<input class="w-full bg-surface-dim border border-outline-variant rounded-DEFAULT px-4 py-2 text-on-surface font-label-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="password"/>
+</div>
+</div>
+<div class="flex justify-end">
+<button class="bg-primary text-on-primary-container px-6 py-2 rounded-DEFAULT font-label-md hover:bg-primary-container transition-colors shadow-[0_0_20px_rgba(77,142,255,0.15)]">
+                                Change Password
+                            </button>
+</div>
+</div>
+<!-- Two-Factor Authentication -->
+<div class="flex items-center justify-between mt-stack-md pt-stack-sm">
+<div class="pr-4">
+<h3 class="font-label-md text-[16px] text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-tertiary">shield_locked</span>
+                                Two-Factor Authentication (2FA)
+                            </h3>
+<p class="font-body-md text-sm text-on-surface-variant mt-1">Add an extra layer of security to your account using an authenticator app.</p>
+</div>
+<!-- Custom CSS Toggle Switch -->
+<label class="relative inline-flex items-center cursor-pointer shrink-0">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-dim border border-white/20 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary peer-checked:border-primary peer-checked:after:bg-on-primary"></div>
+</label>
+</div>
+</section>
+<!-- Danger Zone -->
+<section class="bg-surface-container-low border border-error-container/30 rounded-xl p-stack-lg relative overflow-hidden mt-stack-md">
+<div class="flex items-center gap-4 mb-stack-sm">
+<span class="material-symbols-outlined text-error text-[28px]">warning</span>
+<h2 class="font-headline-md text-[20px] text-error">Danger Zone</h2>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant mb-stack-md max-w-prose">
+                        Once you delete your account, there is no going back. All your data, saved communities, and custom feeds will be permanently erased. Please be certain.
+                    </p>
+<button class="bg-transparent border border-error text-error px-6 py-2 rounded-DEFAULT font-label-md hover:bg-error-container hover:text-on-error-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">delete_forever</span>
+                        Delete Account
+                    </button>
+</section>
+</div>
+</div>
+</main>
+</body></html>

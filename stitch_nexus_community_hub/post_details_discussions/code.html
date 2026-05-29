@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Post Details - DevStack</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-highest": "#2d3449",
+                      "on-tertiary-fixed": "#001f26",
+                      "surface-container": "#171f33",
+                      "inverse-on-surface": "#283044",
+                      "surface-bright": "#31394d",
+                      "inverse-surface": "#dae2fd",
+                      "on-surface": "#dae2fd",
+                      "secondary": "#ddb7ff",
+                      "primary-fixed": "#d8e2ff",
+                      "on-secondary-fixed-variant": "#6900b3",
+                      "on-primary-container": "#00285d",
+                      "error-container": "#93000a",
+                      "secondary-fixed-dim": "#ddb7ff",
+                      "surface-dim": "#0b1326",
+                      "secondary-fixed": "#f0dbff",
+                      "on-secondary": "#490080",
+                      "on-background": "#dae2fd",
+                      "tertiary": "#4cd7f6",
+                      "primary-fixed-dim": "#adc6ff",
+                      "primary-container": "#4d8eff",
+                      "tertiary-container": "#009eb9",
+                      "surface-container-high": "#222a3d",
+                      "on-primary": "#002e6a",
+                      "on-primary-fixed": "#001a42",
+                      "on-primary-fixed-variant": "#004395",
+                      "surface-container-lowest": "#060e20",
+                      "outline": "#8c909f",
+                      "secondary-container": "#6f00be",
+                      "surface-variant": "#2d3449",
+                      "surface-tint": "#adc6ff",
+                      "on-error": "#690005",
+                      "primary": "#adc6ff",
+                      "on-secondary-container": "#d6a9ff",
+                      "on-tertiary": "#003640",
+                      "on-tertiary-fixed-variant": "#004e5c",
+                      "background": "#0b1326",
+                      "outline-variant": "#424754",
+                      "tertiary-fixed-dim": "#4cd7f6",
+                      "surface-container-low": "#131b2e",
+                      "surface": "#0b1326",
+                      "tertiary-fixed": "#acedff",
+                      "inverse-primary": "#005ac2",
+                      "on-surface-variant": "#c2c6d6",
+                      "on-error-container": "#ffdad6",
+                      "error": "#ffb4ab",
+                      "on-tertiary-container": "#002f38",
+                      "on-secondary-fixed": "#2c0051"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-sm": "0.5rem",
+                      "stack-lg": "2rem",
+                      "margin-mobile": "1rem",
+                      "stack-xs": "0.25rem",
+                      "gutter": "1.5rem",
+                      "container-max": "1280px",
+                      "stack-md": "1rem"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-xl": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-xl": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "headline-lg": [
+                              "30px",
+                              {
+                                      "lineHeight": "38px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(23, 31, 51, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .code-block {
+            background: #060e20;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+        }
+
+        .thread-line {
+            width: 1px;
+            background-color: rgba(255, 255, 255, 0.1);
+            position: absolute;
+            top: 2rem;
+            bottom: -1rem;
+            left: 1.5rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .comment-group:hover > .thread-line {
+            background-color: #adc6ff;
+        }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b1326; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3449; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #424754; 
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen antialiased selection:bg-primary/30 selection:text-primary-fixed">
+<!-- TopNavBar Shell (Hidden on intent-specific screens, but this is a top-level hub) -->
+<nav class="fixed top-0 w-full z-50 bg-surface-container/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-white/10 shadow-sm flex justify-between items-center px-gutter h-16 w-full text-on-surface-variant font-body-md text-body-md">
+<div class="flex items-center gap-4">
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden p-2 hover:bg-surface-bright/50 transition-colors active:scale-95 duration-150 rounded-DEFAULT text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<a class="font-headline-md text-headline-md font-bold text-primary active:scale-95 duration-150 transition-transform" href="#">
+                DevStack
+            </a>
+<!-- Global Search (Web) -->
+<div class="hidden md:flex ml-8 relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="w-full bg-surface-container-highest border border-white/10 rounded-full py-1.5 pl-10 pr-4 text-label-md font-label-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all" placeholder="Search discussions, tags..." type="text"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1">
+<kbd class="hidden lg:inline-flex items-center justify-center px-1.5 py-0.5 rounded border border-white/20 bg-surface-container font-label-sm text-label-sm text-on-surface-variant">⌘</kbd>
+<kbd class="hidden lg:inline-flex items-center justify-center px-1.5 py-0.5 rounded border border-white/20 bg-surface-container font-label-sm text-label-sm text-on-surface-variant">K</kbd>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1">
+<button class="p-2 hover:bg-surface-bright/50 transition-colors active:scale-95 duration-150 rounded-full text-on-surface-variant relative" title="notifications">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 hover:bg-surface-bright/50 transition-colors active:scale-95 duration-150 rounded-full text-on-surface-variant hidden sm:flex" title="terminal">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">terminal</span>
+</button>
+</div>
+<button class="hidden sm:flex items-center gap-2 bg-primary text-on-primary font-label-md text-label-md px-4 py-1.5 rounded-lg hover:bg-primary-fixed transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">add</span>
+                Create
+            </button>
+<button class="h-8 w-8 rounded-full overflow-hidden border border-white/10 hover:border-primary transition-colors active:scale-95 duration-150">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBq8Rz4FlNjdSH03_3xWmgWHNL8mo5PJ6ukTCNgZyU6W_m9ik45aPSTwmSnhlUz8-5DhOwzwVRjKOk0Bm-XsMNYH5Huqi0B2d3HEJXWIYUFeo-6Xp2mbmIKn45_wf56LPZT9UPImBhR-0cUZq6p8zk2IEWrBOLR2uUIXq5eyACfc7p3L5ZiVzUvA6EBNUjAQXHkaJqNz4U9yaBCYsCztbyInDroKM4N0BCUqXwrjYMz3fNpxPKH1D4l6HCHGgt57gvek9kG7IQ8gfI"/>
+</button>
+</div>
+</nav>
+<div class="flex w-full min-h-screen pt-16">
+<!-- SideNavBar Shell (Web) -->
+<aside class="hidden md:flex flex-col py-stack-lg gap-stack-md fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-surface-dim dark:bg-surface-dim border-r border-white/5 font-label-md text-label-md text-on-surface-variant transition-all duration-200 ease-in-out z-40 overflow-y-auto">
+<div class="px-6 mb-4">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-1">Developer Hub</h2>
+<p class="font-label-sm text-label-sm opacity-70">Community-First Platform</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<!-- Inactive -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors group" href="#">
+<span class="material-symbols-outlined opacity-70 group-hover:opacity-100" style="font-variation-settings: 'FILL' 0;">home</span>
+                    Home
+                </a>
+<!-- Active Semantic Match (Since we are in a discussion post) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary font-bold border-l-2 border-primary bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+                    Communities
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors group" href="#">
+<span class="material-symbols-outlined opacity-70 group-hover:opacity-100" style="font-variation-settings: 'FILL' 0;">sell</span>
+                    Tags
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors group" href="#">
+<span class="material-symbols-outlined opacity-70 group-hover:opacity-100" style="font-variation-settings: 'FILL' 0;">dynamic_feed</span>
+                    Custom Feeds
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors group" href="#">
+<span class="material-symbols-outlined opacity-70 group-hover:opacity-100" style="font-variation-settings: 'FILL' 0;">bookmark</span>
+                    Saved
+                </a>
+</nav>
+<div class="px-4 mt-auto space-y-4">
+<button class="w-full py-2.5 rounded-lg border border-primary/30 text-primary font-label-md text-label-md hover:bg-primary/10 transition-colors flex justify-center items-center gap-2">
+                    Start a Discussion
+                </button>
+<div class="border-t border-white/5 pt-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors group" href="#">
+<span class="material-symbols-outlined opacity-70 group-hover:opacity-100" style="font-variation-settings: 'FILL' 0;">settings</span>
+                        Settings
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors group" href="#">
+<span class="material-symbols-outlined opacity-70 group-hover:opacity-100" style="font-variation-settings: 'FILL' 0;">help</span>
+                        Help
+                    </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 p-margin-mobile md:p-gutter max-w-container-max mx-auto w-full flex flex-col lg:flex-row gap-gutter">
+<!-- Left Sticky Upvote Column (Desktop) -->
+<div class="hidden lg:flex flex-col items-center gap-2 sticky top-24 h-fit w-16 pt-2">
+<button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 0;">stat_1</span>
+</button>
+<span class="font-label-md text-label-md text-on-surface font-bold">1.2k</span>
+<button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[28px] rotate-180" style="font-variation-settings: 'FILL' 0;">stat_1</span>
+</button>
+<div class="w-8 h-px bg-white/10 my-2"></div>
+<button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant hover:text-tertiary transition-colors" title="Bookmark">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">bookmark</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" title="Share">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">share</span>
+</button>
+</div>
+<!-- Center Content Column (Thread & Comments) -->
+<div class="flex-1 w-full max-w-[720px] mx-auto lg:mx-0">
+<!-- Post Header -->
+<header class="mb-stack-lg">
+<!-- Mobile Upvote (inline) -->
+<div class="flex lg:hidden items-center gap-4 mb-4 text-on-surface-variant">
+<div class="flex items-center bg-surface-container rounded-full px-1 py-0.5 border border-white/5">
+<button class="p-1.5 rounded-full hover:bg-surface-bright/50 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">stat_1</span>
+</button>
+<span class="font-label-sm text-label-sm font-bold px-1 text-on-surface">1.2k</span>
+<button class="p-1.5 rounded-full hover:bg-surface-bright/50 text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[20px] rotate-180" style="font-variation-settings: 'FILL' 0;">stat_1</span>
+</button>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-2 mb-3">
+<span class="px-2 py-0.5 rounded bg-secondary-container/20 text-secondary border border-secondary/20 font-label-sm text-label-sm">Architecture</span>
+<span class="px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary border border-tertiary/20 font-label-sm text-label-sm">React</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm ml-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 0;">schedule</span>
+                            Posted 4 hours ago
+                        </span>
+</div>
+<h1 class="font-headline-lg-mobile md:font-headline-xl text-headline-lg-mobile md:text-headline-xl text-on-surface mb-6">
+                        Transitioning to a Monorepo: Lessons Learned from a Year in the Trenches
+                    </h1>
+<!-- Mobile Author Info (Visible on mobile, side panel on desktop) -->
+<div class="flex lg:hidden items-center gap-3 mb-6 p-4 rounded-xl glass-panel">
+<img alt="Author Avatar" class="w-10 h-10 rounded-full border border-white/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFUrTRUG8X1as_rjh0vef6JlSsEKPYJ86zbAxqs4Bq8GREHx_ysLWlvAhPPgpEFzeHQM4_DSy0wXqFknmDR5MJ5KSuyT7mdxHEKcgfupCN79zbNhXRDIbobtAbAJGTdMjW5j5kjYWgpAW_1xONVPKzIssYBrEGmEGG09KREUFOxX8Mc0uM5sXp2jFbdNIpnJxRywSC9VdpwVn2hsM9LCvmYl5eKCPIEua9z0UmU3Du3xjDKtHwurpU4KHG-Kao4yslGUC7Mfa2-0Q"/>
+<div>
+<div class="font-label-md text-label-md text-on-surface font-bold">Sarah Chen</div>
+<div class="font-label-sm text-label-sm text-primary">Senior Staff Engineer @ TechCorp</div>
+</div>
+</div>
+</header>
+<!-- Post Body (Rich Text) -->
+<article class="prose prose-invert prose-lg max-w-none text-on-surface-variant font-body-lg text-body-lg mb-stack-lg border-b border-white/10 pb-stack-lg">
+<p class="mb-4">
+                        When we first decided to migrate our 15 disparate microservices into a single monorepo using Nx, the engineering org was split. Half thought it would solve our dependency hell, the other half expected a tangled mess of merge conflicts. A year later, here is what actually happened.
+                    </p>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-8 mb-4">The Build Cache is King</h2>
+<p class="mb-4">
+                        The biggest immediate win was remote caching. Before, a full CI run across all services took roughly 45 minutes. By sharing the build cache across the team, we got that down to an average of 12 minutes.
+                    </p>
+<div class="code-block my-6 overflow-hidden">
+<div class="bg-surface-container-highest px-4 py-2 border-b border-white/10 flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">nx.json</span>
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1 text-xs">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 0;">content_copy</span> Copy
+                            </button>
+</div>
+<pre class="p-4 overflow-x-auto font-label-md text-label-md text-inverse-surface"><code>{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "parallel": 3
+      }
+    }
+  }
+}</code></pre>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-8 mb-4">Strict Boundaries Saved Us</h2>
+<p class="mb-4">
+                        We enforced strict module boundaries from day one using ESLint. You cannot import a feature directly into a shared UI component. Period.
+                    </p>
+<blockquote class="border-l-4 border-primary pl-4 my-6 italic text-on-surface opacity-90">
+                        "A monorepo without strict dependency boundaries is just a distributed monolith waiting to happen."
+                    </blockquote>
+<p class="mb-4">
+                        We are still iterating, but overall, visibility across the codebase has improved dramatically. Curious to hear how others have handled CI bottlenecks in large repos.
+                    </p>
+</article>
+<!-- Comments Section -->
+<section class="mt-8">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">forum</span>
+                            Discussion (42)
+                        </h3>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Sort by:</span>
+<select class="bg-surface-container border border-white/10 rounded-md font-label-sm text-label-sm text-on-surface py-1 px-2 focus:ring-1 focus:ring-primary outline-none">
+<option>Top</option>
+<option>Newest</option>
+</select>
+</div>
+</div>
+<!-- Comment Input -->
+<div class="flex gap-4 mb-stack-lg glass-panel p-4 rounded-xl">
+<img alt="Your Avatar" class="w-8 h-8 rounded-full hidden sm:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-IzFwr9ZAmr_N4BqRa2KsPltUyGGv8179SNS8Pk2r7VhQhtoWWHGuRAD_-wEji0glr51g0rc7vANs3VyTq5mMk5Rk2FjdGP-9jTHPzDuCe0oT489ImHFPQmKU68ck9BeDrRr41xpY7hXlpG_rOYFBHPFSmJS-50jOj2IcnwykoZIkIHbISb9WIBYxEWovpE5iohUzkcEILBegBgEDlPfOCK0G0ndBRSOZIcdlA1F5jEh0CWMyDQTHuOe1R_5Yg8Ogo2WMyauFkX4"/>
+<div class="flex-1">
+<textarea class="w-full bg-surface-container-highest border border-white/10 rounded-lg p-3 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all min-h-[100px] resize-y" placeholder="Add to the discussion..."></textarea>
+<div class="flex justify-end mt-2">
+<button class="bg-primary text-on-primary font-label-md text-label-md px-4 py-1.5 rounded-lg hover:bg-primary-fixed transition-colors">
+                                    Comment
+                                </button>
+</div>
+</div>
+</div>
+<!-- Comment Thread 1 -->
+<div class="space-y-6">
+<!-- Root Comment -->
+<div class="comment-group relative flex gap-3">
+<!-- Thread Line Connector for Replies -->
+<div class="thread-line"></div>
+<!-- Avatar Column -->
+<div class="flex flex-col items-center z-10">
+<img alt="Commenter Avatar" class="w-8 h-8 rounded-full border border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFnTdliej1Shk1mAGgzkpcMMV4wFemISCGrp6-A3zgd1vQZsWYGlnVdSV07wQIs3_szJD6LIFivnUmLw5ju3JgZTIvm0Qc_SoSX8-aFIE8MFssUnVUz45JIEGJOutYaO6ts473hgtefl7c-DrxRY9FtpsiwMvKZ0dW671o783REpjGXeqIA8u09tPy8h6tmgkYg9qN02eV_vT30eJx2Mu271YM7ReRYnWq3rEXXP3TuesewCUfDDlnN_CQra6f2iLlrqDs9aDPo5U"/>
+</div>
+<!-- Comment Content -->
+<div class="flex-1 pb-4">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-label-md text-label-md font-bold text-on-surface">Alex_Dev</span>
+<span class="px-1.5 rounded bg-primary/10 text-primary font-label-sm text-[10px] border border-primary/20">Top Contributor</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-2">2h ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">
+                                    Did you run into issues with CI times blowing up when touching shared libraries? We tried this last year and any change to our core UI lib caused a 30-minute cascade build.
+                                </p>
+<!-- Comment Actions -->
+<div class="flex items-center gap-4 text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex items-center gap-1">
+<button class="hover:text-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">arrow_upward</span>
+</button>
+<span class="font-bold text-on-surface">156</span>
+<button class="hover:text-error transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">arrow_downward</span>
+</button>
+</div>
+<button class="hover:text-on-surface transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">chat_bubble</span>
+                                        Reply
+                                    </button>
+<button class="hover:text-on-surface transition-colors">Share</button>
+</div>
+</div>
+</div>
+<!-- Nested Reply 1 -->
+<div class="comment-group relative flex gap-3 ml-8">
+<div class="thread-line"></div>
+<div class="flex flex-col items-center z-10">
+<img alt="Author Avatar" class="w-8 h-8 rounded-full border border-primary border-2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZIhs90rNipGNx5DHdHoCt5u406ZZe4cE3bIncp4ywiKa_KI3703a4ZYtQU9OwAc-2zqJ8CZxsYNtublYoQ2dGahWusWizJZ3Qn_PAA6Z20GJ-d3iK8EPzFYEEmMJV1xK93gnPZJG94LgDdXkxgiBb8eTeF4NszUqRAj25sXE32o9Q0NxU9tnPeSxy2Hh4AZj5hJ1RecI33vTMiCAbFBRbbjKxzvlIOeZqxEo3Y0ZlqE9aC3h2rx_bG3Z6Lfx65GAu0_-ez1JKyW0"/>
+</div>
+<div class="flex-1 pb-4">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-label-md text-label-md font-bold text-primary">Sarah Chen</span>
+<span class="px-1.5 rounded bg-tertiary-container/20 text-tertiary font-label-sm text-[10px] border border-tertiary/20">Author</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-2">1h ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">
+                                    Yes! That was our exact pain point month 3. The fix was utilizing `nx affected` in CI. Instead of building everything that depends on the UI lib, we only build apps where the *affected graph* shows a change actually impacted them. Reduced cascade times by ~60%.
+                                </p>
+<div class="flex items-center gap-4 text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex items-center gap-1">
+<button class="hover:text-primary transition-colors flex items-center"><span class="material-symbols-outlined text-[18px]">arrow_upward</span></button>
+<span class="font-bold text-on-surface">89</span>
+<button class="hover:text-error transition-colors flex items-center"><span class="material-symbols-outlined text-[18px]">arrow_downward</span></button>
+</div>
+<button class="hover:text-on-surface transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">chat_bubble</span> Reply
+                                    </button>
+</div>
+</div>
+</div>
+<!-- Deep Nested Reply 2 -->
+<div class="comment-group relative flex gap-3 ml-16">
+<div class="flex flex-col items-center z-10">
+<img alt="User Avatar" class="w-8 h-8 rounded-full border border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4BY_sPO2zSpZPIWfgowR1Xgnc3_klfr49VSB0jYE0-uHJF2UASHI_uirrNBXBZWnlo9VG54dzaMIH8hunjSOoAJVXPrRvEU0QjKU2f8GJ3P9Okjuss9cAaC_wBS27KG7VOSrYzM5mQPfkebBFY9_vTH6709cLj2fPjdxpyPeH7Bff-I4-xZk_3KVjv8AjGuApyMcl-5wWnzfv5tNl9PjDGRlY-wZM0e-1wiXTHZGJT64uZN6fIfJs6stSmsImFdxkGu6gtdQdLdg"/>
+</div>
+<div class="flex-1 pb-2">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-label-md text-label-md font-bold text-on-surface">DevOps_Dan</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-2">45m ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">
+                                    Adding onto this: DTE (Distributed Task Execution) is a game changer if you have the budget for Nx Cloud or are willing to set up your own runner. Parallelizing the affected graph across agents saved us.
+                                </p>
+<div class="flex items-center gap-4 text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex items-center gap-1">
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]">arrow_upward</span></button>
+<span class="font-bold text-on-surface">12</span>
+<button class="hover:text-error transition-colors"><span class="material-symbols-outlined text-[18px]">arrow_downward</span></button>
+</div>
+<button class="hover:text-on-surface transition-colors">Reply</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Sidebar: Author & Related (Desktop) -->
+<aside class="hidden lg:block w-64 flex-shrink-0 space-y-6">
+<!-- Author Card -->
+<div class="glass-panel rounded-xl p-5 border border-white/10 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary"></div>
+<div class="flex flex-col items-center text-center">
+<img alt="Author Avatar" class="w-16 h-16 rounded-full border-2 border-surface mb-3 shadow-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg1YtTsNKgTqMHM0wYEoTnkFvWbRgABTU7fZSHERO9DCjw7ekT88JcsiC7uJnrybv9lhQEr8fVYL6XnbugMKYe8WdL99OSPmLoO6iz1gTCbBNqU__1vZU3m4CvQLu3vrdpfrFpQdjDTq-ArnDoW5Klk2tLc4KcxkAc7z5u-HEOeVki9UYyxwAEnjKjwZ-qN6kllyXyLz4vIU_viB4MHk9GUfc_JHpGoSPLYqSqAnirLqMDuUnlu6cdyGiZabBUu8VpWSaArc-BgR8"/>
+<h4 class="font-headline-md text-[18px] text-on-surface font-bold">Sarah Chen</h4>
+<p class="font-label-sm text-label-sm text-primary mb-3">Senior Staff Engineer</p>
+<div class="flex justify-center gap-2 mb-4 w-full border-y border-white/5 py-2">
+<div class="text-center px-2">
+<div class="font-bold text-on-surface text-label-md">14.2k</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-wider">Rep</div>
+</div>
+<div class="w-px bg-white/10"></div>
+<div class="text-center px-2">
+<div class="font-bold text-on-surface text-label-md">42</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-wider">Posts</div>
+</div>
+</div>
+<button class="w-full py-1.5 rounded-lg border border-primary text-primary font-label-md text-label-md hover:bg-primary/10 transition-colors">
+                            Follow
+                        </button>
+</div>
+</div>
+<!-- Related Posts -->
+<div class="bg-surface-container-low rounded-xl p-5 border border-white/5">
+<h4 class="font-headline-sm text-[16px] text-on-surface font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+                        Related Reads
+                    </h4>
+<ul class="space-y-4">
+<li class="group cursor-pointer">
+<a class="block" href="#">
+<h5 class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors line-clamp-2 mb-1">
+                                    Micro-frontends vs Monorepos: When to choose which?
+                                </h5>
+<div class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">visibility</span> 4.2k views
+                                </div>
+</a>
+</li>
+<li class="group cursor-pointer">
+<a class="block" href="#">
+<h5 class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors line-clamp-2 mb-1">
+                                    Caching strategies in massive CI pipelines
+                                </h5>
+<div class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">visibility</span> 2.8k views
+                                </div>
+</a>
+</li>
+<li class="group cursor-pointer">
+<a class="block" href="#">
+<h5 class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors line-clamp-2 mb-1">
+                                    Why we moved off ESLint for custom workspace boundaries
+                                </h5>
+<div class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">visibility</span> 1.9k views
+                                </div>
+</a>
+</li>
+</ul>
+</div>
+<!-- Table of Contents (Sticky) -->
+<div class="sticky top-24 hidden xl:block border-l border-white/10 pl-4 mt-8 space-y-2">
+<h4 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-3">On this page</h4>
+<a class="block font-label-sm text-label-sm text-on-surface hover:text-primary transition-colors" href="#">The Build Cache is King</a>
+<a class="block font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Strict Boundaries Saved Us</a>
+<a class="block font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors pt-2 border-t border-white/5 mt-2" href="#">Discussion (42)</a>
+</div>
+</aside>
+</main>
+</div>
+</body></html>

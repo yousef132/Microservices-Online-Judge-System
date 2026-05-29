@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevStack - Search Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface-bright": "#31394d",
+                "on-secondary-fixed-variant": "#6900b3",
+                "on-primary-container": "#00285d",
+                "outline": "#8c909f",
+                "on-error": "#690005",
+                "error": "#ffb4ab",
+                "tertiary": "#4cd7f6",
+                "on-secondary-container": "#d6a9ff",
+                "tertiary-fixed": "#acedff",
+                "on-background": "#dae2fd",
+                "surface-container-low": "#131b2e",
+                "secondary-container": "#6f00be",
+                "on-surface": "#dae2fd",
+                "surface": "#0b1326",
+                "secondary-fixed": "#f0dbff",
+                "on-surface-variant": "#c2c6d6",
+                "primary-container": "#4d8eff",
+                "on-tertiary-container": "#002f38",
+                "outline-variant": "#424754",
+                "tertiary-fixed-dim": "#4cd7f6",
+                "on-error-container": "#ffdad6",
+                "secondary": "#ddb7ff",
+                "error-container": "#93000a",
+                "surface-dim": "#0b1326",
+                "on-secondary-fixed": "#2c0051",
+                "on-tertiary-fixed": "#001f26",
+                "on-secondary": "#490080",
+                "inverse-primary": "#005ac2",
+                "surface-container-high": "#222a3d",
+                "on-tertiary-fixed-variant": "#004e5c",
+                "surface-container-lowest": "#060e20",
+                "inverse-surface": "#dae2fd",
+                "primary-fixed": "#d8e2ff",
+                "on-primary-fixed-variant": "#004395",
+                "surface-variant": "#2d3449",
+                "secondary-fixed-dim": "#ddb7ff",
+                "surface-container": "#171f33",
+                "primary": "#adc6ff",
+                "on-tertiary": "#003640",
+                "on-primary": "#002e6a",
+                "tertiary-container": "#009eb9",
+                "on-primary-fixed": "#001a42",
+                "background": "#0b1326",
+                "primary-fixed-dim": "#adc6ff",
+                "inverse-on-surface": "#283044",
+                "surface-tint": "#adc6ff",
+                "surface-container-highest": "#2d3449"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "container-max": "1280px",
+                "stack-md": "1rem",
+                "stack-sm": "0.5rem",
+                "margin-mobile": "1rem",
+                "stack-lg": "2rem",
+                "stack-xs": "0.25rem",
+                "gutter": "1.5rem"
+        },
+        "fontFamily": {
+                "headline-lg": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Inter"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "label-sm": [
+                        "JetBrains Mono"
+                ],
+                "headline-md": [
+                        "Inter"
+                ],
+                "label-md": [
+                        "JetBrains Mono"
+                ],
+                "headline-xl": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "headline-lg": [
+                        "30px",
+                        {
+                                "lineHeight": "38px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "headline-xl": [
+                        "40px",
+                        {
+                                "lineHeight": "48px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "800"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        body {
+            background-color: theme('colors.surface');
+            color: theme('colors.on-surface');
+        }
+        .glass-card {
+            background: rgba(34, 42, 61, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-panel {
+            background: rgba(23, 31, 51, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .search-highlight {
+            background-color: theme('colors.primary-container');
+            color: theme('colors.on-primary-container');
+            padding: 0 4px;
+            border-radius: 2px;
+        }
+        
+        /* Custom Scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface'); 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.surface-variant'); 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline'); 
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pt-16 bg-surface-dim">
+<!-- TopNavBar (Simulated from JSON) -->
+<nav class="fixed top-0 w-full z-50 bg-surface-container/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-white/10 shadow-sm flex justify-between items-center px-gutter h-16 transition-colors duration-200">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary">DevStack</span>
+<div class="hidden md:flex ml-8 relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant z-10" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="w-full bg-surface-container-highest border border-outline-variant rounded-md py-2 pl-10 pr-4 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md transition-shadow" placeholder="Search..." type="text" value="React Server Components"/>
+<div class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+<kbd class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant">⌘</kbd>
+<kbd class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant">K</kbd>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-bright/50 transition-colors active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-bright/50 transition-colors active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">terminal</span>
+</button>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded flex items-center gap-2 hover:bg-primary-fixed transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0; font-size: 18px;">add</span>
+                Create
+            </button>
+<div class="h-8 w-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant cursor-pointer ml-2">
+<img alt="User avatar" class="h-full w-full object-cover" data-alt="A close-up portrait of a young professional in a softly lit, modern tech workspace setting. The lighting is warm and slightly diffused, creating a welcoming and authoritative mood suitable for a premium platform avatar. The background is a dark, out-of-focus hint of a high-end minimalist office." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZpQFpn0HKwOJhBhjtTg-7qCksiNL9g3uLNh-K_sSrTibFP-Paf7kkF5aWpJDJ8Y2Ka5qstAtNxBbiKVKkb-SVUSmclve2E6Vs1tZQ0FQUhG0frrGbtw8h2zSviW1PS_LIGcbyIQBmbaiCtVUM8hAER4PnuW46xnFPLlbAeh7pR6h09bXO57YQIh8EIM9SAzSIxUGqLAV4xTeTcf7jScvQ7IUUDzjAdQgp3hMyicnbwdqFFAyxr02NM1nqjqebwx8rufn87yVVL1k"/>
+</div>
+</div>
+</nav>
+<div class="flex flex-1 max-w-container-max mx-auto w-full px-gutter">
+<!-- Left Sidebar (SideNavBar simulated from JSON) -->
+<aside class="hidden md:flex flex-col w-64 fixed left-0 top-16 h-[calc(100vh-64px)] bg-surface-dim dark:bg-surface-dim border-r border-white/5 py-stack-lg gap-stack-md overflow-y-auto pl-gutter pr-4">
+<div class="mb-6 px-4">
+<div class="flex items-center gap-3 mb-1">
+<div class="h-8 w-8 rounded bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">code_blocks</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Developer Hub</h2>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant pl-11">Community-First Platform</p>
+</div>
+<nav class="flex-1 flex flex-col gap-1">
+<!-- Search intent context: We are on a search page, so no specific general nav item is strictly active, but we'll leave them all inactive as 'Search' is not a primary left-nav item -->
+<a class="flex items-center gap-3 px-4 py-2.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+                    Home
+                </a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">groups</span>
+                    Communities
+                </a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">sell</span>
+                    Tags
+                </a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dynamic_feed</span>
+                    Custom Feeds
+                </a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">bookmark</span>
+                    Saved
+                </a>
+</nav>
+<div class="mt-auto pt-6 border-t border-white/5 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-2.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help</span>
+                    Help
+                </a>
+</div>
+<button class="mt-4 w-full border border-primary/30 text-primary font-label-md text-label-md py-2.5 rounded hover:bg-primary/5 transition-colors">
+                Start a Discussion
+            </button>
+</aside>
+<!-- Main Content Area (Center + Right Sidebar) -->
+<main class="flex-1 md:ml-64 flex flex-col lg:flex-row gap-gutter py-stack-lg">
+<!-- Center Column: Search Results -->
+<div class="flex-1 flex flex-col gap-6 max-w-[720px]">
+<!-- Search Header -->
+<div class="flex flex-col gap-4 border-b border-white/10 pb-4">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="font-size: 32px;">search</span>
+                            Results for "<span class="text-primary">React Server Components</span>"
+                        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Found 248 results across posts, questions, and communities.</p>
+</div>
+<!-- Tabs & Sort -->
+<div class="flex justify-between items-end mt-4">
+<div class="flex gap-1 overflow-x-auto pb-1 hide-scrollbar">
+<button class="px-4 py-2 font-label-md text-label-md text-primary border-b-2 border-primary bg-primary/5 rounded-t">All Results</button>
+<button class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 rounded transition-colors whitespace-nowrap">Posts (142)</button>
+<button class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 rounded transition-colors whitespace-nowrap">Questions (89)</button>
+<button class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 rounded transition-colors whitespace-nowrap">Communities (5)</button>
+<button class="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 rounded transition-colors whitespace-nowrap">Users (12)</button>
+</div>
+<div class="hidden sm:flex items-center gap-2 mb-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Sort by:</span>
+<select class="bg-surface-container border border-outline-variant rounded text-on-surface font-label-md text-label-md py-1 px-2 focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+<option>Relevance</option>
+<option>Newest</option>
+<option>Most Upvoted</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Results List -->
+<div class="flex flex-col gap-4">
+<!-- Result Card 1 -->
+<article class="glass-card rounded-lg p-5 flex flex-col gap-3 hover:border-primary/30 transition-colors group cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex gap-2 items-center mb-1">
+<span class="bg-secondary-container/20 text-secondary border border-secondary/30 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold font-label-sm">Discussion</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 2 hours ago
+                                </span>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors opacity-0 group-hover:opacity-100">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">bookmark_add</span>
+</button>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface leading-tight group-hover:text-primary transition-colors">
+                            Migrating from SPA to <span class="search-highlight">React Server Components</span>: A Performance Case Study
+                        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+                            We recently transitioned our main dashboard to use <span class="search-highlight">React Server Components</span> (RSC) with Next.js App Router. The initial bundle size dropped by 45%, but we encountered several caching gotchas when mixing client and server logic. Here is a deep dive into our architecture...
+                        </p>
+<div class="flex justify-between items-center mt-2 pt-3 border-t border-white/5">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<div class="h-6 w-6 rounded-full bg-surface-bright overflow-hidden">
+<img alt="Author" class="h-full w-full object-cover" data-alt="A small, circular profile picture of a male developer wearing glasses, set against a blurred dark background. The lighting highlights his focused expression, matching the high-end, serious tone of a professional developer platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPVMgZpbvl90X82e9q7Gcr24B_DWOqdeMjznKlCFi-UMnWZ9P97bGGzdS9Gv27BkAvr1EOIVmsRTMftv99ri_bfTyrRMWYjmJ9wZwg6E4bOTNrxL6J3lAn9UO0Vv0RDRP-JvYIj7g0cAIN1PF6U7sD0Dbn4MufjeQt7w8IGbBO8n-6BWycg3drMt9RAlAsOLMxtwMdSfjzUMFjT8-Ba5h8qlazJsQDDoQG9AP65pssOk3tf40Jv9teQkKpR6inUhx9Usj5J0BBbBk"/>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface font-medium">alex_dev</span>
+</div>
+<div class="flex gap-1">
+<span class="font-label-sm text-label-sm px-2 py-0.5 bg-surface-container rounded text-on-surface-variant hover:bg-surface-bright transition-colors">react</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 bg-surface-container rounded text-on-surface-variant hover:bg-surface-bright transition-colors">nextjs</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 bg-surface-container rounded text-on-surface-variant hover:bg-surface-bright transition-colors">performance</span>
+</div>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">thumb_up</span> 342</span>
+<span class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">chat_bubble</span> 56</span>
+</div>
+</div>
+</article>
+<!-- Result Card 2 (Question) -->
+<article class="glass-card rounded-lg p-5 flex flex-col gap-3 hover:border-primary/30 transition-colors group cursor-pointer relative overflow-hidden">
+<!-- Left Active Indicator for Answered Questions -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary shadow-[0_0_8px_rgba(76,215,246,0.5)]"></div>
+<div class="flex justify-between items-start pl-2">
+<div class="flex gap-2 items-center mb-1">
+<span class="bg-tertiary-container/20 text-tertiary border border-tertiary/30 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">check_circle</span> Solved
+                                </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 1 day ago
+                                </span>
+</div>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface leading-tight group-hover:text-primary transition-colors pl-2">
+                            How to pass context down in <span class="search-highlight">React Server Components</span>?
+                        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 pl-2">
+                            I understand that <span class="search-highlight">React Server Components</span> cannot use standard React Context since they don't have state or effects. What is the recommended pattern for sharing global data (like user theme or auth state) deeply within a server component tree without prop drilling?
+                        </p>
+<div class="flex justify-between items-center mt-2 pt-3 border-t border-white/5 pl-2">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<div class="h-6 w-6 rounded-full bg-surface-bright overflow-hidden">
+<span class="w-full h-full flex items-center justify-center font-label-sm bg-gradient-to-br from-primary to-secondary text-surface font-bold">S</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface font-medium">sarah_codes</span>
+</div>
+<div class="flex gap-1">
+<span class="font-label-sm text-label-sm px-2 py-0.5 bg-surface-container rounded text-on-surface-variant">react</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 bg-surface-container rounded text-on-surface-variant">architecture</span>
+</div>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1 text-tertiary"><span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check_circle</span> 1 Accepted</span>
+<span class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">thumb_up</span> 128</span>
+<span class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">chat_bubble</span> 14</span>
+</div>
+</div>
+</article>
+<!-- Result Card 3 -->
+<article class="glass-card rounded-lg p-5 flex flex-col gap-3 hover:border-primary/30 transition-colors group cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex gap-2 items-center mb-1">
+<span class="bg-primary-container/20 text-primary border border-primary/30 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-bold font-label-sm">Tutorial</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 3 days ago
+                                </span>
+</div>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface leading-tight group-hover:text-primary transition-colors">
+                            Understanding Data Fetching in <span class="search-highlight">React Server Components</span> vs Client Components
+                        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+                            A comprehensive guide on when to use standard `fetch` inside a Server Component versus using SWR/React Query in a Client Component. We will build a small application demonstrating both approaches, highlighting the network waterfall differences...
+                        </p>
+<div class="flex justify-between items-center mt-2 pt-3 border-t border-white/5">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<div class="h-6 w-6 rounded-full bg-surface-bright overflow-hidden">
+<img alt="Author" class="h-full w-full object-cover" data-alt="A profile picture of a woman with short dark hair, smiling subtly. The lighting is bright and clean, contrasting with the dark mode UI, suggesting approachability and expertise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjSFzBBQ4QXTz1xScem5kxTpvDhzvGJ8wJ71KoASzyo3D_3nJBUPwiNhnFEAwEiXqIZKpin5A9D7kVp1JR7p1Jp53DsO-bYgBJbUAzd2HVXnqmfA6Ovr2GECgStHQ8Kown-7pElCLj00OJ20Boy0RQeRxUtoCnMrCElQa5o-3ANjdbVR76zIkOn-QtaYqTfMW_rPBEEtwmGCRZvq97dj-mDzFlTHIlaRTgZgTV7gpem-LHxau8N_OwN96K3bgX18p0wB8n_fHQG1M"/>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface font-medium">web_ninja</span>
+</div>
+<div class="flex gap-1">
+<span class="font-label-sm text-label-sm px-2 py-0.5 bg-surface-container rounded text-on-surface-variant">react</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 bg-surface-container rounded text-on-surface-variant">tutorial</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 bg-surface-container rounded text-on-surface-variant">data-fetching</span>
+</div>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">thumb_up</span> 89</span>
+<span class="flex items-center gap-1 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">chat_bubble</span> 22</span>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination -->
+<div class="flex justify-center mt-6 gap-2">
+<button class="w-10 h-10 rounded glass-panel flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/50 transition-colors cursor-not-allowed opacity-50">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded bg-primary/20 border border-primary text-primary font-label-md flex items-center justify-center">1</button>
+<button class="w-10 h-10 rounded glass-panel flex items-center justify-center text-on-surface hover:text-primary hover:border-primary/50 transition-colors font-label-md">2</button>
+<button class="w-10 h-10 rounded glass-panel flex items-center justify-center text-on-surface hover:text-primary hover:border-primary/50 transition-colors font-label-md">3</button>
+<span class="w-10 h-10 flex items-center justify-center text-on-surface-variant">...</span>
+<button class="w-10 h-10 rounded glass-panel flex items-center justify-center text-on-surface hover:text-primary hover:border-primary/50 transition-colors font-label-md">12</button>
+<button class="w-10 h-10 rounded glass-panel flex items-center justify-center text-on-surface hover:text-primary hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Right Sidebar: Filters -->
+<aside class="w-full lg:w-[280px] flex flex-col gap-6 shrink-0">
+<!-- Filters Widget -->
+<div class="glass-panel rounded-lg p-5 flex flex-col gap-5">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2 border-b border-white/5 pb-3">
+<span class="material-symbols-outlined text-primary">tune</span>
+                        Filters
+                    </h3>
+<!-- Filter by Tag -->
+<div class="flex flex-col gap-3">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-[11px]">Filter by Tag</h4>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
+<input class="w-full bg-surface-container border border-outline-variant rounded py-1.5 pl-8 pr-3 text-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="Find tags..." type="text"/>
+</div>
+<div class="flex flex-wrap gap-2 mt-1">
+<span class="font-label-sm text-label-sm px-2.5 py-1 bg-primary/20 border border-primary/50 text-primary rounded-full cursor-pointer flex items-center gap-1">
+                                React <span class="material-symbols-outlined text-[14px]">close</span>
+</span>
+<span class="font-label-sm text-label-sm px-2.5 py-1 bg-surface-container border border-outline-variant hover:border-outline text-on-surface-variant rounded-full cursor-pointer transition-colors">Next.js</span>
+<span class="font-label-sm text-label-sm px-2.5 py-1 bg-surface-container border border-outline-variant hover:border-outline text-on-surface-variant rounded-full cursor-pointer transition-colors">WebDev</span>
+<span class="font-label-sm text-label-sm px-2.5 py-1 bg-surface-container border border-outline-variant hover:border-outline text-on-surface-variant rounded-full cursor-pointer transition-colors">JavaScript</span>
+</div>
+</div>
+<!-- Date Range -->
+<div class="flex flex-col gap-3">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-[11px]">Date Range</h4>
+<div class="flex flex-col gap-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-radio text-primary bg-surface-container border-outline-variant focus:ring-primary focus:ring-offset-surface" name="date" type="radio"/>
+<span class="font-body-sm text-on-surface group-hover:text-primary transition-colors text-sm">Any time</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-radio text-primary bg-surface-container border-outline-variant focus:ring-primary focus:ring-offset-surface" name="date" type="radio"/>
+<span class="font-body-sm text-on-surface group-hover:text-primary transition-colors text-sm">Past 24 hours</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-radio text-primary bg-surface-container border-outline-variant focus:ring-primary focus:ring-offset-surface" name="date" type="radio"/>
+<span class="font-body-sm text-on-surface group-hover:text-primary transition-colors text-sm">Past week</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-radio text-primary bg-surface-container border-outline-variant focus:ring-primary focus:ring-offset-surface" name="date" type="radio"/>
+<span class="font-body-sm text-on-surface group-hover:text-primary transition-colors text-sm">Past month</span>
+</label>
+</div>
+</div>
+<!-- Post Type -->
+<div class="flex flex-col gap-3">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-[11px]">Post Type</h4>
+<div class="flex flex-col gap-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-checkbox text-primary bg-surface-container border-outline-variant rounded focus:ring-primary focus:ring-offset-surface" type="checkbox"/>
+<span class="font-body-sm text-on-surface group-hover:text-primary transition-colors text-sm">Discussions</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-checkbox text-primary bg-surface-container border-outline-variant rounded focus:ring-primary focus:ring-offset-surface" type="checkbox"/>
+<span class="font-body-sm text-on-surface group-hover:text-primary transition-colors text-sm">Questions</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-checkbox text-primary bg-surface-container border-outline-variant rounded focus:ring-primary focus:ring-offset-surface" type="checkbox"/>
+<span class="font-body-sm text-on-surface group-hover:text-primary transition-colors text-sm">Tutorials</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox text-primary bg-surface-container border-outline-variant rounded focus:ring-primary focus:ring-offset-surface" type="checkbox"/>
+<span class="font-body-sm text-on-surface group-hover:text-primary transition-colors text-sm">Links/Resources</span>
+</label>
+</div>
+</div>
+<button class="mt-2 w-full bg-surface-container-high border border-outline-variant hover:bg-surface-bright text-on-surface font-label-md text-label-md py-2 rounded transition-colors">
+                        Apply Filters
+                    </button>
+</div>
+<!-- Trending Widget (Bento style grid item) -->
+<div class="glass-panel rounded-lg p-5 flex flex-col gap-4 relative overflow-hidden">
+<!-- Decorative subtle gradient -->
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/10 rounded-full blur-2xl pointer-events-none"></div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">trending_up</span>
+                        Trending in React
+                    </h3>
+<div class="flex flex-col gap-3">
+<a class="group flex flex-col gap-1" href="#">
+<span class="font-body-sm text-on-surface group-hover:text-primary transition-colors line-clamp-1 text-sm font-medium">Server Actions vs API Routes</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-[11px]">342 discussions this week</span>
+</a>
+<a class="group flex flex-col gap-1" href="#">
+<span class="font-body-sm text-on-surface group-hover:text-primary transition-colors line-clamp-1 text-sm font-medium">React 19 Compiler</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-[11px]">89 discussions this week</span>
+</a>
+<a class="group flex flex-col gap-1" href="#">
+<span class="font-body-sm text-on-surface group-hover:text-primary transition-colors line-clamp-1 text-sm font-medium">Suspense Boundaries best practices</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-[11px]">156 discussions this week</span>
+</a>
+</div>
+</div>
+</aside>
+</main>
+</div>
+</body></html>

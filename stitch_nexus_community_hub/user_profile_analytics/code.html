@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevStack - User Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b1326; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3449; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #424754; 
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-highest": "#2d3449",
+                      "on-tertiary-fixed": "#001f26",
+                      "surface-container": "#171f33",
+                      "inverse-on-surface": "#283044",
+                      "surface-bright": "#31394d",
+                      "inverse-surface": "#dae2fd",
+                      "on-surface": "#dae2fd",
+                      "secondary": "#ddb7ff",
+                      "primary-fixed": "#d8e2ff",
+                      "on-secondary-fixed-variant": "#6900b3",
+                      "on-primary-container": "#00285d",
+                      "error-container": "#93000a",
+                      "secondary-fixed-dim": "#ddb7ff",
+                      "surface-dim": "#0b1326",
+                      "secondary-fixed": "#f0dbff",
+                      "on-secondary": "#490080",
+                      "on-background": "#dae2fd",
+                      "tertiary": "#4cd7f6",
+                      "primary-fixed-dim": "#adc6ff",
+                      "primary-container": "#4d8eff",
+                      "tertiary-container": "#009eb9",
+                      "surface-container-high": "#222a3d",
+                      "on-primary": "#002e6a",
+                      "on-primary-fixed": "#001a42",
+                      "on-primary-fixed-variant": "#004395",
+                      "surface-container-lowest": "#060e20",
+                      "outline": "#8c909f",
+                      "secondary-container": "#6f00be",
+                      "surface-variant": "#2d3449",
+                      "surface-tint": "#adc6ff",
+                      "on-error": "#690005",
+                      "primary": "#adc6ff",
+                      "on-secondary-container": "#d6a9ff",
+                      "on-tertiary": "#003640",
+                      "on-tertiary-fixed-variant": "#004e5c",
+                      "background": "#0b1326",
+                      "outline-variant": "#424754",
+                      "tertiary-fixed-dim": "#4cd7f6",
+                      "surface-container-low": "#131b2e",
+                      "surface": "#0b1326",
+                      "tertiary-fixed": "#acedff",
+                      "inverse-primary": "#005ac2",
+                      "on-surface-variant": "#c2c6d6",
+                      "on-error-container": "#ffdad6",
+                      "error": "#ffb4ab",
+                      "on-tertiary-container": "#002f38",
+                      "on-secondary-fixed": "#2c0051"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-sm": "0.5rem",
+                      "stack-lg": "2rem",
+                      "margin-mobile": "1rem",
+                      "stack-xs": "0.25rem",
+                      "gutter": "1.5rem",
+                      "container-max": "1280px",
+                      "stack-md": "1rem"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "headline-xl": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-md": ["JetBrains Mono"],
+                      "label-sm": ["JetBrains Mono"],
+                      "headline-lg-mobile": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen">
+<!-- TopNavBar -->
+<nav class="bg-surface-container/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-white/10 shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16 transition-all">
+<!-- Brand -->
+<div class="flex items-center gap-stack-sm">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="terminal">terminal</span>
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tight">DevStack</span>
+</div>
+<!-- Search Bar (on_left configuration via flex ordering) -->
+<div class="hidden md:flex items-center bg-surface-dim border border-outline-variant/50 rounded-lg px-stack-sm py-2 w-96 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/50 transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none outline-none text-on-surface font-body-md w-full placeholder:text-on-surface-variant/50 focus:ring-0 p-0" placeholder="Search components, discussions..." type="text"/>
+<div class="flex items-center gap-1 border border-outline-variant/30 rounded px-1.5 py-0.5 ml-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">⌘</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">K</span>
+</div>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-stack-md">
+<button class="text-on-surface-variant hover:bg-surface-bright/50 transition-colors p-2 rounded-full active:scale-95 duration-150 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="hidden md:flex items-center justify-center bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-primary-fixed transition-colors active:scale-95 duration-150">
+                Create
+            </button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer active:scale-95 duration-150 shrink-0">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A small, professional headshot of a software developer with a neutral background, lit softly to match a dark mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKJMpKmbzzR1ywyS5sjam0QiiTayI5STtUjmNVPrjEOojUV2CYmx25w05Fu8jtr0MfoPSFbkGifrARGgiGA_Z1MQ3IgFDpynO96M1JHsfe5jUi-uWJlw6UUfPJF-1UT9_bPct61n0Ar4_dDLKhZ_bbdA7DsBJTnq_h_x2OB5B7QjiowWS10VQIfIKMTGlJjq4ydQs9Aakfb3AL96Yri9iax5VYFwKfSahc0TNBorgLPhF7YtactZXB8FRVz0Vm1Njr4v7wH2ZbJ9Q"/>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col bg-surface-dim dark:bg-surface-dim border-r border-white/5 fixed left-0 top-16 h-[calc(100vh-64px)] w-64 py-stack-lg gap-stack-md overflow-y-auto">
+<!-- Header -->
+<div class="px-stack-lg mb-stack-sm flex items-center gap-stack-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center border border-white/5">
+<span class="material-symbols-outlined text-primary" data-icon="hub">hub</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Developer Hub</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Community-First Platform</p>
+</div>
+</div>
+<!-- Main Tabs -->
+<nav class="flex-1 px-stack-sm">
+<ul class="flex flex-col gap-1">
+<li>
+<a class="flex items-center gap-stack-md px-stack-md py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="home">home</span>
+                        Home
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-stack-md py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="groups">groups</span>
+                        Communities
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-stack-md py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="sell">sell</span>
+                        Tags
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-stack-md py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dynamic_feed">dynamic_feed</span>
+                        Custom Feeds
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-stack-md py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="bookmark">bookmark</span>
+                        Saved
+                    </a>
+</li>
+</ul>
+</nav>
+<!-- CTA -->
+<div class="px-stack-md mt-auto">
+<button class="w-full flex items-center justify-center gap-2 bg-surface-container text-primary border border-primary/20 font-label-md text-label-md py-2.5 rounded-lg hover:bg-primary/5 transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[18px]" data-icon="add_comment">add_comment</span>
+                Start a Discussion
+            </button>
+</div>
+<!-- Footer Tabs -->
+<nav class="px-stack-sm pt-stack-sm border-t border-white/5 mt-stack-md">
+<ul class="flex flex-col gap-1">
+<li>
+<a class="flex items-center gap-stack-md px-stack-md py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+                        Settings
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-stack-md px-stack-md py-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+                        Help
+                    </a>
+</li>
+</ul>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-16 md:pl-64 min-h-screen">
+<div class="max-w-container-max mx-auto p-margin-mobile md:p-gutter pb-32">
+<!-- Profile Header -->
+<section class="relative mb-stack-lg">
+<!-- Cover Image -->
+<div class="h-48 md:h-64 rounded-xl overflow-hidden relative border border-white/5 shadow-md">
+<img alt="Profile Cover" class="w-full h-full object-cover" data-alt="A sweeping, futuristic digital cityscape at twilight, rendered in deep indigo and neon cyan. The scene is viewed from a high vantage point, showing abstract geometric structures with glowing data streams. The lighting is moody and cinematic, emphasizing the 'SaaS-Deep' aesthetic with sharp contrasts and subtle atmospheric fog. Designed as a high-end profile banner." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9hpefTFM0a7P17c4SFNpeJ9Uvka8raZ8ewy6PfHBnvMUTNJCtRMom-oRbyt_GbW6PM1vC0r0KsiXdLZr4YJfzp7NKXNWe_IoJ9qKvj31Tmz5lTjML7ghKndkv_bW6w-x02mEAD_nVCi2rFbL9j78hMY4UCOz_p41MJmthMmahbmIJJZKl8OZDoAs18o4nM4q5ztILnoQIke0mlj5FXt0x6k83Q9ffbVA7lHgI_pO2204KWKCzvCJm1ID6ZnSlk5UgMlSKeD-9_CI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>
+</div>
+<!-- Avatar & Actions Overlay -->
+<div class="px-stack-md md:px-stack-lg flex flex-col md:flex-row justify-between items-start md:items-end -mt-16 relative z-10 gap-stack-md">
+<!-- Left: Avatar & Info -->
+<div class="flex flex-col md:flex-row items-start md:items-end gap-stack-md">
+<div class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-background overflow-hidden shadow-lg bg-surface-container">
+<img alt="User Avatar Large" class="w-full h-full object-cover" data-alt="A professional, stylish digital portrait of a male software engineer. The subject is well-lit with subtle dramatic edge lighting in cyan and purple, set against a dark background. They are looking slightly off-camera with a focused expression. The overall mood is authoritative yet approachable, fitting for a premium developer community platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6ZgjU6E0KMZXQGirkIvXDUiE4uM112KxSsoHpX-onMR6ZDQ4dytDQU8kmznRhj0Sj9mZPMvATZrs1szpmpyt6L4ajGSOEJTyWceXbcQzfTXRDW2Merkd_Z9gl8ySAZrQxopLr58AGxxwYXEJIGPrbdRMKqq5Qdc_wHAE1d2Pp2bstPVBB124xOaeyFaQm0khuji4X0lA8Js-QBS8lBoBSG0PCtGkTRn1rABw9wZ_DBJb62tVE3aAACiMr41g3hcujpF93u-s0JP4"/>
+</div>
+<div class="pb-2">
+<div class="flex items-center gap-stack-sm mb-1">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface m-0">Alex Chen</h1>
+<span class="material-symbols-outlined text-tertiary text-[20px]" data-icon="verified" title="Verified Contributor">verified</span>
+</div>
+<div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-on-surface-variant font-body-md text-body-md">
+<span>@alexc_dev</span>
+<span class="text-outline-variant">•</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span> San Francisco, CA</span>
+<span class="text-outline-variant">•</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]" data-icon="calendar_month">calendar_month</span> Joined Mar 2021</span>
+</div>
+</div>
+</div>
+<!-- Right: Actions & Badges -->
+<div class="flex flex-col items-start md:items-end gap-stack-sm pb-2 w-full md:w-auto">
+<div class="flex items-center gap-stack-sm w-full md:w-auto">
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-primary text-on-primary font-label-md text-label-md px-6 py-2.5 rounded-lg hover:bg-primary-fixed transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="person_add">person_add</span>
+                                Follow
+                            </button>
+<button class="p-2.5 rounded-lg border border-outline-variant/50 text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+<div class="mt-2 inline-flex items-center gap-2 bg-gradient-to-r from-secondary-container to-tertiary-container px-3 py-1 rounded-full border border-white/10 shadow-[0_0_15px_rgba(111,0,190,0.3)]">
+<span class="material-symbols-outlined text-white text-[16px]" data-icon="diamond">diamond</span>
+<span class="font-label-sm text-label-sm text-white font-bold tracking-wide">REP: 14,250</span>
+</div>
+</div>
+</div>
+<!-- Bio -->
+<div class="mt-stack-md px-stack-md md:px-stack-lg max-w-3xl">
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                        Senior Systems Engineer specializing in distributed databases and rust. Passionate about open-source tooling, mentoring junior devs, and finding edge cases. Currently building at <a class="text-tertiary hover:underline" href="#">@DataScale</a>.
+                    </p>
+</div>
+</section>
+<!-- Stats Grid -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-stack-md mb-stack-lg">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container/50 border border-white/5 backdrop-blur-md rounded-xl p-stack-md flex flex-col justify-between hover:bg-surface-container/80 transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-primary transition-colors">Total Posts</span>
+<div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="article">article</span>
+</div>
+</div>
+<div>
+<span class="font-headline-lg text-headline-lg text-on-surface block">342</span>
+<span class="font-label-sm text-label-sm text-tertiary flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span> +12 this month
+                        </span>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-container/50 border border-white/5 backdrop-blur-md rounded-xl p-stack-md flex flex-col justify-between hover:bg-surface-container/80 transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-tertiary transition-colors">Answers Accepted</span>
+<div class="w-8 h-8 rounded bg-tertiary/10 flex items-center justify-center text-tertiary group-hover:bg-tertiary/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+<div>
+<span class="font-headline-lg text-headline-lg text-on-surface block">89</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1 block">Top 5% in Rust</span>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-container/50 border border-white/5 backdrop-blur-md rounded-xl p-stack-md flex flex-col justify-between hover:bg-surface-container/80 transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-secondary transition-colors">Likes Received</span>
+<div class="w-8 h-8 rounded bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="thumb_up">thumb_up</span>
+</div>
+</div>
+<div>
+<span class="font-headline-lg text-headline-lg text-on-surface block">4.2k</span>
+<span class="font-label-sm text-label-sm text-tertiary flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span> +300 this week
+                        </span>
+</div>
+</div>
+<!-- Stat Card 4 -->
+<div class="bg-surface-container/50 border border-white/5 backdrop-blur-md rounded-xl p-stack-md flex flex-col justify-between hover:bg-surface-container/80 transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-on-secondary-container transition-colors">Rare Badges</span>
+<div class="w-8 h-8 rounded bg-secondary-container/30 flex items-center justify-center text-on-secondary-container group-hover:bg-secondary-container/50 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="military_tech">military_tech</span>
+</div>
+</div>
+<div>
+<span class="font-headline-lg text-headline-lg text-on-surface block">14</span>
+<div class="flex gap-1 mt-2">
+<div class="w-2 h-2 rounded-full bg-tertiary"></div>
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-1">+11 more</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Content Area: Tabs & Timeline -->
+<section>
+<!-- Tabs Navigation -->
+<div class="flex border-b border-white/10 mb-stack-lg overflow-x-auto hide-scrollbar">
+<button class="px-stack-md py-stack-sm font-label-md text-label-md text-primary border-b-2 border-primary whitespace-nowrap">
+                        Activity Timeline
+                    </button>
+<button class="px-stack-md py-stack-sm font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">
+                        My Posts <span class="bg-surface-container-high text-on-surface-variant px-1.5 py-0.5 rounded text-[10px] ml-1">342</span>
+</button>
+<button class="px-stack-md py-stack-sm font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap">
+                        Saved Content <span class="bg-surface-container-high text-on-surface-variant px-1.5 py-0.5 rounded text-[10px] ml-1">89</span>
+</button>
+</div>
+<!-- Tab Content: Activity Timeline -->
+<div class="flex flex-col gap-0">
+<!-- Timeline Item 1: Authored Post -->
+<div class="relative pl-8 md:pl-12 py-stack-md group">
+<!-- Timeline Line & Dot -->
+<div class="absolute left-[11px] md:left-[19px] top-0 bottom-0 w-px bg-outline-variant/30 group-last:bottom-auto group-last:h-full"></div>
+<div class="absolute left-1 md:left-3 top-[28px] w-6 h-6 rounded-full bg-surface-container border-2 border-primary flex items-center justify-center z-10 shadow-[0_0_10px_rgba(173,198,255,0.2)]">
+<span class="material-symbols-outlined text-[12px] text-primary" data-icon="edit">edit</span>
+</div>
+<div class="bg-surface-container-lowest/50 border border-white/5 rounded-xl p-stack-md hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-2 mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Published an article in</span>
+<a class="font-label-sm text-label-sm text-primary hover:underline" href="#">Rust Lang</a>
+<span class="text-outline-variant text-[10px]">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2 hours ago</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Implementing Zero-Copy Deserialization with Serde</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mb-4">
+                                One of the most powerful features of Serde is its ability to perform zero-copy deserialization. This means that instead of allocating new memory for strings or byte arrays, Serde can just borrow them directly from the input buffer. In high-performance systems, this saves significant overhead...
+                            </p>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-2 py-1 bg-surface-container text-on-surface-variant font-label-sm text-label-sm rounded border border-white/5">rust</span>
+<span class="px-2 py-1 bg-surface-container text-on-surface-variant font-label-sm text-label-sm rounded border border-white/5">performance</span>
+<span class="px-2 py-1 bg-surface-container text-on-surface-variant font-label-sm text-label-sm rounded border border-white/5">serde</span>
+</div>
+<div class="flex items-center gap-stack-md text-on-surface-variant">
+<span class="flex items-center gap-1 font-label-sm text-label-sm hover:text-secondary cursor-pointer transition-colors"><span class="material-symbols-outlined text-[16px]" data-icon="favorite">favorite</span> 124</span>
+<span class="flex items-center gap-1 font-label-sm text-label-sm hover:text-primary cursor-pointer transition-colors"><span class="material-symbols-outlined text-[16px]" data-icon="chat_bubble">chat_bubble</span> 18</span>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2: Answered Question -->
+<div class="relative pl-8 md:pl-12 py-stack-md group">
+<!-- Timeline Line & Dot -->
+<div class="absolute left-[11px] md:left-[19px] top-0 bottom-0 w-px bg-outline-variant/30 group-last:bottom-auto group-last:h-full"></div>
+<div class="absolute left-1 md:left-3 top-[28px] w-6 h-6 rounded-full bg-surface-container border-2 border-tertiary flex items-center justify-center z-10 shadow-[0_0_10px_rgba(76,215,246,0.2)]">
+<span class="material-symbols-outlined text-[12px] text-tertiary" data-icon="reply">reply</span>
+</div>
+<div class="bg-surface-container-lowest/50 border border-white/5 rounded-xl p-stack-md hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-2 mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Answered a question by</span>
+<a class="font-label-sm text-label-sm text-on-surface hover:text-primary" href="#">@dev_sarah</a>
+<span class="text-outline-variant text-[10px]">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Yesterday</span>
+</div>
+<div class="bg-surface-container-highest/30 border-l-2 border-outline-variant pl-3 py-1 mb-3">
+<p class="font-body-md text-body-md text-on-surface-variant italic text-sm">"How do I prevent memory leaks when using multiple channels in a single Tokio task?"</p>
+</div>
+<p class="font-body-md text-body-md text-on-surface mb-3">
+                                The issue is likely that your receiver loop isn't checking if the sender has been dropped. You need to ensure you're using `tokio::select!` properly to handle the cancellation token along with your channel receivers...
+                            </p>
+<div class="inline-flex items-center gap-1 px-2 py-1 bg-tertiary/10 text-tertiary font-label-sm text-label-sm rounded border border-tertiary/20">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle" data-weight="fill">check_circle</span>
+                                Accepted Answer
+                            </div>
+</div>
+</div>
+<!-- Timeline Item 3: Earned Badge -->
+<div class="relative pl-8 md:pl-12 py-stack-md group">
+<!-- Timeline Line & Dot -->
+<div class="absolute left-[11px] md:left-[19px] top-0 bottom-[calc(100%-28px)] w-px bg-outline-variant/30"></div>
+<div class="absolute left-1 md:left-3 top-[28px] w-6 h-6 rounded-full bg-gradient-to-br from-secondary to-tertiary flex items-center justify-center z-10 shadow-[0_0_15px_rgba(221,183,255,0.4)]">
+<span class="material-symbols-outlined text-[14px] text-surface-container-lowest" data-icon="workspace_premium" data-weight="fill">workspace_premium</span>
+</div>
+<div class="bg-gradient-to-r from-surface-container-lowest to-surface-container/50 border border-secondary/20 rounded-xl p-stack-md flex items-center gap-stack-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high border border-white/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[28px] text-secondary" data-icon="local_fire_department">local_fire_department</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface text-lg">Earned the 'Hot Streak' Badge</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">Logged in and contributed for 30 consecutive days.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-auto self-start">3 days ago</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<script>
+        // Simple script to handle interaction states visually for demonstration
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Reset all
+                document.querySelectorAll('nav a').forEach(l => {
+                    l.classList.remove('text-on-surface', 'bg-surface-container-high/40');
+                    l.classList.add('text-on-surface-variant');
+                });
+                // Set active
+                e.currentTarget.classList.add('text-on-surface', 'bg-surface-container-high/40');
+                e.currentTarget.classList.remove('text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>

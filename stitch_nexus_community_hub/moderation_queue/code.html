@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Moderation Queue - DevStack</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#060e20",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "on-secondary-container": "#d6a9ff",
+                        "error-container": "#93000a",
+                        "inverse-surface": "#dae2fd",
+                        "on-background": "#dae2fd",
+                        "inverse-primary": "#005ac2",
+                        "on-primary": "#002e6a",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "on-surface-variant": "#c2c6d6",
+                        "outline": "#8c909f",
+                        "secondary-fixed": "#f0dbff",
+                        "surface": "#0b1326",
+                        "secondary": "#ddb7ff",
+                        "surface-container-highest": "#2d3449",
+                        "outline-variant": "#424754",
+                        "inverse-on-surface": "#283044",
+                        "tertiary-fixed": "#acedff",
+                        "surface-container-high": "#222a3d",
+                        "surface-container": "#171f33",
+                        "surface-tint": "#adc6ff",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-secondary-fixed": "#2c0051",
+                        "on-primary-container": "#00285d",
+                        "secondary-container": "#6f00be",
+                        "on-tertiary-fixed": "#001f26",
+                        "background": "#0b1326",
+                        "tertiary": "#4cd7f6",
+                        "on-primary-fixed": "#001a42",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-surface": "#dae2fd",
+                        "surface-variant": "#2d3449",
+                        "surface-bright": "#31394d",
+                        "on-tertiary": "#003640",
+                        "surface-dim": "#0b1326",
+                        "primary": "#adc6ff",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#131b2e",
+                        "on-primary-fixed-variant": "#004395",
+                        "on-error": "#690005",
+                        "tertiary-container": "#009eb9",
+                        "primary-container": "#4d8eff",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary-container": "#002f38",
+                        "on-secondary": "#490080"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "1rem",
+                        "container-max": "1280px",
+                        "gutter": "1.5rem",
+                        "stack-sm": "0.5rem",
+                        "stack-md": "1rem",
+                        "stack-xs": "0.25rem",
+                        "stack-lg": "2rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-xl": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(45, 52, 73, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="bg-surface-container/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-white/10 shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16 w-full">
+<div class="flex items-center gap-stack-md">
+<span class="font-headline-md text-headline-md font-bold text-primary">DevStack</span>
+</div>
+<div class="flex-1 max-w-xl px-stack-lg hidden md:block">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full bg-surface-dim border border-outline-variant rounded-full py-2 pl-10 pr-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-on-surface-variant/50" placeholder="Search components, users, threads..." type="text"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1">
+<kbd class="hidden lg:inline-flex items-center justify-center px-1.5 py-0.5 rounded border border-outline-variant bg-surface-container text-label-sm font-label-sm text-on-surface-variant">⌘</kbd>
+<kbd class="hidden lg:inline-flex items-center justify-center px-1.5 py-0.5 rounded border border-outline-variant bg-surface-container text-label-sm font-label-sm text-on-surface-variant">K</kbd>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-stack-sm">
+<button class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-bright/50 transition-colors rounded-full active:scale-95 duration-150 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-bright/50 transition-colors rounded-full active:scale-95 duration-150 hidden sm:block">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+<button class="hidden sm:flex items-center gap-2 bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors active:scale-95 duration-150">
+                Create
+            </button>
+<img alt="User avatar" class="w-8 h-8 rounded-full border border-outline-variant ml-2 cursor-pointer hover:border-primary transition-colors" data-alt="A close up portrait of a male professional wearing a sleek dark blazer against a subtle blurred dark background. The lighting is cinematic, highlighting his features softly. The overall aesthetic is professional, modern, and fits seamlessly into a dark-mode SaaS application environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKrSkgTu1VcSuYSfYJugT-eHSeFc1l77cpIfkILVMwvVpb8lwPwVpybZ_ynrAhao2wEhmpWr6cFmVkYW3_THoYD7bslCX1pHXuaQXxT5PwITltOeb8HM2AhJKh9LS4ht5sNVEbOPXYPWKX1zghADOs-RAIiDaUJQvYx5E2hK01jxcJEzo2fsJ24JzXpRs4-YUIXoiF5fHG-Tb2VAhxr76BT0TQiYSsAIrrdBFss3JzeiXIKYPvbZCB79PBktAjneRx0smX9pVA8yQ"/>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="bg-surface-dim dark:bg-surface-dim fixed left-0 top-16 h-[calc(100vh-64px)] w-64 border-r border-white/5 flex flex-col py-stack-lg gap-stack-md hidden md:flex z-40">
+<div class="px-gutter mb-stack-md">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Developer Hub</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Community-First Platform</p>
+</div>
+<nav class="flex-1 flex flex-col gap-1 px-stack-sm">
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="home">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="groups">groups</span>
+<span class="font-label-md text-label-md">Communities</span>
+</a>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="sell">sell</span>
+<span class="font-label-md text-label-md">Tags</span>
+</a>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="dynamic_feed">dynamic_feed</span>
+<span class="font-label-md text-label-md">Custom Feeds</span>
+</a>
+<!-- Active State is Moderation Queue (not explicitly in JSON but contextually fitting below Custom Feeds for this admin view) -->
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-primary font-bold border-l-2 border-primary bg-primary/5 transition-all duration-200 ease-in-out group mt-stack-md" href="#">
+<span class="material-symbols-outlined" data-icon="gavel" data-weight="fill" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="font-label-md text-label-md">Mod Queue</span>
+</a>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="bookmark">bookmark</span>
+<span class="font-label-md text-label-md">Saved</span>
+</a>
+</nav>
+<div class="px-gutter mb-stack-md">
+<button class="w-full flex items-center justify-center gap-2 bg-surface-container-high border border-outline-variant text-on-surface font-label-md text-label-md px-4 py-2.5 rounded-lg hover:bg-surface-bright transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[18px]">add_comment</span>
+                Start a Discussion
+            </button>
+</div>
+<div class="mt-auto flex flex-col gap-1 px-stack-sm border-t border-white/5 pt-stack-sm">
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-stack-md px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 mt-16 p-margin-mobile md:p-gutter max-w-container-max mx-auto w-full flex flex-col gap-stack-lg">
+<!-- Header -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md border-b border-white/10 pb-stack-md">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Moderation Queue</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 max-w-2xl">Review reported content, manage user standing, and maintain community standards.</p>
+</div>
+<div class="flex items-center gap-stack-sm">
+<div class="bg-surface-container-high rounded-lg p-1 border border-outline-variant flex">
+<button class="px-3 py-1.5 rounded bg-surface-bright text-on-surface font-label-sm text-label-sm shadow-sm transition-colors">Pending (12)</button>
+<button class="px-3 py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-colors">Resolved</button>
+</div>
+<button class="p-2 border border-outline-variant rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface-variant transition-colors group">
+<span class="material-symbols-outlined group-hover:text-primary text-[20px]">filter_list</span>
+</button>
+</div>
+</header>
+<!-- Moderation List (Bento-ish Grid layout for reports) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-stack-md md:gap-stack-lg">
+<!-- Item 1: High Priority Toxic Comment -->
+<article class="glass-panel rounded-xl lg:col-span-2 flex flex-col overflow-hidden relative group">
+<div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+<div class="p-stack-md border-b border-white/5 bg-surface-container-low/50 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-error-container/20 border border-error-container text-error font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                            High Priority: Harassment
+                        </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">timer</span> 2h ago
+                        </span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ID: #REP-8832</span>
+</div>
+<div class="p-stack-md flex-1 flex flex-col md:flex-row gap-stack-lg">
+<div class="flex-1 flex flex-col gap-stack-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface">Reported Comment</h3>
+<div class="bg-surface-container-lowest p-stack-md rounded border border-outline-variant/30 font-body-md text-body-md text-on-surface font-mono text-sm relative">
+<!-- Thread Line indicator -->
+<div class="absolute left-0 top-0 bottom-0 w-[2px] bg-outline-variant/50"></div>
+<p class="pl-3">"Honestly, if you're writing your auth service in Python in 2024, you're an absolute idiot and shouldn't be allowed near production systems. Read a book, loser."</p>
+</div>
+<div class="mt-auto pt-stack-md flex items-center gap-stack-md text-label-sm font-label-sm">
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant">Author:</span>
+<a class="text-primary hover:underline flex items-center gap-1" href="#">@toxic_coder <span class="w-1.5 h-1.5 rounded-full bg-error inline-block"></span></a>
+<span class="text-on-surface-variant text-xs">(3 prior warnings)</span>
+</div>
+<div class="w-1 h-1 bg-outline-variant rounded-full"></div>
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant">Reporter:</span>
+<a class="text-secondary hover:underline" href="#">@sysadmin_jane</a>
+</div>
+</div>
+</div>
+</div>
+<div class="p-stack-md border-t border-white/5 bg-surface-container-highest/30 flex justify-end gap-stack-sm">
+<button class="px-4 py-2 border border-outline-variant rounded-lg text-on-surface hover:bg-surface-bright font-label-md text-label-md transition-colors">
+                        Dismiss
+                    </button>
+<button class="px-4 py-2 border border-tertiary-container rounded-lg text-tertiary hover:bg-tertiary-container/20 font-label-md text-label-md transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+                        Warn User
+                    </button>
+<button class="px-4 py-2 bg-error text-on-error rounded-lg hover:bg-error/90 font-label-md text-label-md transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+                        Delete Content
+                    </button>
+</div>
+</article>
+<!-- Metadata / Context Panel for Item 1 -->
+<aside class="glass-panel rounded-xl lg:col-span-1 p-stack-md flex flex-col gap-stack-md">
+<h4 class="font-label-md text-label-md text-on-surface uppercase tracking-wider text-on-surface-variant border-b border-white/10 pb-2">Context: @toxic_coder</h4>
+<div class="flex flex-col gap-stack-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Account Age</span>
+<span class="font-label-sm text-label-sm text-on-surface">3 Months</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Community Trust Score</span>
+<span class="font-label-sm text-label-sm text-error">Low (32/100)</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Recent Reports</span>
+<span class="font-label-sm text-label-sm text-on-surface">4 in last 30 days</span>
+</div>
+</div>
+<div class="mt-auto">
+<button class="w-full py-2 border border-error-container text-error rounded-lg hover:bg-error-container/10 font-label-md text-label-md transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">block</span>
+                        Suspend Account
+                    </button>
+</div>
+</aside>
+</div>
+</main>
+</body></html>
