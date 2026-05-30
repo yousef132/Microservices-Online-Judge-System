@@ -1,6 +1,6 @@
 ﻿namespace Community.API.Common.Helpers
 {
-    public class MinioOptions
+    public class S3MinioOptions
     {
         public string Endpoint { get; set; } = default!;
         public string PublicEndpoint { get; set; } = default!;

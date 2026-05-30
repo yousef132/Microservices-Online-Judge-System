@@ -1,13 +1,8 @@
-﻿namespace BuildingBlocks.Core.Exceptions
-{
-    public class NotFoundException : Exception
-    {
-        public NotFoundException(string message) : base(message)
-        {
-        }
+namespace Community.API.Common.Exceptions;
 
-        public NotFoundException(string name, object key) : base($"Entity \"{name}\" ({key}) was not found.")
-        {
-        }
-    }
+public class NotFoundException(string message) : Exception(message)
+{
+    public NotFoundException(string name, object key)
+        : this($"Entity \"{name}\" ({key}) was not found.")
+    { }
 }

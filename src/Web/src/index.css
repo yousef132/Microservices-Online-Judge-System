@@ -1,5 +1,105 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
 @import "tailwindcss";
+
+@theme {
+  --color-surface-container-highest: #2d3449;
+  --color-on-tertiary-fixed: #001f26;
+  --color-surface-container: #171f33;
+  --color-inverse-on-surface: #283044;
+  --color-surface-bright: #31394d;
+  --color-inverse-surface: #dae2fd;
+  --color-on-surface: #dae2fd;
+  --color-secondary: #ddb7ff;
+  --color-primary-fixed: #d8e2ff;
+  --color-on-secondary-fixed-variant: #6900b3;
+  --color-on-primary-container: #00285d;
+  --color-error-container: #93000a;
+  --color-secondary-fixed-dim: #ddb7ff;
+  --color-surface-dim: #0b1326;
+  --color-secondary-fixed: #f0dbff;
+  --color-on-secondary: #490080;
+  --color-on-background: #dae2fd;
+  --color-tertiary: #4cd7f6;
+  --color-primary-fixed-dim: #adc6ff;
+  --color-primary-container: #4d8eff;
+  --color-tertiary-container: #009eb9;
+  --color-surface-container-high: #222a3d;
+  --color-on-primary: #002e6a;
+  --color-on-primary-fixed: #001a42;
+  --color-on-primary-fixed-variant: #004395;
+  --color-surface-container-lowest: #060e20;
+  --color-outline: #8c909f;
+  --color-secondary-container: #6f00be;
+  --color-surface-variant: #2d3449;
+  --color-surface-tint: #adc6ff;
+  --color-on-error: #690005;
+  --color-primary: #adc6ff;
+  --color-on-secondary-container: #d6a9ff;
+  --color-on-tertiary: #003640;
+  --color-on-tertiary-fixed-variant: #004e5c;
+  --color-background: #0b1326;
+  --color-outline-variant: #424754;
+  --color-tertiary-fixed-dim: #4cd7f6;
+  --color-surface-container-low: #131b2e;
+  --color-surface: #0b1326;
+  --color-tertiary-fixed: #acedff;
+  --color-inverse-primary: #005ac2;
+  --color-on-surface-variant: #c2c6d6;
+  --color-on-error-container: #ffdad6;
+  --color-error: #ffb4ab;
+  --color-on-tertiary-container: #002f38;
+  --color-on-secondary-fixed: #2c0051;
+
+  --radius-DEFAULT: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 0.75rem;
+
+  --spacing-stack-xs: 0.25rem;
+  --spacing-stack-sm: 0.5rem;
+  --spacing-stack-md: 1rem;
+  --spacing-stack-lg: 2rem;
+  --spacing-margin-mobile: 1rem;
+  --spacing-gutter: 1.5rem;
+  --spacing-container-max: 1280px;
+  --container-container-max: 1280px;
+
+  --font-body-md: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-body-lg: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-headline-xl: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-headline-lg: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-headline-md: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-headline-lg-mobile: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-label-md: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-label-sm: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 24px;
+  --text-body-md--font-weight: 400;
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 28px;
+  --text-body-lg--font-weight: 400;
+  --text-headline-xl: 40px;
+  --text-headline-xl--line-height: 48px;
+  --text-headline-xl--letter-spacing: -0.02em;
+  --text-headline-xl--font-weight: 800;
+  --text-headline-lg: 30px;
+  --text-headline-lg--line-height: 38px;
+  --text-headline-lg--letter-spacing: -0.01em;
+  --text-headline-lg--font-weight: 700;
+  --text-headline-md: 24px;
+  --text-headline-md--line-height: 32px;
+  --text-headline-md--font-weight: 600;
+  --text-headline-lg-mobile: 24px;
+  --text-headline-lg-mobile--line-height: 32px;
+  --text-headline-lg-mobile--font-weight: 700;
+  --text-label-md: 14px;
+  --text-label-md--line-height: 20px;
+  --text-label-md--font-weight: 500;
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 16px;
+  --text-label-sm--font-weight: 500;
+}
 
 :root {
   font-family:
@@ -11,7 +111,7 @@
     "Segoe UI",
     sans-serif;
   color: #ffffff;
-  background: #202124;
+  background: #0b1326;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -24,14 +124,76 @@
 
 html {
   min-height: 100%;
-  background: #202124;
+  background: #0b1326;
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background: #202124;
+  background: #0b1326;
+}
+
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+.glass-card,
+.glass-panel {
+  background: rgba(45, 52, 73, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.feed-card {
+  background: rgba(34, 42, 61, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.feed-card:hover {
+  background: rgba(34, 42, 61, 0.8);
+  border-color: rgba(173, 198, 255, 0.3);
+}
+
+.thread-line {
+  width: 1px;
+  background-color: #2d3449;
+  transition: background-color 0.2s ease;
+}
+
+.thread-line:hover {
+  background-color: #adc6ff;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b1326;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d3449;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #424754;
 }
 
 button,

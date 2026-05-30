@@ -352,7 +352,7 @@ function RequireRole({ api, allowedRoles, children }) {
       const payloadJson = atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/"));
       const payload = JSON.parse(payloadJson);
       return payload.role || payload.roles || payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-    } catch (e) {
+    } catch {
       return null;
     }
   };
@@ -419,12 +419,9 @@ class PageErrorBoundary extends React.Component {
 
 function Shell({ api }) {
   const location = useLocation();
+  const appApi = useAuth(api);
   const [searchOpen, setSearchOpen] = useState(false);
-  const { count: unreadCount } = useNotificationCount(api);
-
-  if (location.pathname === "/" && !api.isAuthenticated) {
-    return <Navigate to="/welcome" replace />;
-  }
+  const { count: unreadCount } = useNotificationCount(appApi);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -436,6 +433,10 @@ function Shell({ api }) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  if (location.pathname === "/" && !appApi.isAuthenticated) {
+    return <Navigate to="/welcome" replace />;
+  }
 
   return (
     <div className="bg-background text-on-background min-h-screen flex flex-col md:flex-row font-body-md selection:bg-primary selection:text-on-primary antialiased">
@@ -455,7 +456,7 @@ function Shell({ api }) {
             <NavLink to="/tags" className={({isActive}) => `flex items-center gap-3 px-3 py-2 rounded-lg font-label-md transition-colors ${isActive ? 'bg-surface-variant text-on-surface' : 'text-on-surface-variant hover:bg-surface-bright'}`}>
               <span className="material-symbols-outlined">tag</span> Tags
             </NavLink>
-            {api.isAuthenticated && (
+            {appApi.isAuthenticated && (
               <>
                 <NavLink to="/me" className={({isActive}) => `flex items-center gap-3 px-3 py-2 rounded-lg font-label-md transition-colors ${isActive ? 'bg-surface-variant text-on-surface' : 'text-on-surface-variant hover:bg-surface-bright'}`}>
                   <span className="material-symbols-outlined">description</span> My Articles
@@ -470,40 +471,40 @@ function Shell({ api }) {
       </aside>
 
       <div className="flex-1 flex flex-col min-h-screen">
-        <Header api={api} onSearch={() => setSearchOpen(true)} unreadCount={unreadCount} />
+        <Header api={appApi} onSearch={() => setSearchOpen(true)} unreadCount={unreadCount} />
         <main className="flex-1 overflow-y-auto">
           <PageErrorBoundary>
             <Routes>
               <Route path="/welcome" element={<WelcomePage />} />
-              <Route path="/auth" element={<AuthPage api={api} />} />
-              <Route path="/" element={<Dashboard api={api} />} />
+              <Route path="/auth" element={<AuthPage api={appApi} />} />
+              <Route path="/" element={<Dashboard api={appApi} />} />
               <Route path="/explore" element={<ExplorePage />} />
               <Route path="/tags" element={<TagsExplorerPage />} />
               <Route path="/search" element={<SearchResultsPage />} />
               
-              <Route path="/notifications" element={<RequireAuth api={api}><NotificationsPage /></RequireAuth>} />
-              <Route path="/communities" element={<RequireAuth api={api}><CommunitiesPage /></RequireAuth>} />
-              <Route path="/communities/discover" element={<RequireAuth api={api}><DiscoverCommunitiesPage /></RequireAuth>} />
-              <Route path="/feeds/custom" element={<RequireAuth api={api}><CustomFeedsPage /></RequireAuth>} />
-              <Route path="/settings/profile" element={<RequireAuth api={api}><ProfileSettingsPage /></RequireAuth>} />
-              <Route path="/settings/account" element={<RequireAuth api={api}><AccountSettingsPage /></RequireAuth>} />
-              <Route path="/profile/:username/analytics" element={<RequireAuth api={api}><UserAnalyticsPage /></RequireAuth>} />
+              <Route path="/notifications" element={<RequireAuth api={appApi}><NotificationsPage /></RequireAuth>} />
+              <Route path="/communities" element={<RequireAuth api={appApi}><CommunitiesPage /></RequireAuth>} />
+              <Route path="/communities/discover" element={<RequireAuth api={appApi}><DiscoverCommunitiesPage /></RequireAuth>} />
+              <Route path="/feeds/custom" element={<RequireAuth api={appApi}><CustomFeedsPage /></RequireAuth>} />
+              <Route path="/settings/profile" element={<RequireAuth api={appApi}><ProfileSettingsPage /></RequireAuth>} />
+              <Route path="/settings/account" element={<RequireAuth api={appApi}><AccountSettingsPage /></RequireAuth>} />
+              <Route path="/profile/:username/analytics" element={<RequireAuth api={appApi}><UserAnalyticsPage /></RequireAuth>} />
               
-              <Route path="/analytics/detailed" element={<RequireRole api={api} allowedRoles={['Admin', 'SuperAdmin']}><DetailedAnalyticsPage /></RequireRole>} />
-              <Route path="/admin" element={<RequireRole api={api} allowedRoles={['Admin', 'SuperAdmin']}><AdminDashboardPage /></RequireRole>} />
-              <Route path="/admin/users" element={<RequireRole api={api} allowedRoles={['Admin', 'SuperAdmin']}><UserManagementPage /></RequireRole>} />
-              <Route path="/moderation" element={<RequireRole api={api} allowedRoles={['Admin', 'SuperAdmin']}><ModerationQueuePage /></RequireRole>} />
+              <Route path="/analytics/detailed" element={<RequireRole api={appApi} allowedRoles={['Admin', 'SuperAdmin']}><DetailedAnalyticsPage /></RequireRole>} />
+              <Route path="/admin" element={<RequireRole api={appApi} allowedRoles={['Admin', 'SuperAdmin']}><AdminDashboardPage /></RequireRole>} />
+              <Route path="/admin/users" element={<RequireRole api={appApi} allowedRoles={['Admin', 'SuperAdmin']}><UserManagementPage /></RequireRole>} />
+              <Route path="/moderation" element={<RequireRole api={appApi} allowedRoles={['Admin', 'SuperAdmin']}><ModerationQueuePage /></RequireRole>} />
 
-              <Route path="/articles/new" element={<RequireAuth api={api}><ArticleEditor api={api} mode="create" /></RequireAuth>} />
-              <Route path="/articles/:slug" element={<ArticleDetails api={api} />} />
-              <Route path="/articles/:slug/edit" element={<RequireAuth api={api}><ArticleEditor api={api} mode="edit" /></RequireAuth>} />
-              <Route path="/me" element={<RequireAuth api={api}><ArticleCollection api={api} mode="mine" /></RequireAuth>} />
-              <Route path="/bookmarks" element={<RequireAuth api={api}><ArticleCollection api={api} mode="bookmarks" /></RequireAuth>} />
+              <Route path="/articles/new" element={<RequireAuth api={appApi}><ArticleEditor api={appApi} mode="create" /></RequireAuth>} />
+              <Route path="/articles/:slug" element={<ArticleDetails api={appApi} />} />
+              <Route path="/articles/:slug/edit" element={<RequireAuth api={appApi}><ArticleEditor api={appApi} mode="edit" /></RequireAuth>} />
+              <Route path="/me" element={<RequireAuth api={appApi}><ArticleCollection api={appApi} mode="mine" /></RequireAuth>} />
+              <Route path="/bookmarks" element={<RequireAuth api={appApi}><ArticleCollection api={appApi} mode="bookmarks" /></RequireAuth>} />
               </Routes>
           </PageErrorBoundary>
         </main>
       </div>
-      {searchOpen && <SearchOverlay api={api} onClose={() => setSearchOpen(false)} />}
+      {searchOpen && <SearchOverlay api={appApi} onClose={() => setSearchOpen(false)} />}
     </div>
   );
 }
@@ -1177,14 +1178,18 @@ function NotificationsPage() {
     try {
       await request(`/api/notifications/${id}/read`, { method: "PUT" });
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
-    } catch (err) {}
+    } catch {
+      // Leave the notification unread if the server rejects the update.
+    }
   };
 
   const markAllAsRead = async () => {
     try {
       await request("/api/notifications/read-all", { method: "POST" });
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-    } catch (err) {}
+    } catch {
+      // Leave local read states unchanged if the bulk update fails.
+    }
   };
 
   return (
@@ -1302,7 +1307,9 @@ function CommunitiesPage() {
     try {
       await request(`/api/communities/${id}/follow`, { method });
       setCommunities(prev => prev.filter(c => c.id !== id));
-    } catch (err) {}
+    } catch {
+      // Keep the community visible if the follow action fails.
+    }
   };
 
   return (
@@ -1380,7 +1387,9 @@ function DiscoverCommunitiesPage() {
     try {
       await request(`/api/communities/${id}/follow`, { method });
       setCommunities(prev => prev.map(c => c.id === id ? { ...c, isFollowed: !isFollowed } : c));
-    } catch (err) {}
+    } catch {
+      // Preserve the current follow state if the request fails.
+    }
   };
 
   return (
@@ -1501,13 +1510,14 @@ function CustomFeedsPage() {
 }
 
 function ProfileSettingsPage() {
-  const { request } = useApi();
+  const api = useApi();
+  const { request } = api;
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
-  const { upload, uploading } = usePresignedUpload(useApi());
+  const { uploading } = usePresignedUpload(api);
 
   useEffect(() => {
     let mounted = true;

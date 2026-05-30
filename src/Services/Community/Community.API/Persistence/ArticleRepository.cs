@@ -47,7 +47,7 @@ public class ArticleRepository(MongoDbContext context) : IArticleRepository
 
     public async Task<(IEnumerable<Article> Articles, long TotalCount)> ListForAuthorAsync(Guid authorId, int page, int pageSize)
     {
-        var filter = Builders<Article>.Filter.Eq("author.id", authorId) &
+        var filter = Builders<Article>.Filter.Eq(a => a.Author.Id, authorId) &
                      Builders<Article>.Filter.Ne(a => a.Status, "Deleted");
         var sort = Builders<Article>.Sort.Descending(a => a.CreatedAt);
         var articles = await _articles.Find(filter).Sort(sort)

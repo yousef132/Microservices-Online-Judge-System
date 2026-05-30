@@ -1,4 +1,5 @@
 using BuildingBlocks.Core.Exceptions;
+using Community.API.Common.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Users.API.Domain.Models;
 using Users.API.Feature.User;

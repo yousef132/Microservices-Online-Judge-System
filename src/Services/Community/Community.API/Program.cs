@@ -1,4 +1,6 @@
+using Amazon.S3;
 using BuildingBlocks.Core;
+using BuildingBlocks.Core.Exceptions.Handler;
 using BuildingBlocks.Identity;
 using BuildingBlocks.Logging;
 using Community.API.BackgroundJobs;
@@ -6,13 +8,13 @@ using Community.API.Common.Behaviors;
 using Community.API.Common.Extensions;
 using Community.API.Common.Helpers;
 using Community.API.Database;
-using Community.API.Middleware;
 using Community.API.Persistence;
 using Community.API.Services.Auth;
 using Community.API.Services.S3;
 using Community.API.Services.Slugs;
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<MongoDbContext>();
 
 
-builder.Services.Configure<MinioOptions>(
+builder.Services.Configure<S3MinioOptions>(
     builder.Configuration.GetSection("Minio"));
 
 // ────────────────────────────────────────────
@@ -41,6 +43,17 @@ builder.Services.AddScoped<IRecommendationCacheRepository, RecommendationCacheRe
 // ────────────────────────────────────────────
 builder.Services.AddScoped<IAuthHelper, AuthHelper>();
 builder.Services.AddScoped<IS3Service, S3Service>();
+builder.Services.AddSingleton<IAmazonS3>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<S3MinioOptions>>().Value;
+    var config = new AmazonS3Config
+    {
+        ServiceURL = options.Endpoint, // backend -> s3 storage, then use minio
+        ForcePathStyle = true,
+        UseHttp = true
+    };
+    return new AmazonS3Client(options.AccessKey, options.SecretKey, config);
+});
 builder.Services.AddScoped<ISlugGenerator, SlugGenerator>();
 
 // ────────────────────────────────────────────
@@ -55,13 +68,13 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBeh
 // ────────────────────────────────────────────
 // Middleware
 // ────────────────────────────────────────────
-builder.Services.AddTransient<GlobalExceptionHandler>();
 builder.Services.AddHttpContextAccessor();
 
 // ────────────────────────────────────────────
 // Background Jobs
 // ────────────────────────────────────────────
 builder.Services.AddHostedService<HotScoreRecalculator>();
+builder.Services.AddHttpClient();
 
 // ────────────────────────────────────────────
 // Authentication / Authorization
@@ -111,7 +124,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<GlobalExceptionHandler>();
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors("AllowReactApp");

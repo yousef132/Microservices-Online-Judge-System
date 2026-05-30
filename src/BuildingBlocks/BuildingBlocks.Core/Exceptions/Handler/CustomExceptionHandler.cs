@@ -1,29 +1,38 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using Community.API.Common.Exceptions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace BuildingBlocks.Core.Exceptions.Handler
 {
-   using BuildingBlocks.Core.Exceptions;
-using FluentValidation;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-
-namespace BuildingBlocks.Core.Exceptions.Handler
-{
-    public sealed class GlobalExceptionHandler
-        (ILogger<GlobalExceptionHandler> logger)
-        : IExceptionHandler
+    public class GlobalExceptionHandlerMiddleware
     {
-        public async ValueTask<bool> TryHandleAsync(
-            HttpContext context,
-            Exception exception,
-            CancellationToken cancellationToken)
+        private readonly RequestDelegate _next;
+        private readonly ILogger<GlobalExceptionHandlerMiddleware> _logger;
+
+        public GlobalExceptionHandlerMiddleware(
+            RequestDelegate next,
+            ILogger<GlobalExceptionHandlerMiddleware> logger)
         {
-            logger.LogError(exception,
+            _next = next;
+            _logger = logger;
+        }
+
+        public async Task InvokeAsync(HttpContext context)
+        {
+            try
+            {
+                await _next(context);
+            }
+            catch (Exception exception)
+            {
+                await HandleExceptionAsync(context, exception);
+            }
+        }
+
+        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+            _logger.LogError(exception,
                 "Unhandled exception occurred at {Time}",
                 DateTime.UtcNow);
 
@@ -69,34 +78,32 @@ namespace BuildingBlocks.Core.Exceptions.Handler
             };
 
             context.Response.StatusCode = statusCode;
+            context.Response.ContentType = "application/json";
 
-            var problemDetails = new ProblemDetails
+            var problemDetails = new
             {
                 Title = title,
                 Detail = detail,
                 Status = statusCode,
                 Instance = context.Request.Path,
-                Type = exception.GetType().Name
-            };
-
-            problemDetails.Extensions["traceId"] = context.TraceIdentifier;
-
-            // FluentValidation support
-            if (exception is FluentValidation.ValidationException fluentValidationException)
-            {
-                problemDetails.Extensions["validationErrors"] =
-                    fluentValidationException.Errors
+                Type = exception.GetType().Name,
+                traceId = context.TraceIdentifier,
+                validationErrors = exception is FluentValidation.ValidationException fluentValidationException
+                    ? fluentValidationException.Errors
                         .GroupBy(e => e.PropertyName)
                         .ToDictionary(
                             g => g.Key,
                             g => g.Select(e => e.ErrorMessage).ToArray()
-                        );
-            }
+                        )
+                    : null
+            };
 
-            await context.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
 
-            return true;
+            await context.Response.WriteAsJsonAsync(problemDetails, jsonOptions);
         }
     }
-}
 }

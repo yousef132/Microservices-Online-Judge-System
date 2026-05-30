@@ -1,10 +1,10 @@
 using BuildingBlocks.Core;
-using BuildingBlocks.Core.Exceptions.Handler.BuildingBlocks.Core.Exceptions.Handler;
 using Carter;
 using Users.API.Common.Extentions;
 using Users.API.Feature.User;
 using BuildingBlocks.Identity;
 using BuildingBlocks.Logging;
+using BuildingBlocks.Core.Exceptions.Handler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +17,6 @@ builder.Services.AddEndpointsApiExplorer()
     .AddLoggingConfigs(builder.Configuration)
     .AddSwaggerDocumentation();
 
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddCarter(configurator: c =>
 {
@@ -58,7 +57,7 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 
-app.UseExceptionHandler();
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();

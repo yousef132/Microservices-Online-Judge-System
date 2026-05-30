@@ -1,7 +1,7 @@
 import { http, HttpResponse, delay } from 'msw'
 
 export const handlers = [
-  http.get('/api/notifications/unread-count', async ({ request }) => {
+  http.get('*/api/notifications/unread-count', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -17,7 +17,7 @@ export const handlers = [
     return HttpResponse.json({ count: 5 })
   }),
 
-  http.get('/api/search/suggestions', async ({ request }) => {
+  http.get('*/api/search/suggestions', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -46,7 +46,7 @@ export const handlers = [
     })
   }),
 
-  http.get('/api/explore/highlights', async ({ request }) => {
+  http.get('*/api/explore/highlights', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -76,7 +76,7 @@ export const handlers = [
     })
   }),
 
-  http.get('/api/tags/summary', async ({ request }) => {
+  http.get('*/api/tags/summary', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -100,7 +100,7 @@ export const handlers = [
     })
   }),
 
-  http.get('/api/search', async ({ request }) => {
+  http.get('*/api/search', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -145,7 +145,7 @@ export const handlers = [
   }),
 
   // Phase 6
-  http.get('/api/users/profile-settings', async ({ request }) => {
+  http.get('*/api/users/profile-settings', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -163,7 +163,7 @@ export const handlers = [
       avatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAhq9rTlDFODYBaGIZprxNWUFz1qkjvgK74OH8m5TsathziN827eJ7Nrs4i7uST5eez4xGKHTqUiCMNS1Opg6RWhTmI9BC6S5Ej3DcAXoGOKwfqsjrTCPcVoP-dlUoIJAVNTcH0v82DNTWtEXs5KRi_b3B6C3kjfVmz6zuFow7_VsNZTibgtVceKvpVsPtHWnbPHoQzHsInpo8ovIG6Oo6yy3ddYA5bMvm3zGYszr6ZcSCq87nQ1XyOWqmNP72mo0V090aeqnTpJo8"
     })
   }),
-  http.put('/api/users/profile-settings', async ({ request }) => {
+  http.put('*/api/users/profile-settings', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -182,7 +182,7 @@ export const handlers = [
       avatarUrl: body.avatarStorageKey || "https://lh3.googleusercontent.com/aida-public/AB6AXuAhq9rTlDFODYBaGIZprxNWUFz1qkjvgK74OH8m5TsathziN827eJ7Nrs4i7uST5eez4xGKHTqUiCMNS1Opg6RWhTmI9BC6S5Ej3DcAXoGOKwfqsjrTCPcVoP-dlUoIJAVNTcH0v82DNTWtEXs5KRi_b3B6C3kjfVmz6zuFow7_VsNZTibgtVceKvpVsPtHWnbPHoQzHsInpo8ovIG6Oo6yy3ddYA5bMvm3zGYszr6ZcSCq87nQ1XyOWqmNP72mo0V090aeqnTpJo8"
     })
   }),
-  http.post('/api/users/avatar-upload-url', async ({ request }) => {
+  http.post('*/api/users/avatar-upload-url', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -198,7 +198,7 @@ export const handlers = [
       expiresAt: new Date(Date.now() + 3600000).toISOString()
     })
   }),
-  http.put('/api/users/security/password', async ({ request }) => {
+  http.put('*/api/users/security/password', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -210,7 +210,7 @@ export const handlers = [
 
         return HttpResponse.json({ message: "Password updated successfully." })
   }),
-  http.delete('/api/users/account', async ({ request }) => {
+  http.delete('*/api/users/account', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -222,7 +222,7 @@ export const handlers = [
 
         return HttpResponse.json({ message: "Account deleted." })
   }),
-  http.get('/api/communities/followed', async ({ request }) => {
+  http.get('*/api/communities/followed', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -239,7 +239,7 @@ export const handlers = [
       ]
     })
   }),
-  http.get('/api/communities/recommended', async ({ request }) => {
+  http.get('*/api/communities/recommended', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -256,7 +256,7 @@ export const handlers = [
       ]
     })
   }),
-  http.post('/api/communities/:id/follow', async ({ request, params }) => {
+  http.post('*/api/communities/:id/follow', async ({ request, params }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -268,7 +268,7 @@ export const handlers = [
 
         return HttpResponse.json({ communityId: params.id, isFollowed: true }, { status: 201 })
   }),
-  http.delete('/api/communities/:id/follow', async ({ request, params }) => {
+  http.delete('*/api/communities/:id/follow', async ({ request, params }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -280,7 +280,7 @@ export const handlers = [
 
         return HttpResponse.json({ communityId: params.id, isFollowed: false })
   }),
-  http.get('/api/feeds/custom', async ({ request }) => {
+  http.get('*/api/feeds/custom', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -298,7 +298,7 @@ export const handlers = [
       ]
     })
   }),
-  http.post('/api/feeds/custom', async ({ request }) => {
+  http.post('*/api/feeds/custom', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -313,7 +313,7 @@ export const handlers = [
   }),
 
   // Phase 7
-  http.get('/api/notifications', async ({ request }) => {
+  http.get('*/api/notifications', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -376,7 +376,7 @@ export const handlers = [
       pageSize: 20
     })
   }),
-  http.put('/api/notifications/:id/read', async ({ request, params }) => {
+  http.put('*/api/notifications/:id/read', async ({ request, params }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -388,7 +388,7 @@ export const handlers = [
 
         return HttpResponse.json({ id: params.id, isRead: true })
   }),
-  http.post('/api/notifications/read-all', async ({ request }) => {
+  http.post('*/api/notifications/read-all', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -402,7 +402,7 @@ export const handlers = [
   }),
 
   // Phase 8
-  http.get('/api/users/:username/analytics/summary', async ({ request, params }) => {
+  http.get('*/api/users/:username/analytics/summary', async ({ request, params }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -433,7 +433,7 @@ export const handlers = [
       })
     })
   }),
-  http.get('/api/analytics/community-detailed', async ({ request }) => {
+  http.get('*/api/analytics/community-detailed', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -452,7 +452,7 @@ export const handlers = [
   }),
 
   // Phase 9
-  http.get('/api/admin/metrics', async ({ request }) => {
+  http.get('*/api/admin/metrics', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -470,7 +470,7 @@ export const handlers = [
       snapshotAt: new Date().toISOString()
     })
   }),
-  http.get('/api/admin/users', async ({ request }) => {
+  http.get('*/api/admin/users', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -492,7 +492,7 @@ export const handlers = [
       pageSize: 20
     })
   }),
-  http.put('/api/admin/users/:id/role', async ({ params, request }) => {
+  http.put('*/api/admin/users/:id/role', async ({ params, request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -505,7 +505,7 @@ export const handlers = [
         const { role } = await request.json()
     return HttpResponse.json({ id: params.id, role })
   }),
-  http.put('/api/admin/users/:id/status', async ({ params, request }) => {
+  http.put('*/api/admin/users/:id/status', async ({ params, request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -518,7 +518,7 @@ export const handlers = [
         const { status } = await request.json()
     return HttpResponse.json({ id: params.id, status })
   }),
-  http.get('/api/moderation/queue', async ({ request }) => {
+  http.get('*/api/moderation/queue', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');
@@ -543,7 +543,7 @@ export const handlers = [
       ]
     })
   }),
-  http.post('/api/moderation/resolve', async ({ request }) => {
+  http.post('*/api/moderation/resolve', async ({ request }) => {
 
     const url = new URL(request.url, 'http://localhost');
     const scenario = url.searchParams.get('msw_scenario');

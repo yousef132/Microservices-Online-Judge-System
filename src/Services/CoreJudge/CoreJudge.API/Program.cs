@@ -1,5 +1,5 @@
 using BuildingBlocks.Core;
-using BuildingBlocks.Core.Exceptions.Handler.BuildingBlocks.Core.Exceptions.Handler;
+using BuildingBlocks.Core.Exceptions.Handler;
 using BuildingBlocks.Identity;
 using BuildingBlocks.Logging;
 using CoreJudge.API.Extentions;
@@ -26,7 +26,6 @@ builder.Services.AddApplication(builder.Configuration)
     .AddIdentity(builder.Configuration)
     .AddLoggingConfigs(builder.Configuration);
 
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 var app = builder.Build();
 await app.Services.ApplyMigrationsWithRetryAsync();
@@ -41,7 +40,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseAuthorization();
-app.UseExceptionHandler();
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.MapControllers();
 app.MapGet("/health", () => Results.Ok("healthy"));

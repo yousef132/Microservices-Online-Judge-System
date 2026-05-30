@@ -1,5 +1,4 @@
 using Community.API.Entities;
-using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using ArticleTag = Community.API.Entities.Tag;
 
