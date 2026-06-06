@@ -1,0 +1,56 @@
+
+# ============================================================
+# Prometheus Configuration — Online Judge System
+# ============================================================
+# Prometheus does NOT receive pushed metrics.
+# Instead it SCRAPES the OpenTelemetry Collector's Prometheus
+# exporter endpoint (port 8889) at regular intervals.
+# ============================================================
+
+global:
+  scrape_interval: 15s          # How often to scrape targets
+  evaluation_interval: 15s      # How often to evaluate rules
+  scrape_timeout: 10s
+  external_labels:
+    environment: "development"
+    project: "online-judge"
+
+# ── ALERTING ─────────────────────────────────────────────────
+# (No alertmanager configured yet — add when needed)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets: ["alertmanager:9093"]
+
+# ── RULE FILES ───────────────────────────────────────────────
+# rule_files:
+#   - "alert_rules.yml"
+
+# ── SCRAPE CONFIGS ───────────────────────────────────────────
+scrape_configs:
+
+  # ── OTel Collector — application metrics (from all services)
+  # The collector's Prometheus exporter aggregates metrics from all
+  # microservices and exposes them on port 8889.
+  - job_name: "otel-collector-app-metrics"
+    static_configs:
+      - targets: ["otel-collector:8889"]
+        labels:
+          source: "otel-collector"
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+
+  # ── OTel Collector — self telemetry (collector health + perf)
+  - job_name: "otel-collector-self"
+    static_configs:
+      - targets: ["otel-collector:8888"]
+        labels:
+          source: "otel-collector-internal"
+
+  # ── Prometheus self-monitoring
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+        labels:
+          source: "prometheus"

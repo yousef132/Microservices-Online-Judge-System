@@ -43,6 +43,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Community", "Community", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Community.API", "Services\Community\Community.API\Community.API.csproj", "{AA4F6544-999B-4600-AC6B-62912E66A690}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Observability", "Observability", "{14FFD0F1-69DE-4A90-91CD-1F0AA14ABB7C}"
+	ProjectSection(SolutionItems) = preProject
+		otel-config.yaml = otel-config.yaml
+		prometheus.yaml = prometheus.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -1,0 +1,150 @@
+# ============================================================
+# OpenTelemetry Collector Configuration
+# ============================================================
+#
+# Signal routing:
+#   Traces   → Jaeger   (via OTLP gRPC 4317)
+#   Metrics  → Prometheus (scrape endpoint :8889/metrics)
+#   Logs     → Elasticsearch (index: otel-logs)
+#
+# All microservices export via OTLP gRPC to this collector
+# on port 4317 (internal Docker network).
+# ============================================================
+
+# ── RECEIVERS ────────────────────────────────────────────────
+# Accept telemetry data from microservices via OTLP protocol.
+# Services use OpenTelemetry SDK (OTLP exporter) to push data.
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317   # All services export here (gRPC)
+      http:
+        endpoint: 0.0.0.0:4318   # Optional HTTP/Protobuf endpoint
+
+# ── PROCESSORS ───────────────────────────────────────────────
+# Transform, filter and batch telemetry before export.
+processors:
+  # Batch telemetry for efficiency — reduces number of outbound requests
+  batch:
+    timeout: 5s
+    send_batch_size: 1024
+    send_batch_max_size: 2048
+
+  # Add resource attributes to every signal (useful for Kibana/Jaeger filtering)
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: "development"
+        action: upsert
+      - key: service.namespace
+        value: "online-judge"
+        action: upsert
+
+  # Memory limiter — prevent OOM under high load
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+    spike_limit_mib: 128
+
+  # Drop noisy health-check & readiness probe spans (OTTL syntax)
+  filter/health_checks:
+    error_mode: ignore
+    traces:
+      span:
+        - 'attributes["http.route"] == "/health"'
+        - 'attributes["http.route"] == "/health/ready"'
+        - 'attributes["http.route"] == "/health/live"'
+        - 'attributes["url.path"] == "/health"'
+        - 'attributes["url.path"] == "/metrics"'
+
+# ── EXPORTERS ────────────────────────────────────────────────
+exporters:
+  # ---- TRACES → Jaeger ----------------------------------------
+  # Jaeger accepts OTLP natively since v1.35+
+  otlp/jaeger:
+    endpoint: "logging-jaeger:4317"
+    tls:
+      insecure: true
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
+
+  # ---- METRICS → Prometheus -----------------------------------
+  # Prometheus scrapes this endpoint; no push needed
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    namespace: "online_judge"
+    const_labels:
+      environment: "development"
+    enable_open_metrics: true
+    resource_to_telemetry_conversion:
+      enabled: true   # Convert resource attributes to metric labels
+
+  # ---- LOGS → Elasticsearch -----------------------------------
+  elasticsearch:
+    endpoints:
+      - http://elasticsearch:9200
+    logs_index: "otel-logs"
+    sending_queue:
+      enabled: true
+      num_consumers: 4
+      queue_size: 100
+    retry:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
+    tls:
+      insecure: true
+
+  # ---- Debug (stdout) — disable in production -----------------
+  debug:
+    verbosity: basic          # Set to "detailed" for troubleshooting
+
+# ── EXTENSIONS ───────────────────────────────────────────────
+extensions:
+  # Health-check endpoint for Docker healthcheck
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+  # Exposes collector's own performance profiling
+  pprof:
+    endpoint: 0.0.0.0:1888
+
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+# ── PIPELINES ────────────────────────────────────────────────
+# Wire receivers → processors → exporters per signal type.
+service:
+  extensions: [health_check, pprof, zpages]
+
+  pipelines:
+    # TRACES pipeline
+    traces:
+      receivers:  [otlp]
+      processors: [memory_limiter, filter/health_checks, resource, batch]
+      exporters:  [otlp/jaeger, debug]
+
+    # METRICS pipeline
+    metrics:
+      receivers:  [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters:  [prometheus, debug]
+
+    # LOGS pipeline
+    logs:
+      receivers:  [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters:  [elasticsearch, debug]
+
+  # Collector's own telemetry (logs + metrics about the collector itself)
+  telemetry:
+    logs:
+      level: info
+    metrics:
+      level: detailed
+      address: 0.0.0.0:8888

@@ -208,6 +208,45 @@ services:
       retries: 10
       start_period: 20s
 
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.127.0
+    pull_policy: if_not_present
+    container_name: otel-collector
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ./otel-config.yaml:/etc/otelcol-contrib/config.yaml:ro
+    depends_on:
+      logging-jaeger:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:13133"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    pull_policy: if_not_present
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+      - "--web.enable-lifecycle"
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    depends_on:
+      otel-collector:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
 volumes:
   users-pgdata:
   corejudge-pgdata:
@@ -216,5 +255,6 @@ volumes:
   elasticsearch-data:
   mongo-data:
   minio_data:
+  prometheus-data:
   judge_data:
     name: judge_data

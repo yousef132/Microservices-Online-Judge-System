@@ -13,9 +13,11 @@ services:
       KeyCloak__Audience: account
       KeyCloak__Authority: http://keycloak:8080/realms/online_judge
       Logging__LogLevel__Default: Information
-      Jaeger__OTEL_EXPORTER_OTLP_ENDPOINT: http://logging-jaeger:4317/
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
     depends_on:
       users.db:
+        condition: service_healthy
+      otel-collector:
         condition: service_healthy
 
   corejudge.db: 
@@ -37,8 +39,6 @@ services:
   logging-jaeger:
     container_name: logging.jaeger
     ports:
-      - "4317:4317"
-      - "4318:4318"
       - "16686:16686"
 
   corejudge.api:
@@ -56,7 +56,7 @@ services:
       KeyCloak__Audience: account
       KeyCloak__Authority: http://keycloak:8080/realms/online_judge
       Logging__LogLevel__Default: Information
-      Jaeger__OTEL_EXPORTER_OTLP_ENDPOINT: http://logging-jaeger:4317/
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
       ConnectionStrings__Redis: caching:6379,password=StrongRedisPassword123
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: guest
@@ -73,6 +73,8 @@ services:
         condition: service_healthy
       caching:
         condition: service_healthy
+      otel-collector:
+        condition: service_healthy
 
   caching:
     ports:
@@ -88,18 +90,19 @@ services:
     environment:
       MongoDB__ConnectionString: mongodb://admin:StrongMongoPassword123@community.mongo:27017
       MongoDB__DatabaseName: CommunityDb
-    
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
       Minio__Endpoint: minio:9000 # for connection within the Docker network
       Minio__PublicEndpoint: localhost:9000 # for external access (e.g., presigned URLs)
       Minio__AccessKey: admin
       Minio__SecretKey: password
       Minio__BucketName: community-service
       Minio__UseSSL: "false"
-    
     depends_on:
       community.mongo:
         condition: service_healthy
       minio:
+        condition: service_healthy
+      otel-collector:
         condition: service_healthy
 
   api.gateway:
@@ -115,11 +118,13 @@ services:
       KeyCloak__Audience: account
       KeyCloak__Authority: http://keycloak:8080/realms/online_judge
       Logging__LogLevel__Default: Information
-      Jaeger__OTEL_EXPORTER_OTLP_ENDPOINT: http://logging-jaeger:4317/
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
     depends_on:
       users.api:
         condition: service_healthy
       corejudge.api:
+        condition: service_healthy
+      otel-collector:
         condition: service_healthy
     restart: unless-stopped
 
@@ -159,3 +164,15 @@ services:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: password
       MINIO_SERVER_URL: http://localhost:9000
+
+  otel-collector:
+    ports:
+      - "4317:4317"   # OTLP gRPC (for local dev / external tools)
+      - "4318:4318"   # OTLP HTTP
+      - "8889:8889"   # Prometheus metrics endpoint
+      - "13133:13133" # Health check
+      - "55679:55679" # zPages
+
+  prometheus:
+    ports:
+      - "9090:9090"
