@@ -1,5 +1,6 @@
 using Community.API.Database;
 using Community.API.Entities;
+using Community.API.Enums;
 using MongoDB.Driver;
 
 namespace Community.API.Persistence;
@@ -8,14 +9,14 @@ public class UserActivityLogRepository(MongoDbContext context) : IUserActivityLo
 {
     private readonly IMongoCollection<UserActivity> _activities = context.UserActivities;
 
-    public async Task LogActivityAsync(Guid userId, Guid articleId, string eventType)
+    public async Task LogActivityAsync(Guid userId, Guid articleId, EventTypeEnum eventType)
     {
         var log = new UserActivity
         {
             Id = Guid.NewGuid(),
             UserId = userId,
             ArticleId = articleId,
-            EventType = eventType,
+            EventType = eventType.ToString(),
             CreatedAt = DateTime.UtcNow
         };
         await _activities.InsertOneAsync(log);

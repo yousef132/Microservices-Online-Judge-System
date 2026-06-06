@@ -7,7 +7,7 @@ public interface IVoteRepository
 {
     Task<Vote?> GetVoteAsync(Guid userId, Guid targetId, string targetType);
     Task<List<Vote>> GetVotesForCommentsAsync(Guid userId, IEnumerable<Guid> commentIds);
-    Task CreateVoteAsync(Guid userId, Guid targetId, string targetType, int value, IClientSessionHandle session);
-    Task UpdateVoteAsync(string voteId, int newValue, IClientSessionHandle session);
-    Task DeleteVoteAsync(string voteId, IClientSessionHandle session);
+    Task CreateVoteAsync(Guid userId, Guid targetId, string targetType, int value);
+    Task UpdateVoteAsync(string voteId, int newValue);
+    Task DeleteVoteAsync(string voteId);
 }

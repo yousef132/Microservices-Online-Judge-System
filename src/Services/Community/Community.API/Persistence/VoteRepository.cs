@@ -22,7 +22,7 @@ public class VoteRepository(MongoDbContext context) : IVoteRepository
                 Builders<Vote>.Filter.In(v => v.TargetId, commentIds)))
             .ToListAsync();
 
-    public async Task CreateVoteAsync(Guid userId, Guid targetId, string targetType, int value, IClientSessionHandle session)
+    public async Task CreateVoteAsync(Guid userId, Guid targetId, string targetType, int value)
     {
         var vote = new Vote
         {
@@ -33,14 +33,14 @@ public class VoteRepository(MongoDbContext context) : IVoteRepository
             Value = value,
             CreatedAt = DateTime.UtcNow
         };
-        await _votes.InsertOneAsync(session, vote);
+        await _votes.InsertOneAsync(vote);
     }
 
-    public async Task UpdateVoteAsync(string voteId, int newValue, IClientSessionHandle session) =>
-        await _votes.UpdateOneAsync(session,
+    public async Task UpdateVoteAsync(string voteId, int newValue) =>
+        await _votes.UpdateOneAsync(
             Builders<Vote>.Filter.Eq(v => v.Id, voteId),
             Builders<Vote>.Update.Set(v => v.Value, newValue).Set(v => v.CreatedAt, DateTime.UtcNow));
 
-    public async Task DeleteVoteAsync(string voteId, IClientSessionHandle session) =>
-        await _votes.DeleteOneAsync(session, Builders<Vote>.Filter.Eq(v => v.Id, voteId));
+    public async Task DeleteVoteAsync(string voteId) =>
+        await _votes.DeleteOneAsync(Builders<Vote>.Filter.Eq(v => v.Id, voteId));
 }

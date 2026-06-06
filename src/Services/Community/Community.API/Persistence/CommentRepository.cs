@@ -9,37 +9,40 @@ public class CommentRepository(MongoDbContext context) : ICommentRepository
 {
     private readonly IMongoCollection<CommentThread> _comments = context.Comments;
 
-    public async Task AddCommentAsync(Guid articleId, CommentNode newComment, Guid? parentCommentId, IClientSessionHandle session)
+    public async Task AddCommentAsync(Guid articleId, CommentNode newComment, Guid? parentCommentId)
     {
         var filter = Builders<CommentThread>.Filter.Eq(c => c.ArticleId, articleId);
-        var commentDocument = await _comments.Find(session, filter).FirstOrDefaultAsync();
+        var commentThreadDocument = await _comments.Find(filter).FirstOrDefaultAsync();
 
-        if (commentDocument is null)
+        if (commentThreadDocument is null)
         {
             if (parentCommentId.HasValue)
                 throw new Exception("Cannot reply to a comment in an article with no comments.");
 
-            commentDocument = new CommentThread
+            commentThreadDocument = new CommentThread
             {
                 Id = articleId,
                 ArticleId = articleId,
                 Comments = [newComment]
             };
-            await _comments.InsertOneAsync(session, commentDocument);
+            await _comments.InsertOneAsync(commentThreadDocument);
         }
         else
         {
+            // commentthread already exists, we need to add the new comment to the existing thread
+            //----
+            // If parentCommentId is provided, we need to find the parent comment and add the new comment as a reply
             if (parentCommentId.HasValue)
             {
-                var parentNode = FindNode(commentDocument.Comments, parentCommentId.Value);
+                var parentNode = FindNode(commentThreadDocument.Comments, parentCommentId.Value);
                 if (parentNode is null) throw new Exception("Parent comment not found.");
                 parentNode.Replies.Add(newComment);
             }
             else
             {
-                commentDocument.Comments.Add(newComment);
+                commentThreadDocument.Comments.Add(newComment);
             }
-            await _comments.ReplaceOneAsync(session, filter, commentDocument);
+            await _comments.ReplaceOneAsync(filter, commentThreadDocument);
         }
     }
 
@@ -62,18 +65,18 @@ public class CommentRepository(MongoDbContext context) : ICommentRepository
         await _comments.ReplaceOneAsync(filter, commentDocument);
     }
 
-    public async Task UpdateVoteCountAsync(Guid commentId, int delta, IClientSessionHandle session)
+    public async Task UpdateVoteCountAsync(Guid articleId, Guid commentId, int delta)
     {
-        var filter = Builders<CommentThread>.Filter.ElemMatch(
-            c => c.Comments,
-            Builders<CommentNode>.Filter.Eq(cn => cn.Id, commentId));
-        var update = Builders<CommentThread>.Update.Inc("comments.$[elem].voteCount", delta);
-        var arrayFilters = new List<ArrayFilterDefinition>
-        {
-            new BsonDocumentArrayFilterDefinition<BsonDocument>(
-                new BsonDocument("elem._id", commentId.ToString()))
-        };
-        await _comments.UpdateOneAsync(session, filter, update, new UpdateOptions { ArrayFilters = arrayFilters });
+        var filter = Builders<CommentThread>.Filter.Eq(c => c.ArticleId, articleId);
+        var commentDocument = await GetByArticleIdAsync(articleId);
+        if (commentDocument is null) return;
+
+        var nodeToUpdate = FindNode(commentDocument.Comments, commentId);
+        if (nodeToUpdate is null) return;
+
+        nodeToUpdate.VoteCount += delta;
+
+        await _comments.ReplaceOneAsync(filter, commentDocument);
     }
 
     public async Task DeleteCommentAsync(Guid articleId, Guid commentId)

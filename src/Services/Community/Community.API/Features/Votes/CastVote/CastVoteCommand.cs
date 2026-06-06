@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Community.API.Features.Votes.CastVote;
 
-public record CastVoteCommand(Guid TargetId, string TargetType, int Value) : IRequest<CastVoteResponse>;
+public record CastVoteCommand(Guid ArticleId, Guid? CommentId, int Value) : IRequest<CastVoteResponse>;

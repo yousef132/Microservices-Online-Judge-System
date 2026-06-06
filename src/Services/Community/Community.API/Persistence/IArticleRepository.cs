@@ -12,8 +12,8 @@ public interface IArticleRepository
     Task<(IEnumerable<Article> Articles, long TotalCount)> ListAsync(string? tag, Guid? authorId, string sort, int page, int pageSize);
     Task<(IEnumerable<Article> Articles, long TotalCount)> ListForAuthorAsync(Guid authorId, int page, int pageSize);
     Task IncrementViewCountAsync(Guid articleId);
-    Task UpdateVoteCountAsync(Guid articleId, int delta, IClientSessionHandle session);
-    Task IncrementCommentCountAsync(Guid articleId, IClientSessionHandle session);
+    Task UpdateVoteCountAsync(Guid articleId, int delta);
+    Task IncrementCommentCountAsync(Guid articleId);
     Task<IEnumerable<Article>> GetByIdsAsync(IEnumerable<Guid> ids);
     Task UpdateAsync(Article article);
     Task<IEnumerable<Article>> GetAllPublishedAsync();

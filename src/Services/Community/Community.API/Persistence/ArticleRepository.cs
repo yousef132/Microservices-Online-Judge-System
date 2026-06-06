@@ -61,13 +61,13 @@ public class ArticleRepository(MongoDbContext context) : IArticleRepository
             Builders<Article>.Filter.Eq(a => a.Id, articleId),
             Builders<Article>.Update.Inc(a => a.ViewCount, 1));
 
-    public async Task UpdateVoteCountAsync(Guid articleId, int delta, IClientSessionHandle session) =>
-        await _articles.UpdateOneAsync(session,
+    public async Task UpdateVoteCountAsync(Guid articleId, int delta) =>
+        await _articles.UpdateOneAsync(
             Builders<Article>.Filter.Eq(a => a.Id, articleId),
             Builders<Article>.Update.Inc(a => a.VoteCount, delta));
 
-    public async Task IncrementCommentCountAsync(Guid articleId, IClientSessionHandle session) =>
-        await _articles.UpdateOneAsync(session,
+    public async Task IncrementCommentCountAsync(Guid articleId) =>
+        await _articles.UpdateOneAsync(
             Builders<Article>.Filter.Eq(a => a.Id, articleId),
             Builders<Article>.Update.Inc(a => a.CommentCount, 1));
 

@@ -10,8 +10,8 @@ namespace Community.API.Features.Comments.CreateComment;
 public class CreateCommentHandler(
     ICommentRepository commentRepository,
     IArticleRepository articleRepository,
-    IHttpContextAccessor httpContextAccessor,
-    MongoDbContext mongoDbContext)
+    IUserActivityLogRepository userActivityLogRepository,
+    IHttpContextAccessor httpContextAccessor)
     : IRequestHandler<CreateCommentCommand, CommentNode>
 {
     public async Task<CommentNode> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
@@ -36,14 +36,13 @@ public class CreateCommentHandler(
             UpdatedAt = now
         };
 
-        using var session = await mongoDbContext.Client.StartSessionAsync(cancellationToken: cancellationToken);
+        await commentRepository.AddCommentAsync(request.ArticleId, newCommentNode, request.ParentCommentId);
+        _ = Task.Run(() => articleRepository.IncrementCommentCountAsync(request.ArticleId), cancellationToken);
 
-        await session.WithTransactionAsync(async (s, ct) =>
+        _ = Task.Run(async () =>
         {
-            await commentRepository.AddCommentAsync(request.ArticleId, newCommentNode, request.ParentCommentId, s);
-            await articleRepository.IncrementCommentCountAsync(request.ArticleId, s);
-            return 1;
-        }, cancellationToken: cancellationToken);
+            await userActivityLogRepository.LogActivityAsync(userId, request.ArticleId, Community.API.Enums.EventTypeEnum.Comment);
+        }, cancellationToken);
 
         return newCommentNode;
     }

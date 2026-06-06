@@ -3,6 +3,10 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Community.API.Entities;
 
+/// <summary>
+/// for both articles,comments depdeding on targetType
+/// Extendable
+/// </summary>
 public class Vote
 {
     [BsonId]

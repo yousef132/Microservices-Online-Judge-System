@@ -59,6 +59,8 @@ namespace BuildingBlocks.Core.Exceptions.Handler
                 NotFoundException =>
                     (exception.GetType().Name, exception.Message, StatusCodes.Status404NotFound),
 
+                ApplicationLogicException => (exception.GetType().Name, exception.Message, StatusCodes.Status409Conflict),
+
                 KeyNotFoundException =>
                     (exception.GetType().Name, exception.Message, StatusCodes.Status404NotFound),
 

@@ -4,6 +4,8 @@ using Community.API.Persistence;
 using Community.API.Services.S3;
 using MediatR;
 
+using Community.API.Enums;
+
 namespace Community.API.Features.Articles.GetArticleBySlug;
 
 public class GetArticleBySlugHandler(
@@ -31,13 +33,13 @@ public class GetArticleBySlugHandler(
         {
             await articleRepository.IncrementViewCountAsync(article.Id);
             if (userId != Guid.Empty)
-                await userActivityLogRepository.LogActivityAsync(userId, article.Id, "View");
+                await userActivityLogRepository.LogActivityAsync(userId, article.Id, EventTypeEnum.View);
         }, cancellationToken);
 
         var articleDto = ArticleDto.FromArticle(article);
 
         if (!string.IsNullOrEmpty(article.CoverImageKey))
-            articleDto.CoverImageUrl = s3Service.GetPreSignedGetUrl(article.CoverImageKey);
+            articleDto.CoverImageUrl = s3Service.GetPublicUrl(article.CoverImageKey);
 
         if (userId != Guid.Empty)
         {

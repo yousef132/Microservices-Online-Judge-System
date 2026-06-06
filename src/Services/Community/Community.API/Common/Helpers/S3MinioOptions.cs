@@ -1,4 +1,8 @@
-﻿namespace Community.API.Common.Helpers
+﻿using Amazon.S3;
+using Amazon.S3.Model;
+using System.Text.Json;
+
+namespace Community.API.Common.Helpers
 {
     public class S3MinioOptions
     {
