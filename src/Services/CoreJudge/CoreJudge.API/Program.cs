@@ -23,8 +23,9 @@ builder.Services.AddSwaggerGen().AddSwaggerDocumentation();
 builder.Services.AddHealthChecks();
 builder.Services.AddApplication(builder.Configuration)
     .AddInfrastructure(builder.Configuration)
-    .AddIdentity(builder.Configuration)
-    .AddLoggingConfigs(builder.Configuration);
+    .AddIdentity(builder.Configuration);
+
+builder.AddLoggingConfigs(builder.Configuration);
 
 builder.Services.AddProblemDetails();
 var app = builder.Build();

@@ -81,8 +81,9 @@ builder.Services.AddHttpClient();
 // ────────────────────────────────────────────
 
 builder.Services.AddSwaggerDocumentation()
-    .AddIdentity(builder.Configuration)
-    .AddLoggingConfigs(builder.Configuration);
+    .AddIdentity(builder.Configuration);
+
+builder.AddLoggingConfigs(builder.Configuration);
 
 // ────────────────────────────────────────────
 // API / Swagger

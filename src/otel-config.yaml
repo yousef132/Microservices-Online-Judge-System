@@ -11,6 +11,7 @@
 # on port 4317 (internal Docker network).
 # ============================================================
 
+
 # ── RECEIVERS ────────────────────────────────────────────────
 # Accept telemetry data from microservices via OTLP protocol.
 # Services use OpenTelemetry SDK (OTLP exporter) to push data.
@@ -63,7 +64,7 @@ exporters:
   # ---- TRACES → Jaeger ----------------------------------------
   # Jaeger accepts OTLP natively since v1.35+
   otlp/jaeger:
-    endpoint: "logging-jaeger:4317"
+    endpoint: "traces.jaeger:4317"
     tls:
       insecure: true
     retry_on_failure:
@@ -88,6 +89,11 @@ exporters:
     endpoints:
       - http://elasticsearch:9200
     logs_index: "otel-logs"
+    # v0.127.0+ defaults to mapping.mode=otel which requires Elasticsearch
+    # index templates, data streams, and ingest pipelines that don't exist
+    # in a plain index setup. "none" sends raw JSON directly to otel-logs.
+    mapping:
+      mode: none
     sending_queue:
       enabled: true
       num_consumers: 4
@@ -96,7 +102,6 @@ exporters:
       enabled: true
       initial_interval: 5s
       max_interval: 30s
-      max_elapsed_time: 300s
     tls:
       insecure: true
 

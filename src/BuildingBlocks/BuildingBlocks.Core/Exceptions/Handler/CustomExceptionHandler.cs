@@ -32,6 +32,7 @@ namespace BuildingBlocks.Core.Exceptions.Handler
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            
             _logger.LogError(exception,
                 "Unhandled exception occurred at {Time}",
                 DateTime.UtcNow);

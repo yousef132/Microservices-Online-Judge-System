@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Elastic.Clients.Elasticsearch" Version="9.3.3" />
+    <PackageReference Include="Elastic.Clients.Elasticsearch" Version="8.15.5" />
     <PackageReference Include="MassTransit.Abstractions" Version="8.2.2" />
     <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Core\BuildingBlocks.Core.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Identity\BuildingBlocks.Identity.csproj" />

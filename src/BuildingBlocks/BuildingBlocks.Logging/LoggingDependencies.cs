@@ -7,7 +7,6 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Serilog;
 using StackExchange.Redis;
 using System.Reflection;
 
@@ -15,18 +14,21 @@ namespace BuildingBlocks.Logging;
 
 public static class LoggingDependencies
 {
-    public static IServiceCollection AddLoggingConfigs(
-        this IServiceCollection services,
+    public static IHostApplicationBuilder AddLoggingConfigs(
+        this IHostApplicationBuilder appBuilder,
         IConfiguration configuration)
     {
-        var assemblyName = Assembly.GetCallingAssembly().GetName().Name!;
+        var services = appBuilder.Services;
+        // Use entry assembly (the running service) — GetCallingAssembly() would return
+        // BuildingBlocks.Logging (the library), not the service that called this method.
+        var assemblyName = Assembly.GetEntryAssembly()?.GetName().Name ?? "UnknownService";
 
         // Read the OTel Collector OTLP endpoint from configuration.
         // In Docker: set OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
         // Locally:   defaults to http://localhost:4317
-        var otlpEndpoint = configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]
-                           ?? configuration["Jaeger:OTEL_EXPORTER_OTLP_ENDPOINT"]
-                           ?? "http://localhost:4317";
+        var otlpEndpoint = configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
+        Console.WriteLine($"OTLP Endpoint: {otlpEndpoint}");
+        Console.WriteLine($"JWT Key: {configuration["Jwt:Key"]}");
 
         services.AddOpenTelemetry()
             .ConfigureResource(resource =>
@@ -99,36 +101,39 @@ public static class LoggingDependencies
                 });
             });
 
-        // ── LOGS (Serilog → OTLP → OTel Collector → Elasticsearch) ────
-        // Serilog writes structured logs; the OpenTelemetry log bridge
-        // forwards them via OTLP to the collector, which sends to ES.
-        Log.Logger = new LoggerConfiguration()
-            .Enrich.FromLogContext()
-            .Enrich.WithProperty("service.name", assemblyName)
-            .MinimumLevel.Information()
-            //.WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day) // optional file logging
-            //.WriteTo.Seq("http://localhost:5341") // optional Seq logging
-            .CreateLogger();
 
-        services.AddLogging(loggingBuilder =>
+        // LOG FLOW:
+        // ILogger<T>
+        //     → OpenTelemetry Logging Provider  (registered on builder.Logging, not services.AddLogging)
+        //     → OTLP Exporter
+        //     → OpenTelemetry Collector
+        //     → Elasticsearch
+        //
+        // IMPORTANT: Must be registered via builder.Logging (IHostApplicationBuilder.Logging),
+        // NOT services.AddLogging(). ASP.NET Core seals the logging pipeline during host build;
+        // calling services.AddLogging() after the fact adds the provider to the DI container
+        // but the host's ILogger factory has already been configured and won't pick it up.
+        appBuilder.Logging.AddOpenTelemetry(options =>
         {
-            loggingBuilder.AddSerilog(dispose: true);
+            options.IncludeFormattedMessage = true;
+            options.IncludeScopes = true;
+            options.ParseStateValues = true;
 
-            // OpenTelemetry log bridge: captures ILogger calls and
-            // exports them via OTLP to the collector → Elasticsearch
-            loggingBuilder.AddOpenTelemetry(otelLogging =>
+            options.SetResourceBuilder(
+                ResourceBuilder.CreateDefault()
+                    .AddService(assemblyName)
+                    .AddAttributes(new Dictionary<string, object>
+                    {
+                        ["deployment.environment"] =
+                            configuration["ASPNETCORE_ENVIRONMENT"] ?? "Development"
+                    }));
+
+            options.AddOtlpExporter(otlp =>
             {
-                otelLogging.IncludeScopes = true;
-                otelLogging.IncludeFormattedMessage = true;
-                otelLogging.ParseStateValues = true;
-
-                otelLogging.AddOtlpExporter(options =>
-                {
-                    options.Endpoint = new Uri(otlpEndpoint);
-                });
+                otlp.Endpoint = new Uri(otlpEndpoint);
             });
         });
 
-        return services;
+        return appBuilder;
     }
 }

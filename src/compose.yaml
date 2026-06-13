@@ -129,7 +129,7 @@ services:
   #      timeout: 5s
   #      retries: 5
 
-  logging-jaeger:
+  traces.jaeger:
     image: jaegertracing/all-in-one:1
     pull_policy: if_not_present
     healthcheck:
@@ -159,7 +159,7 @@ services:
       start_period: 20s
 
   elasticsearch:
-    image: elasticsearch:9.2.7
+    image: elasticsearch:8.17.5
     pull_policy: if_not_present
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
@@ -168,9 +168,54 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-
+  
+  elasticsearch-init:
+    image: curlimages/curl:latest
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: "no"
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        echo "Creating otel-logs index..."
+  
+        curl -s -X PUT http://elasticsearch:9200/otel-logs \
+          -H "Content-Type: application/json" \
+          -d '{}'
+  
+        echo "Creating problems index..."
+  
+        curl -s -X PUT http://elasticsearch:9200/problems \
+          -H "Content-Type: application/json" \
+          -d '{
+            "mappings": {
+              "properties": {
+                "id": { "type": "integer" },
+                "name": { "type": "text" },
+                "difficulty": { "type": "keyword" }
+              }
+            }
+          }'
+  
+        echo "Creating user_attempts index..."
+  
+        curl -s -X PUT http://elasticsearch:9200/user_attempts \
+          -H "Content-Type: application/json" \
+          -d '{
+            "mappings": {
+              "properties": {
+                "userId": { "type": "keyword" },
+                "problemId": { "type": "integer" },
+                "status": { "type": "keyword" }
+              }
+            }
+          }'
+  
+        echo "Done"
+  
   kibana:
-    image: kibana:9.2.7
+    image: kibana:8.17.5
     pull_policy: if_not_present
     depends_on:
       elasticsearch:
@@ -180,7 +225,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-
+  
   collaboration.api:
     build:
       context: ./Services/Collaboration
@@ -189,7 +234,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
   web:
     build:
       context: ./Web
@@ -216,15 +260,15 @@ services:
     volumes:
       - ./otel-config.yaml:/etc/otelcol-contrib/config.yaml:ro
     depends_on:
-      logging-jaeger:
+      traces.jaeger:
         condition: service_healthy
       elasticsearch:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:13133"]
-      interval: 15s
-      timeout: 5s
-      retries: 10
+    # healthcheck:
+    #   test: ["CMD", "wget", "--spider", "-q", "http://localhost:13133"]
+    #   interval: 15s
+    #   timeout: 5s
+    #   retries: 10
 
   prometheus:
     image: prom/prometheus:v3.5.0
@@ -238,9 +282,9 @@ services:
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
-    depends_on:
-      otel-collector:
-        condition: service_healthy
+    # depends_on:
+      # otel-collector:
+      #   condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy"]
       interval: 15s

@@ -17,8 +17,8 @@ builder.Services.AddHttpLogging(options =>
 
 // builder.Services.AddTelemetryConsumer<ForwarderTelemetry>();
 
-builder.Services.AddLoggingConfigs(builder.Configuration)
-    .AddIdentity(builder.Configuration);
+builder.Services.AddIdentity(builder.Configuration);
+builder.AddLoggingConfigs(builder.Configuration);
 
 var app = builder.Build();
 
