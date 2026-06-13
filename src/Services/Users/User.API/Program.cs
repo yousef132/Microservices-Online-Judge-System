@@ -14,8 +14,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer()
     .RegisterServices(builder.Configuration)
     .AddIdentity(builder.Configuration)
-    .AddLoggingConfigs(builder.Configuration)
     .AddSwaggerDocumentation();
+
+builder.AddLoggingConfigs(builder.Configuration);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddCarter(configurator: c =>
@@ -28,9 +29,7 @@ builder.Services.AddCarter(configurator: c =>
     c.WithModule<UpdateUser.UpdateUserEndpoint>();
     c.WithModule<UserRolesModule.UserRolesEndpoint>();
 });
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Logging.SetMinimumLevel(LogLevel.Information);
+
 builder.Services.AddHealthChecks();
 builder.Services.AddCors(options =>
 {
@@ -57,6 +56,8 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 
+app.UseMiddleware<BuildingBlocks.Core.Middlewares.CorrelationIdMiddleware>();
+app.UseMiddleware<BuildingBlocks.Core.Middlewares.RequestResponseLoggingMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseCors("AllowReactApp");
 app.UseAuthentication();

@@ -23,8 +23,9 @@ builder.Services.AddSwaggerGen().AddSwaggerDocumentation();
 builder.Services.AddHealthChecks();
 builder.Services.AddApplication(builder.Configuration)
     .AddInfrastructure(builder.Configuration)
-    .AddIdentity(builder.Configuration)
-    .AddLoggingConfigs(builder.Configuration);
+    .AddIdentity(builder.Configuration);
+
+builder.AddLoggingConfigs(builder.Configuration);
 
 builder.Services.AddProblemDetails();
 var app = builder.Build();
@@ -40,6 +41,8 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseMiddleware<BuildingBlocks.Core.Middlewares.CorrelationIdMiddleware>();
+app.UseMiddleware<BuildingBlocks.Core.Middlewares.RequestResponseLoggingMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.MapControllers();

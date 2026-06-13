@@ -1,5 +1,6 @@
 using Community.API.Entities;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Extensions.DiagnosticSources;
 using ArticleTag = Community.API.Entities.Tag;
 
 namespace Community.API.Database;
@@ -14,7 +15,11 @@ public class MongoDbContext
         Console.WriteLine(connectionString);
         var databaseName = configuration["MongoDB:DatabaseName"] ?? "CommunityDb";
         Console.WriteLine(databaseName);
-        var client = new MongoClient(connectionString);
+
+        var settings = MongoClientSettings.FromConnectionString(connectionString);
+        settings.ClusterConfigurator = cb => cb.Subscribe(new DiagnosticsActivityEventSubscriber());
+
+        var client = new MongoClient(settings);
         _database = client.GetDatabase(databaseName);
         Client = client;
     }

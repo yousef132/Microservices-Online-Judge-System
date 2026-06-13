@@ -1,0 +1,1847 @@
+{
+  "info": {
+    "name": "Microservices Online Judge System",
+    "description": "Postman collection for all endpoints via API Gateway",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5045",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "123e4567-e89b-12d3-a456-426614174000",
+      "type": "string"
+    },
+    {
+      "key": "articleId",
+      "value": "123e4567-e89b-12d3-a456-426614174001",
+      "type": "string"
+    },
+    {
+      "key": "commentId",
+      "value": "123e4567-e89b-12d3-a456-426614174002",
+      "type": "string"
+    },
+    {
+      "key": "slug",
+      "value": "sample-article",
+      "type": "string"
+    },
+    {
+      "key": "problemId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "contestId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "testcaseId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Working",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/test-working",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "test-working"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign In",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/sign-in",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "sign-in"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\",\n  \"userName\": \"user\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/auth/details/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "auth",
+                "details",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/auth/update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "auth",
+                "update"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/users/assign-role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "users",
+                "assign-role"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"role\": \"Admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/users/remove-role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "users",
+                "remove-role"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"role\": \"Admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Community",
+      "item": [
+        {
+          "name": "Get Recommendations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/recommendations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "recommendations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Recently Active Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/users/recently-active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "users",
+                "recently-active"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Recent Activity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/users/{{userId}}/recent-activity",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "users",
+                "{{userId}}",
+                "recent-activity"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cast Vote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/votes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "votes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"entityId\": \"{{articleId}}\",\n  \"voteType\": \"Upvote\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles/{{articleId}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles",
+                "{{articleId}}",
+                "comments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Great article!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Comment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles/{{articleId}}/comments/{{commentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles",
+                "{{articleId}}",
+                "comments",
+                "{{commentId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated comment\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles/{{articleId}}/comments/{{commentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles",
+                "{{articleId}}",
+                "comments",
+                "{{commentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Comments for Article",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles/{{articleId}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles",
+                "{{articleId}}",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Article",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Article\",\n  \"content\": \"Content here\",\n  \"tags\": [\n    \"C#\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Article",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles/{{articleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles",
+                "{{articleId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Title\",\n  \"content\": \"Updated content\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Article",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles/{{articleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles",
+                "{{articleId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Article By Slug",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles/{{slug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles",
+                "{{slug}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Articles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List My Articles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Cover Image Upload URL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles/{{articleId}}/cover-image-upload-url",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles",
+                "{{articleId}}",
+                "cover-image-upload-url"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fileName\": \"cover.jpg\",\n  \"contentType\": \"image/jpeg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Simulate Cover Upload",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles/{{articleId}}/cover-image/simulate-upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles",
+                "{{articleId}}",
+                "cover-image",
+                "simulate-upload"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fileUrl\": \"http://example.com/cover.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Confirm File Upload",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/articles/cover-image/confirm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "articles",
+                "cover-image",
+                "confirm"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fileKey\": \"some-key\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Bookmark",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/bookmarks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "bookmarks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"articleId\": \"{{articleId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Bookmark",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/bookmarks/{{articleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "bookmarks",
+                "{{articleId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Bookmarked Articles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/community/api/bookmarks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "community",
+                "api",
+                "bookmarks"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CoreJudge",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Problems",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/problems",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "problems"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Problem",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/problems",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "problems"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Two Sum\",\n  \"description\": \"Solve Two Sum\",\n  \"difficulty\": 1,\n  \"memoryLimit\": 256,\n  \"timeLimit\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Solve Problem",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/problems/solve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "problems",
+                "solve"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"problemId\": 1,\n  \"languageId\": 1,\n  \"sourceCode\": \"print(1)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Run Problem Testcases",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/problems/run",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "problems",
+                "run"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"problemId\": 1,\n  \"languageId\": 1,\n  \"sourceCode\": \"print(1)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Problem",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/problems/{{problemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "problems",
+                "{{problemId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Problem By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/problems/{{problemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "problems",
+                "{{problemId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Problem Placeholders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/problems/problem-placeholders/{{problemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "problems",
+                "problem-placeholders",
+                "{{problemId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Testcase",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/testcases",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "testcases"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"problemId\": 1,\n  \"input\": \"1 2\",\n  \"output\": \"3\",\n  \"isHidden\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Create Testcases",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/testcases/bulk",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "testcases",
+                "bulk"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"problemId\": 1,\n  \"testcases\": [\n    {\n      \"input\": \"1 2\",\n      \"output\": \"3\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Testcases for Problem",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/testcases/{{problemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "testcases",
+                "{{problemId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Testcase",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/testcases/{{testcaseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "testcases",
+                "{{testcaseId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"testcaseId\": 1,\n  \"input\": \"2 3\",\n  \"output\": \"5\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Testcase",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/testcases/{{testcaseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "testcases",
+                "{{testcaseId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Contest",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/contest",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "contest"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Weekly Contest\",\n  \"startTime\": \"2026-06-13T10:00:00Z\",\n  \"durationInMinutes\": 120\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Contest",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/contest/{{contestId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "contest",
+                "{{contestId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Weekly Contest Updated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Contest",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/contest/{{contestId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "contest",
+                "{{contestId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Contest Problems",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/contest/{{contestId}}/problems",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "contest",
+                "{{contestId}}",
+                "problems"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register In Contest",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/contest/register/{{contestId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "contest",
+                "register",
+                "{{contestId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Contests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/contest",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "contest"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Contest Standing",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/contest/{{contestId}}/standing",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "contest",
+                "{{contestId}}",
+                "standing"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Topics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/topics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "topics"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Topic",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/corejudge/api/topics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "corejudge",
+                "api",
+                "topics"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Arrays\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Collaboration",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/collaboration/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collaboration",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

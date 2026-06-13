@@ -1,4 +1,4 @@
-﻿using Community.API.Common.Exceptions;
+using Community.API.Common.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -32,6 +32,7 @@ namespace BuildingBlocks.Core.Exceptions.Handler
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            
             _logger.LogError(exception,
                 "Unhandled exception occurred at {Time}",
                 DateTime.UtcNow);
@@ -90,6 +91,7 @@ namespace BuildingBlocks.Core.Exceptions.Handler
                 Instance = context.Request.Path,
                 Type = exception.GetType().Name,
                 traceId = context.TraceIdentifier,
+                correlationId = context.Items["CorrelationId"]?.ToString(),
                 validationErrors = exception is FluentValidation.ValidationException fluentValidationException
                     ? fluentValidationException.Errors
                         .GroupBy(e => e.PropertyName)

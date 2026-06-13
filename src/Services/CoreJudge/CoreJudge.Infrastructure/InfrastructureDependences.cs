@@ -129,7 +129,7 @@ public static class InfrastructureDependencies
         var client = new ElasticsearchClient(settings);
         services.AddSingleton(client);
 
-        CreateIndices(client);
+        //CreateIndices(client);
 
         return services;
     }

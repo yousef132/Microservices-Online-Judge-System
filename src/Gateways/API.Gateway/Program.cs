@@ -17,8 +17,8 @@ builder.Services.AddHttpLogging(options =>
 
 // builder.Services.AddTelemetryConsumer<ForwarderTelemetry>();
 
-builder.Services.AddLoggingConfigs(builder.Configuration)
-    .AddIdentity(builder.Configuration);
+builder.Services.AddIdentity(builder.Configuration);
+builder.AddLoggingConfigs(builder.Configuration);
 
 var app = builder.Build();
 
@@ -30,6 +30,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<API.Gateway.Middlewares.CorrelationIdMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 //adds additional entries to the log detailing the

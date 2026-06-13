@@ -81,8 +81,9 @@ builder.Services.AddHttpClient();
 // ────────────────────────────────────────────
 
 builder.Services.AddSwaggerDocumentation()
-    .AddIdentity(builder.Configuration)
-    .AddLoggingConfigs(builder.Configuration);
+    .AddIdentity(builder.Configuration);
+
+builder.AddLoggingConfigs(builder.Configuration);
 
 // ────────────────────────────────────────────
 // API / Swagger
@@ -124,6 +125,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<BuildingBlocks.Core.Middlewares.CorrelationIdMiddleware>();
+app.UseMiddleware<BuildingBlocks.Core.Middlewares.RequestResponseLoggingMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();

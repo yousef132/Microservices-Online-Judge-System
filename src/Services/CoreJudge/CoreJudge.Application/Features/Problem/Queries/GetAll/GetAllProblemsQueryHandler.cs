@@ -75,7 +75,10 @@ namespace CoreJudge.Application.Features.Problems.Queries.GetAll
                         if (request.Topics != null && request.Topics.Any())
                         {
                             var topicValues = request.Topics.Select(id => (FieldValue)id).ToList();
-                            mustClauses.Add(mq => mq.Terms(t => t.Field("topics.id").Terms(new TermsQueryField(topicValues))));
+                            mustClauses.Add(mq => mq.Terms(t => t
+                                .Field("topics.id")
+                                .Term(new TermsQueryField(topicValues))  // Pass List<FieldValue> directly — no TermsQueryField wrapper
+                            ));
                         }
 
                         if (mustClauses.Any())
@@ -92,15 +95,19 @@ namespace CoreJudge.Application.Features.Problems.Queries.GetAll
                 return problemStatusDict;
 
             var problemIds = problems.Select(p => p.Id).ToList();
+            var problemFieldValues = problemIds.Select(id => (FieldValue)id).ToList();
 
             var attemptsResponse = await _elasticClient.SearchAsync<UserAttemptDocument>(s => s
                 .Indices(ElasticSearchIndexes.UserAttempts)
-                .Size(problemIds.Count) // Fetch all attempts tightly related to these problems, bypassing ES default limit of 10
+                .Size(problemIds.Count)
                 .Query(q => q
                     .Bool(b => b
                         .Must(
                             m1 => m1.Match(m => m.Field(f => f.UserId).Query(_userId)),
-                            m2 => m2.Terms(t => t.Field(f => f.ProblemId).Terms(new TermsQueryField(problemIds.Select(id => (FieldValue)id).ToList())))
+                            m2 => m2.Terms(t => t
+                                .Field(f => f.ProblemId)
+                                .Term(new TermsQueryField(problemFieldValues))
+                            )
                         )
                     )
                 ), cancellationToken);
