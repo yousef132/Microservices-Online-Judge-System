@@ -56,6 +56,8 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 
+app.UseMiddleware<BuildingBlocks.Core.Middlewares.CorrelationIdMiddleware>();
+app.UseMiddleware<BuildingBlocks.Core.Middlewares.RequestResponseLoggingMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseCors("AllowReactApp");
 app.UseAuthentication();

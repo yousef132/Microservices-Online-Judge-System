@@ -125,6 +125,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<BuildingBlocks.Core.Middlewares.CorrelationIdMiddleware>();
+app.UseMiddleware<BuildingBlocks.Core.Middlewares.RequestResponseLoggingMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();

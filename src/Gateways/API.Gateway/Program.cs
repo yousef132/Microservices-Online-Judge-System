@@ -30,6 +30,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<API.Gateway.Middlewares.CorrelationIdMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 //adds additional entries to the log detailing the

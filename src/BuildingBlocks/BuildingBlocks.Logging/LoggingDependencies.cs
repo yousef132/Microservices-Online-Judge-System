@@ -27,8 +27,9 @@ public static class LoggingDependencies
         // In Docker: set OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
         // Locally:   defaults to http://localhost:4317
         var otlpEndpoint = configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
-        Console.WriteLine($"OTLP Endpoint: {otlpEndpoint}");
-        Console.WriteLine($"JWT Key: {configuration["Jwt:Key"]}");
+
+        // Clear default console logging providers
+        appBuilder.Logging.ClearProviders();
 
         services.AddOpenTelemetry()
             .ConfigureResource(resource =>
